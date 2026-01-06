@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gappify - System Logs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            font-size: 13px;
+        }
+
+        .top-nav {
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 0 24px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 5px;
+            color: #333;
+            text-transform: uppercase;
+        }
+
+        .top-nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .top-nav-links a {
+            font-size: 13px;
+            color: #666;
+            text-decoration: none;
+            padding: 18px 0;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+        }
+
+        .top-nav-links a:hover {
+            color: #725bb4;
+        }
+
+        .top-nav-links a.active {
+            color: #725bb4;
+            border-bottom-color: #725bb4;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .layout {
+            display: flex;
+            margin-top: 56px;
+        }
+
+        .sidebar {
+            width: 280px;
+            background-color: #fff;
+            border-right: 1px solid #e0e0e0;
+            min-height: calc(100vh - 56px);
+            position: fixed;
+            left: 0;
+            top: 56px;
+            padding: 24px 0;
+        }
+
+        .sidebar-title {
+            font-size: 24px;
+            font-weight: 600;
+            padding: 0 24px 24px;
+            color: #333;
+        }
+
+        .sidebar-section {
+            margin-bottom: 4px;
+        }
+
+        .sidebar-section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .sidebar-section-header:hover {
+            background-color: #f5f5f5;
+        }
+
+        .sidebar-section-header .chevron {
+            color: #999;
+            margin-left: auto;
+            font-size: 10px;
+        }
+
+        .sidebar-section-items {
+            display: none;
+        }
+
+        .sidebar-section.expanded .sidebar-section-items {
+            display: block;
+        }
+
+        .sidebar-item {
+            padding: 8px 24px 8px 44px;
+            color: #666;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .sidebar-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .sidebar-item.active {
+            color: #725bb4;
+            background-color: #f0eaff;
+        }
+
+        .sidebar-section-header.active {
+            color: #725bb4;
+            background-color: #f0eaff;
+        }
+
+        .beta-badge {
+            background: #22c55e;
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 4px
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 24px 32px;
+            flex: 1;
+            min-height: calc(100vh - 56px);
+            min-width: 0;
+            /* Allow content to shrink and scroll */
+            overflow-x: hidden;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 24px;
+        }
+
+        .controls-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            /* Allow wrapping for buttons and search */
+        }
+
+        .custom-dropdown {
+            position: relative;
+        }
+
+        .dropdown-trigger {
+            background-color: #725bb4;
+            color: #fff;
+            border: 1px solid #725bb4;
+            padding: 0 16px;
+            border-radius: 32px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 32px;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        .dropdown-trigger:hover {
+            background-color: #5a6268;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 4px;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 280px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 10px 16px;
+            font-size: 13px;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .dropdown-item.active {
+            background-color: #f0eaff;
+            color: #725bb4;
+            font-weight: 500;
+        }
+
+        .dropdown-divider {
+            border-top: 1px solid #f0f0f0;
+            margin: 0;
+        }
+
+        .dropdown-item.create-filter {
+            color: #725bb4;
+            font-weight: 500;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            min-width: 250px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-box input {
+            width: 100%;
+            height: 32px;
+            padding: 0 16px;
+            border: 1px solid #d0d0d0;
+            border-radius: 32px;
+            font-size: 13px;
+            color: #666;
+            background-color: #fff;
+        }
+
+        .search-box input::placeholder {
+            color: #999;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #725bb4;
+        }
+
+        .info-icon {
+            color: #999;
+            font-size: 18px;
+            cursor: help;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-info-tooltip {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: left;
+            border-radius: 4px;
+            padding: 10px 12px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -125px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 11px;
+            line-height: 1.4;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+            font-weight: 400;
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .search-info-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .export-btn {
+            background-color: #fff;
+            color: #666;
+            border: 1px solid #d0d0d0;
+            padding: 0 16px;
+            border-radius: 32px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            height: 32px;
+            line-height: 1;
+            margin-left: auto;
+        }
+
+        .export-btn:hover {
+            border-color: #725bb4;
+            color: #725bb4;
+        }
+
+        .active-filters-bar {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding: 10px 24px;
+            background-color: #f0eaff;
+            border-bottom: 1px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+
+        .active-filters-bar.show {
+            display: flex;
+        }
+
+        .filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background-color: #fff;
+            border: 1px solid #725bb4;
+            border-radius: 32px;
+            font-size: 12px;
+            color: #725bb4;
+        }
+
+        .filter-tag-remove {
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .clear-all-filters {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: #725bb4;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .table-container {
+            background-color: #fff;
+            margin: 0;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            overflow: hidden;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1200px;
+        }
+
+        thead {
+            background-color: #fafafa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 12px;
+            color: #666;
+            white-space: nowrap;
+            border-bottom: 1px solid #e0e0e0;
+            cursor: pointer;
+        }
+
+        th:hover {
+            background-color: #f0f0f0;
+        }
+
+        th .sort-icon {
+            margin-left: 4px;
+            color: #999;
+            font-size: 10px;
+        }
+
+        th.sorted-asc .sort-icon,
+        th.sorted-desc .sort-icon {
+            color: #725bb4;
+        }
+
+        td {
+            padding: 10px 16px;
+            font-size: 13px;
+            color: #333;
+            border-bottom: 1px solid #f0f0f0;
+            white-space: nowrap;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        tr:hover td {
+            background-color: #fafafa;
+        }
+
+        .table-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 12px 24px;
+            gap: 16px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .table-info {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .pagination-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #725bb4;
+            background-color: #725bb4;
+            border-radius: 32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #fff;
+        }
+
+        .pagination-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-num {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #d0d0d0;
+            background-color: #fff;
+            border-radius: 32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .page-num:hover {
+            background-color: #f5f5f5;
+        }
+
+        .page-num.active {
+            background-color: #725bb4;
+            color: #fff;
+            border-color: #725bb4;
+            font-weight: 500;
+        }
+
+        .page-size-select {
+            padding: 4px 8px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #666;
+            background-color: #fff;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background-color: #fff;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: #666;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 16px 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .filter-group {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px
+        }
+
+        .logic-toggle {
+            display: flex;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        .logic-option {
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: transparent;
+            color: #999;
+        }
+
+        .logic-option.active {
+            background-color: #725bb4;
+            color: #fff;
+        }
+
+        .criteria-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            margin-bottom: 12px;
+        }
+
+        .criteria-field,
+        .criteria-operator,
+        .criteria-value {
+            flex: 1;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #725bb4;
+        }
+
+        .mode-btn {
+            padding: 8px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid;
+            border-radius: 32px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .mode-btn.include {
+            background: #dcfce7;
+            border-color: #22c55e;
+            color: #166534
+        }
+
+        .mode-btn.exclude {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b
+        }
+
+        .delete-criteria {
+            padding: 10px;
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 16px
+        }
+
+        .filter-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px
+        }
+
+        .add-filter-btn {
+            padding: 8px 16px;
+            background-color: #725bb4;
+            color: #fff;
+            border: 1px solid #725bb4;
+            border-radius: 32px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .remove-all-btn {
+            padding: 8px 16px;
+            background-color: #fff;
+            color: #666;
+            border: 1px solid #d0d0d0;
+            border-radius: 32px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .btn {
+            padding: 0 16px;
+            border-radius: 32px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .btn-primary {
+            background-color: #725bb4;
+            color: #fff;
+            border: 1px solid #725bb4;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-secondary {
+            background-color: #fff;
+            color: #666;
+            border: 1px solid #d0d0d0;
+        }
+
+        .btn-secondary:hover {
+            border-color: #725bb4;
+            color: #725bb4;
+        }
+
+        .empty-criteria {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background-color: #333;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 4px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 3000;
+            font-size: 13px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1
+        }
+
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 10px;
+            border-radius: 32px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .type-transactions {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .type-schedule_manager {
+            background-color: #fef3c7;
+            color: #b45309;
+        }
+
+        .type-company_settings {
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .type-transaction_column_manager {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+
+        .type-accrual_manager {
+            background-color: #fae8ff;
+            color: #a21caf;
+        }
+
+        .type-qje {
+            background-color: #f0eaff;
+            color: #725bb4;
+        }
+
+        .empty-cell {
+            color: #999;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="top-nav">
+        <div class="logo">GAPPIFY</div>
+        <div class="top-nav-links"><a href="#">REVIEW CENTER</a><a href="#">TRANSACTIONS</a><a href="#">QJE'S</a><a
+                href="#">ACCRUAL MANAGER</a><a href="#">INSIGHTS</a></div>
+        <div class="user-menu">👤 admin@gappify.com</div>
+    </nav>
+    <div class="layout">
+        <aside class="sidebar">
+            <h1 class="sidebar-title">Settings</h1>
+            <div class="sidebar-section">
+                <div class="sidebar-section-header">Period Management</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-header">User Management<span class="chevron">▼</span></div>
+                <div class="sidebar-section-items">
+                    <div class="sidebar-item">Users</div>
+                    <div class="sidebar-item">SSO</div>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-header">Schedule Manager</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-header">Accrual Manager<span class="chevron">▼</span></div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-header">Company Settings</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-header">Integrations
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="sidebar-section-items">
+                    <div class="sidebar-item">API Keys</div>
+                    <div class="sidebar-item">Logs</div>
+                    <div class="sidebar-item">API Error Notification</div>
+                    <div class="sidebar-item">Source Data</div>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-header">Insights</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-header">Transactions
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="sidebar-section-items">
+                    <div class="sidebar-item">API Keys</div>
+                    <div class="sidebar-item">Logs</div>
+                    <div class="sidebar-item">API Error Notification</div>
+                    <div class="sidebar-item">Source Data</div>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-header active">Audit Logs</div>
+            </div>
+        </aside>
+        <main class="main-content">
+            <h1 class="page-title">Audit Logs</h1>
+            <div class="controls-bar">
+                <!-- Log Type Selector -->
+                <div class="custom-dropdown">
+                    <button class="dropdown-trigger" id="logTypeTrigger"><span
+                            id="selectedLogTypeLabel">Transactions</span> ▼</button>
+                    <div class="dropdown-menu" id="logTypeMenu">
+                        <div class="dropdown-item" data-value="transactions">Transactions</div>
+                        <div class="dropdown-item" data-value="accrual_manager">Accrual Manager</div>
+                        <div class="dropdown-divider"></div>
+                    </div>
+                </div>
+
+                <!-- Period Selector -->
+                <div class="custom-dropdown" id="periodSelectorContainer">
+                    <button class="dropdown-trigger" id="periodTrigger"><span id="selectedPeriodLabel">December
+                            2025</span> ▼</button>
+                    <div class="dropdown-menu" id="periodMenu">
+                        <div class="dropdown-item" data-value="December 2025">December 2025</div>
+                        <div class="dropdown-item" data-value="November 2025">November 2025</div>
+                        <div class="dropdown-item" data-value="October 2025">October 2025</div>
+                        <div class="dropdown-item" data-value="September 2025">September 2025</div>
+                        <div class="dropdown-item" data-value="August 2025">August 2025</div>
+                        <div class="dropdown-item" data-value="July 2025">July 2025</div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item" id="selectCustomPeriod"><span style="margin-right:8px">Select
+                                Period</span> 📅</div>
+                    </div>
+                </div>
+
+                <div class="search-box">
+                    <input type="text" placeholder="Search Vendor Name, Vendor ID, PO Number, Invoice..."
+                        id="searchInput">
+                    <div class="search-info-tooltip">
+                        <span class="info-icon">ⓘ</span>
+                        <div class="tooltip-text">
+                            Search Vendor Name, Vendor ID, PO Number, Invoice Number
+                        </div>
+                    </div>
+                </div>
+                <button class="export-btn" id="exportBtn">📤 Export to CSV</button>
+            </div>
+            <div class="active-filters-bar" id="activeFiltersBar"><span
+                    style="font-size:12px;color:#725bb4;font-weight:600">Active Filters:</span>
+                <div id="activeFilterTags"></div><button class="clear-all-filters" id="clearAllFiltersBtn">Clear
+                    all</button>
+            </div>
+            <div class="table-container">
+                <div class="table-wrapper">
+                    <table>
+                        <thead id="tableHead"></thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+                <div class="table-footer">
+                    <span class="table-info">Showing <strong id="showingStart">1</strong>-<strong
+                            id="showingEnd">100</strong> of <strong id="showingTotal">0</strong></span>
+                    <div class="pagination"><button class="pagination-btn" id="prevBtn">&lt;</button>
+                        <div id="paginationPages" style="display:flex;gap:4px"></div><button class="pagination-btn"
+                            id="nextBtn">&gt;</button>
+                    </div>
+                    <select class="page-size-select" id="pageSize">
+                        <option value="100">100 / page</option>
+                        <option value="50">50 / page</option>
+                        <option value="25">25 / page</option>
+                    </select>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div class="modal-overlay" id="filterModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Create Custom Filter</h3><button class="modal-close"
+                    id="closeModalBtn">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="filter-group">
+                    <div class="filter-group-header"><span style="font-size:12px;color:#6b7280">MATCH</span>
+                        <div class="logic-toggle"><button class="logic-option active" id="logicAnd">AND</button><button
+                                class="logic-option" id="logicOr">OR</button></div><span id="logicHint"
+                            style="font-size:12px;color:#9ca3af">all conditions</span>
+                    </div>
+                    <div id="criteriaRows"></div>
+                    <div id="emptyCriteria" class="empty-criteria">
+                        <div style="font-size:40px;opacity:0.5">🔍</div>
+                        <p>No filter criteria added</p><button class="add-filter-btn" id="addFilterBtnEmpty">+ Add
+                            filter</button>
+                    </div>
+                    <div class="filter-actions" id="filterActions" style="display:none"><button class="add-filter-btn"
+                            id="addFilterBtn">+ Add filter</button><button class="remove-all-btn"
+                            id="removeAllBtn">Remove all</button></div>
+                </div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-primary" id="applyFiltersBtn">Apply Filters</button><button
+                    class="btn btn-secondary" id="cancelModalBtn">Cancel</button></div>
+        </div>
+    </div>
+    <div class="toast" id="toast"><span id="toastMessage"></span></div>
+    <script>
+        var columns = ['date', 'period', 'type', 'vendor_name', 'vendor_id', 'po_number', 'invoice_number', 'performed_by', 'action', 'field', 'old_value', 'new_value'];
+        var columnLabels = {
+            date: 'Date',
+            period: 'Period',
+            type: 'Type',
+            vendor_name: 'Vendor Name',
+            vendor_id: 'Vendor ID',
+            po_number: 'PO Number',
+            invoice_number: 'Invoice Number',
+            performed_by: 'Performed by',
+            action: 'Action',
+            field: 'Field',
+            old_value: 'Old Value',
+            new_value: 'New Value'
+        };
+        var fieldTypes = {
+            date: 'date', period: 'text', type: 'text', vendor_name: 'text', vendor_id: 'text',
+            po_number: 'text', invoice_number: 'text', performed_by: 'text',
+            action: 'text', field: 'text', old_value: 'text', new_value: 'text'
+        };
+        var operators = {
+            text: ['contains', 'equals', 'not equals', 'starts with', 'ends with', 'is empty', 'is not empty'],
+            date: ['equals', 'before', 'after', 'between', 'is empty', 'is not empty']
+        };
+        var typeLabels = {
+            transactions: 'Transactions',
+            accrual_manager: 'Accrual Manager'
+        };
+
+
+
+        var currentLogType = 'transactions', currentPeriod = 'December 2025', currentPage = 1, pageSize = 100, allData = [], filteredData = [], filterCriteria = [], filterLogic = 'AND', criteriaIdCounter = 0, sortColumn = 'date', sortDirection = 'desc';
+
+        var vendors = [
+            { name: 'Amazon Web Services', id: 'VND-001' },
+            { name: 'Microsoft Azure', id: 'VND-002' },
+            { name: 'Slack Technologies', id: 'VND-003' },
+            { name: 'Zoom Communications', id: 'VND-004' },
+            { name: 'Adobe Systems', id: 'VND-005' },
+            { name: 'Salesforce', id: 'VND-006' },
+            { name: 'Oracle Corp', id: 'VND-007' }
+        ];
+
+        var auditUsers = ['admin@gappify.com', 'john.smith@company.com', 'sarah.jones@company.com', 'mike.chen@company.com', 'emily.davis@company.com'];
+        var auditActions = ['updated', 'imported', 'created'];
+        var auditFields = ['Channel Credit', 'Department - Expense', 'Company Debit', 'Subsidiary', 'Amount', 'Currency', 'Memo', 'GL Account'];
+
+        function generateRandomDate() {
+            var start = new Date(2025, 6, 1); // July 2025
+            var end = new Date(2025, 11, 31); // Dec 2025
+            var d = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+            var hours = String(Math.floor(Math.random() * 24)).padStart(2, '0');
+            var mins = String(Math.floor(Math.random() * 60)).padStart(2, '0');
+            var secs = String(Math.floor(Math.random() * 60)).padStart(2, '0');
+            return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0') + ' ' + hours + ':' + mins + ':' + secs;
+        }
+
+        function generateSampleData(type, count) {
+            var data = [];
+            var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            for (var i = 0; i < count; i++) {
+                var vendor = vendors[Math.floor(Math.random() * vendors.length)];
+                var dateStr = generateRandomDate();
+                var d = new Date(dateStr);
+                var period = monthNames[d.getMonth()] + ' ' + d.getFullYear();
+                var action = auditActions[Math.floor(Math.random() * auditActions.length)];
+
+                var oldVal = '', newVal = '', field = '';
+                if (action === 'updated') {
+                    field = auditFields[Math.floor(Math.random() * auditFields.length)];
+                    oldVal = 'Value-' + Math.floor(Math.random() * 100);
+                    newVal = 'Value-' + Math.floor(Math.random() * 100 + 100);
+                } else if (action === 'created') {
+                    field = 'N/A';
+                    oldVal = '';
+                    newVal = 'New Record';
+                } else {
+                    field = 'Bulk Upload';
+                    oldVal = '';
+                    newVal = 'Imported';
+                }
+
+                data.push({
+                    date: dateStr,
+                    period: period,
+                    type: type,
+                    vendor_name: vendor.name,
+                    vendor_id: vendor.id,
+                    po_number: 'PO-' + (10000 + Math.floor(Math.random() * 90000)),
+                    invoice_number: 'INV-' + (20000 + Math.floor(Math.random() * 80000)),
+                    performed_by: auditUsers[Math.floor(Math.random() * auditUsers.length)],
+                    action: action,
+                    field: field,
+                    old_value: oldVal,
+                    new_value: newVal
+                });
+            }
+            return data;
+        }
+
+        function generateAllData() {
+            var data = [];
+            var counts = { transactions: 1500, accrual_manager: 1000 };
+            Object.keys(counts).forEach(function (type) {
+                data = data.concat(generateSampleData(type, counts[type]));
+            });
+            return data;
+        }
+
+        function changeLogType(type) {
+            currentLogType = type;
+            document.getElementById('selectedLogTypeLabel').textContent = typeLabels[type];
+            document.querySelectorAll('#logTypeMenu .dropdown-item[data-value]').forEach(function (i) {
+                i.classList.toggle('active', i.dataset.value === type);
+            });
+
+            // Toggle Period Selector
+            var periodContainer = document.getElementById('periodSelectorContainer');
+            if (periodContainer) {
+                periodContainer.style.display = (type === 'transactions') ? 'block' : 'none';
+            }
+
+            applyOverallFilters();
+            closeDropdowns();
+        }
+
+        function changePeriod(period) {
+            currentPeriod = period;
+            document.getElementById('selectedPeriodLabel').textContent = period;
+            document.querySelectorAll('#periodMenu .dropdown-item[data-value]').forEach(function (i) {
+                i.classList.toggle('active', i.dataset.value === period);
+            });
+            applyOverallFilters();
+            closeDropdowns();
+        }
+
+        function applyOverallFilters() {
+            console.log('=== applyOverallFilters called ===');
+            var baseData = allData.filter(function (row) {
+                if (currentLogType === 'transactions') {
+                    return row.type === currentLogType && row.period === currentPeriod;
+                } else {
+                    return row.type === currentLogType;
+                }
+            });
+            console.log('After type/period filter:', baseData.length, 'records');
+
+            // Apply search filter
+            // Apply search filter
+            var searchInput = document.getElementById('searchInput');
+            if (!searchInput) {
+                console.error('CRITICAL: Search input missing in DOM');
+                return;
+            }
+
+            var q = searchInput.value.toLowerCase().trim();
+
+            if (q) {
+                var searchCols = ['vendor_name', 'vendor_id', 'po_number', 'invoice_number'];
+
+                baseData = baseData.filter(function (row) {
+                    return searchCols.some(function (col) {
+                        var rawVal = row[col];
+                        var value = String(rawVal || '').toLowerCase();
+                        var matches = value.indexOf(q) >= 0;
+                        return matches;
+                    });
+                });
+
+            }
+
+            // Apply custom filter criteria
+            if (filterCriteria.length) {
+                baseData = baseData.filter(function (row) {
+                    var results = filterCriteria.map(function (c) {
+                        if (!c.field) return true;
+                        var v = String(row[c.field] || '').toLowerCase(), fv = String(c.value || '').toLowerCase(), m = false;
+                        switch (c.operator) {
+                            case 'contains': m = v.indexOf(fv) >= 0; break;
+                            case 'equals': m = v === fv; break;
+                            case 'not equals': m = v !== fv; break;
+                            case 'starts with': m = v.indexOf(fv) === 0; break;
+                            case 'ends with': m = v.slice(-fv.length) === fv; break;
+                            case 'before': m = new Date(v) < new Date(fv); break;
+                            case 'after': m = new Date(v) > new Date(fv); break;
+                            case 'is empty': m = !v; break;
+                            case 'is not empty': m = !!v; break;
+                            default: m = true;
+                        }
+                        return c.mode === 'include' ? m : !m;
+                    });
+                    return filterLogic === 'AND' ? results.every(function (r) { return r; }) : results.some(function (r) { return r; });
+                });
+            }
+
+            filteredData = baseData;
+            console.log('Final filtered data:', filteredData.length, 'records');
+            sortData();
+            currentPage = 1;
+            renderTable();
+            updatePagination();
+            updateActiveFiltersBar();
+        }
+
+        function renderTable() {
+            var thead = document.getElementById('tableHead'), tbody = document.getElementById('tableBody');
+            var headerHtml = '<tr>';
+            columns.forEach(function (col) {
+                var sc = '', si = '⇅';
+                if (col === sortColumn) {
+                    sc = sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc';
+                    si = sortDirection === 'asc' ? '▲' : '▼';
+                }
+                headerHtml += '<th class="' + sc + '" data-column="' + col + '">' + columnLabels[col] + '<span class="sort-icon">' + si + '</span></th>';
+            });
+            headerHtml += '</tr>';
+            thead.innerHTML = headerHtml;
+
+            var start = (currentPage - 1) * pageSize, end = Math.min(start + pageSize, filteredData.length);
+            var bodyHtml = '';
+            filteredData.slice(start, end).forEach(function (row) {
+                bodyHtml += '<tr>';
+                columns.forEach(function (col) {
+                    var val = row[col] || '';
+                    if (col === 'type') {
+                        bodyHtml += '<td><span class="type-badge type-' + val + '">' + typeLabels[val] + '</span></td>';
+                    } else if (val === '') {
+                        bodyHtml += '<td><span class="empty-cell">—</span></td>';
+                    } else {
+                        bodyHtml += '<td title="' + val + '">' + val + '</td>';
+                    }
+                });
+                bodyHtml += '</tr>';
+            });
+            tbody.innerHTML = bodyHtml;
+
+            document.getElementById('showingStart').textContent = filteredData.length > 0 ? start + 1 : 0;
+            document.getElementById('showingEnd').textContent = end;
+            document.getElementById('showingTotal').textContent = filteredData.length.toLocaleString();
+
+            document.querySelectorAll('#tableHead th').forEach(function (th) {
+                th.onclick = function () { sortBy(th.dataset.column); };
+            });
+        }
+
+        function sortBy(col) {
+            if (sortColumn === col) sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            else { sortColumn = col; sortDirection = 'asc'; }
+            sortData();
+            renderTable();
+        }
+
+        function sortData() {
+            var ft = fieldTypes[sortColumn] || 'text';
+            filteredData.sort(function (a, b) {
+                var av = a[sortColumn] || '', bv = b[sortColumn] || '', cmp = 0;
+                if (ft === 'date') cmp = new Date(av || 0) - new Date(bv || 0);
+                else cmp = String(av).localeCompare(String(bv));
+                return sortDirection === 'asc' ? cmp : -cmp;
+            });
+        }
+
+        function toggleDropdown(id) {
+            document.getElementById(id).classList.toggle('show');
+        }
+
+        function closeDropdowns() {
+            document.querySelectorAll('.dropdown-menu').forEach(function (m) {
+                m.classList.remove('show');
+            });
+        }
+
+        function openFilterModal() { document.getElementById('filterModal').classList.add('show'); renderCriteriaRows(); closeDropdowns(); }
+        function closeFilterModal() { document.getElementById('filterModal').classList.remove('show'); }
+        function setLogic(l) { filterLogic = l; document.getElementById('logicAnd').classList.toggle('active', l === 'AND'); document.getElementById('logicOr').classList.toggle('active', l === 'OR'); document.getElementById('logicHint').textContent = l === 'AND' ? 'all conditions' : 'any condition'; }
+        function addCriteria() { filterCriteria.push({ id: ++criteriaIdCounter, field: '', mode: 'include', operator: 'contains', value: '', value2: '' }); renderCriteriaRows(); }
+        function removeCriteria(id) { filterCriteria = filterCriteria.filter(function (c) { return c.id !== id; }); renderCriteriaRows(); }
+        function removeAllCriteria() { filterCriteria = []; renderCriteriaRows(); }
+        function getFieldType(f) { return fieldTypes[f] || 'text'; }
+
+        function renderCriteriaRows() {
+            var container = document.getElementById('criteriaRows'), empty = document.getElementById('emptyCriteria'), actions = document.getElementById('filterActions');
+            if (!filterCriteria.length) { container.innerHTML = ''; empty.style.display = 'block'; actions.style.display = 'none'; return; }
+            empty.style.display = 'none'; actions.style.display = 'flex';
+            var html = '';
+            filterCriteria.forEach(function (c) {
+                var ft = getFieldType(c.field), ops = operators[ft] || operators.text, hideVal = ['is empty', 'is not empty'].indexOf(c.operator) >= 0;
+                html += '<div class="criteria-row" data-id="' + c.id + '"><div class="form-group"><label>Field</label><select class="field-select"><option value="">Select</option>';
+                columns.forEach(function (col) {
+                    html += '<option value="' + col + '" ' + (c.field === col ? 'selected' : '') + '>' + columnLabels[col] + '</option>';
+                });
+                html += '</select></div><div style="text-align:center"><span style="font-size:11px;color:#6b7280">Mode</span><br><button class="mode-btn ' + (c.mode === 'include' ? 'include' : 'exclude') + ' mode-toggle-btn">' + (c.mode === 'include' ? '✓ Inc' : '✕ Exc') + '</button></div><div class="form-group"><label>Operator</label><select class="operator-select" ' + (c.field ? '' : 'disabled') + '>';
+                ops.forEach(function (o) { html += '<option value="' + o + '" ' + (c.operator === o ? 'selected' : '') + '>' + o + '</option>'; });
+                html += '</select></div><div class="form-group"><label>Value</label>' + (hideVal ? '<input disabled placeholder="N/A">' : '<input type="text" class="value-input" value="' + c.value + '">') + '</div><button class="delete-criteria delete-btn">🗑️</button></div>';
+            });
+            container.innerHTML = html;
+            container.querySelectorAll('.criteria-row').forEach(function (row) {
+                var id = parseInt(row.dataset.id), c = filterCriteria.find(function (x) { return x.id === id; });
+                row.querySelector('.field-select').onchange = function () { c.field = this.value; c.operator = operators[getFieldType(c.field)][0]; renderCriteriaRows(); };
+                row.querySelector('.mode-toggle-btn').onclick = function () { c.mode = c.mode === 'include' ? 'exclude' : 'include'; renderCriteriaRows(); };
+                row.querySelector('.operator-select').onchange = function () { c.operator = this.value; renderCriteriaRows(); };
+                var vi = row.querySelector('.value-input'); if (vi) vi.oninput = function () { c.value = this.value; };
+                row.querySelector('.delete-btn').onclick = function () { removeCriteria(id); };
+            });
+        }
+
+        function applyFilters() {
+            applyOverallFilters();
+            closeFilterModal();
+            showToast('Filters applied: ' + filteredData.length + ' records');
+        }
+
+        function updateActiveFiltersBar() {
+            var bar = document.getElementById('activeFiltersBar'), tags = document.getElementById('activeFilterTags');
+            var valid = filterCriteria.filter(function (c) { return c.field; });
+            if (!valid.length) { bar.classList.remove('show'); return; }
+            bar.classList.add('show');
+            var html = '';
+            valid.forEach(function (c) {
+                html += '<span class="filter-tag" data-id="' + c.id + '">' + (c.mode === 'exclude' ? '✕ ' : '') + columnLabels[c.field] + ' ' + c.operator + ' ' + (['is empty', 'is not empty'].indexOf(c.operator) >= 0 ? '' : c.value) + ' <span class="filter-tag-remove">✕</span></span>';
+            });
+            tags.innerHTML = html;
+            tags.querySelectorAll('.filter-tag-remove').forEach(function (b) {
+                b.onclick = function () {
+                    var id = parseInt(b.parentElement.dataset.id);
+                    filterCriteria = filterCriteria.filter(function (c) { return c.id !== id; });
+                    applyOverallFilters();
+                };
+            });
+        }
+
+        function clearAllFilters() {
+            filterCriteria = [];
+            applyOverallFilters();
+            showToast('Filters cleared');
+        }
+
+        function updatePagination() {
+            var tp = Math.ceil(filteredData.length / pageSize), pc = document.getElementById('paginationPages');
+            var pages = [];
+            if (tp <= 5) for (var i = 1; i <= tp; i++)pages.push(i);
+            else if (currentPage <= 2) pages = [1, 2, 3, '...', tp];
+            else if (currentPage >= tp - 1) pages = [1, '...', tp - 2, tp - 1, tp];
+            else pages = [1, '...', currentPage, currentPage + 1, '...', tp];
+            var html = '';
+            pages.forEach(function (p) {
+                if (p === '...') html += '<span style="padding:0 6px;color:#9ca3af">...</span>';
+                else html += '<button class="page-num ' + (p === currentPage ? 'active' : '') + '" data-page="' + p + '">' + p + '</button>';
+            });
+            pc.innerHTML = html;
+            pc.querySelectorAll('.page-num').forEach(function (b) { b.onclick = function () { goToPage(parseInt(b.dataset.page)); }; });
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === tp || tp === 0;
+        }
+
+        function goToPage(p) { currentPage = p; renderTable(); updatePagination(); }
+
+        function handleSearch() {
+            applyOverallFilters();
+        }
+
+        function exportData() {
+            showToast('Exporting ' + filteredData.length + ' records...');
+            setTimeout(function () {
+                var exportData = filteredData.slice();
+                var csv = [columns.map(function (c) { return columnLabels[c]; }).join(',')];
+                exportData.forEach(function (row) {
+                    csv.push(columns.map(function (col) {
+                        var val = row[col] || '';
+                        if (col === 'type') val = typeLabels[val];
+                        return '"' + String(val).replace(/"/g, '""') + '"';
+                    }).join(','));
+                });
+                var a = document.createElement('a');
+                a.href = URL.createObjectURL(new Blob([csv.join('\n')], { type: 'text/csv' }));
+                a.download = 'system_logs_export.csv';
+                a.click();
+                showToast('Export complete!');
+            }, 300);
+        }
+
+        function showToast(msg) {
+            var t = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = msg;
+            t.classList.add('show');
+            setTimeout(function () { t.classList.remove('show'); }, 3000);
+        }
+
+        function initApp() {
+            allData = generateAllData();
+            applyOverallFilters();
+
+            document.querySelectorAll('#logTypeMenu .dropdown-item[data-value]').forEach(function (i) {
+                i.classList.toggle('active', i.dataset.value === currentLogType);
+            });
+            document.querySelectorAll('#periodMenu .dropdown-item[data-value]').forEach(function (i) {
+                i.classList.toggle('active', i.dataset.value === currentPeriod);
+            });
+
+            var logTypeTrigger = document.getElementById('logTypeTrigger');
+            if (logTypeTrigger) logTypeTrigger.onclick = function (e) { e.stopPropagation(); toggleDropdown('logTypeMenu'); };
+
+            var periodTrigger = document.getElementById('periodTrigger');
+            if (periodTrigger) periodTrigger.onclick = function (e) { e.stopPropagation(); toggleDropdown('periodMenu'); };
+
+            document.querySelectorAll('#logTypeMenu .dropdown-item[data-value]').forEach(function (i) {
+                i.onclick = function () { changeLogType(i.dataset.value); };
+            });
+            document.querySelectorAll('#periodMenu .dropdown-item[data-value]').forEach(function (i) {
+                i.onclick = function () { changePeriod(i.dataset.value); };
+            });
+
+            var createBtn = document.getElementById('createFilterBtn');
+            if (createBtn) createBtn.onclick = openFilterModal;
+
+            // Search input handler
+            // Search input handler
+            var searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.oninput = function (e) {
+                    // Force filter update
+                    currentPage = 1;
+                    applyOverallFilters();
+                };
+            }
+
+            document.getElementById('closeModalBtn').onclick = closeFilterModal;
+            document.getElementById('cancelModalBtn').onclick = closeFilterModal;
+            document.getElementById('applyFiltersBtn').onclick = applyFilters;
+            document.getElementById('exportBtn').onclick = exportData;
+            document.getElementById('clearAllFiltersBtn').onclick = clearAllFilters;
+            document.getElementById('prevBtn').onclick = function () { if (currentPage > 1) goToPage(currentPage - 1); };
+            document.getElementById('nextBtn').onclick = function () { var tp = Math.ceil(filteredData.length / pageSize); if (currentPage < tp) goToPage(currentPage + 1); };
+            document.getElementById('pageSize').onchange = function () { pageSize = parseInt(this.value); currentPage = 1; renderTable(); updatePagination(); };
+            document.getElementById('logicAnd').onclick = function () { setLogic('AND'); };
+            document.getElementById('logicOr').onclick = function () { setLogic('OR'); };
+            document.getElementById('addFilterBtn').onclick = addCriteria;
+            document.getElementById('addFilterBtnEmpty').onclick = addCriteria;
+            document.getElementById('removeAllBtn').onclick = removeAllCriteria;
+            document.getElementById('filterModal').onclick = function (e) { if (e.target.id === 'filterModal') closeFilterModal(); };
+
+            document.querySelectorAll('.sidebar-section-header').forEach(function (h) {
+                h.onclick = function () { h.parentElement.classList.toggle('expanded'); };
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.custom-dropdown')) {
+                    closeDropdowns();
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+
+</html>

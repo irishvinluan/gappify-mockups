@@ -1,0 +1,4004 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gappify - Transactions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    button {
+      border-radius: 32px;
+      background-color: #725bb4;
+      color: #fff;
+      border: 1px solid #725bb4;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      font-size: 13px;
+    }
+
+    .header {
+      background-color: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      color: #333;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: flex;
+      gap: 32px;
+    }
+
+    .nav-item {
+      font-size: 13px;
+      color: #666;
+      text-decoration: none;
+      padding: 18px 0;
+      border-bottom: 2px solid transparent;
+      font-weight: 500;
+    }
+
+    .nav-item:hover {
+      color: #725bb4;
+    }
+
+    .nav-item.active {
+      color: #725bb4;
+      border-bottom-color: #725bb4;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .user-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-color: #e8e8e8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toolbar {
+      background-color: #fff;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .btn-dropdown {
+      background-color: #725bb4;
+      color: #fff;
+      border: 1px solid #725bb4;
+      padding: 0 16px;
+      border-radius: 32px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 32px;
+      line-height: 1;
+    }
+
+    .btn-dropdown:hover {
+      background-color: #5a6268;
+    }
+
+    .btn-dropdown .arrow {
+      font-size: 10px;
+    }
+
+    .search-bar {
+      width: 500px;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-bar input {
+      width: 100%;
+      height: 32px;
+      padding: 0 16px;
+      border: 1px solid #d0d0d0;
+      border-radius: 32px;
+      font-size: 13px;
+      color: #666;
+      background-color: #fff;
+    }
+
+    .search-bar input::placeholder {
+      color: #999;
+    }
+
+    .search-bar input:focus {
+      outline: none;
+      border-color: #725bb4;
+    }
+
+    .search-bar .search-icon {
+      position: absolute;
+      right: 12px;
+      color: #999;
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .action-bar {
+      background-color: #f0eaff;
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      border-bottom: 1px solid #e0e0e0;
+      position: relative;
+    }
+
+    .selection-info {
+      font-size: 13px;
+      color: #666;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .action-buttons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .edit-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .toggle-switch {
+      width: 36px;
+      height: 20px;
+      background-color: #ccc;
+      border-radius: 10px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background-color: #fff;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+    }
+
+    .btn-secondary {
+      background-color: #725bb4;
+      color: #fff;
+      border: 1px solid #725bb4;
+      padding: 0 16px;
+      border-radius: 32px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      line-height: 1;
+    }
+
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+
+    .btn-secondary span,
+    .btn-success span,
+    .btn-danger span {
+      display: inline-flex;
+      align-items: center;
+      line-height: 1;
+      font-size: 14px;
+    }
+
+    .btn-success {
+      background-color: #725bb4;
+      color: #fff;
+      border: 1px solid #725bb4;
+      padding: 0 16px;
+      border-radius: 32px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      line-height: 1;
+    }
+
+    .btn-success:hover {
+      background-color: #5a6268;
+    }
+
+    .btn-danger {
+      background-color: #725bb4;
+      color: #fff;
+      border: 1px solid #725bb4;
+      padding: 0 16px;
+      border-radius: 32px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      line-height: 1;
+    }
+
+    .btn-danger:hover {
+      background-color: #5a6268;
+    }
+
+    .table-container {
+      background-color: #fff;
+      margin: 0;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1600px;
+    }
+
+    thead {
+      background-color: #fafafa;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 500;
+      font-size: 12px;
+      color: #666;
+      white-space: nowrap;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    th.sortable {
+      cursor: pointer;
+    }
+
+    th.sortable:hover {
+      background-color: #f0f0f0;
+    }
+
+    th .sort-icon {
+      margin-left: 4px;
+      color: #999;
+      font-size: 10px;
+    }
+
+    td {
+      padding: 10px 16px;
+      font-size: 13px;
+      color: #333;
+      border-bottom: 1px solid #f0f0f0;
+      white-space: nowrap;
+    }
+
+    tr:hover {
+      background-color: #fafafa;
+    }
+
+    .checkbox-cell {
+      width: 40px;
+      text-align: center;
+    }
+
+    .checkbox-cell input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      accent-color: #725bb4;
+    }
+
+    .actions-cell {
+      width: 50px;
+    }
+
+    td.actions-cell {
+      color: #999;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .actions-cell:hover {
+      color: #666;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .amount-cell {
+      text-align: right;
+    }
+
+    .check-icon {
+      color: #725bb4;
+      font-size: 14px;
+    }
+
+    .pagination-bar {
+      background-color: #fff;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 16px;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .pagination-info {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .pagination-controls {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pagination-btn {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #725bb4;
+      background-color: #725bb4;
+      border-radius: 32px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #fff;
+    }
+
+    .pagination-btn:hover {
+      background-color: #5a6268;
+    }
+
+    .pagination-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .page-input {
+      width: 40px;
+      height: 32px;
+      border: 1px solid #d0d0d0;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .page-size-select {
+      padding: 4px 8px;
+      border: 1px solid #d0d0d0;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #666;
+      background-color: #fff;
+    }
+
+    .notification-badge {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 48px;
+      height: 48px;
+      background-color: #dc3545;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+    }
+
+    .filter-dropdown-container {
+      position: relative;
+    }
+
+    .filter-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: 4px;
+      background-color: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      min-width: 280px;
+      z-index: 1000;
+      display: none;
+    }
+
+    .filter-dropdown.show {
+      display: block;
+    }
+
+    .filter-section {
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .filter-section:last-child {
+      border-bottom: none;
+    }
+
+    .filter-section-header {
+      padding: 10px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background-color: #fafafa;
+    }
+
+    .filter-item {
+      padding: 10px 16px;
+      font-size: 13px;
+      color: #333;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+
+    .filter-item:hover {
+      background-color: #f5f5f5;
+    }
+
+    .filter-item-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .filter-item-icon {
+      color: #999;
+      font-size: 14px;
+      margin-left: 8px;
+      cursor: pointer;
+    }
+
+    .filter-item-icon:hover {
+      color: #725bb4;
+    }
+
+    .filter-item-meta {
+      font-size: 11px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    .filter-item.active {
+      background-color: #f0eaff;
+    }
+
+    .filter-item.active .filter-item-name {
+      color: #725bb4;
+      font-weight: 500;
+    }
+
+    .create-filter-item {
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #725bb4;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .create-filter-item:hover {
+      background-color: #f5f5f5;
+    }
+
+    .edit-filter-btn {
+      background: none;
+      border: none;
+      color: #725bb4;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px 8px;
+      display: none;
+    }
+
+    .edit-filter-btn:hover {
+      color: #6a4be0;
+    }
+
+    .edit-filter-btn.show {
+      display: inline-block;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      background-color: #fff;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #999;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      color: #666;
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 16px 24px;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .form-label.required::before {
+      content: '* ';
+      color: #dc3545;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d0d0d0;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #333;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #725bb4;
+    }
+
+    .form-input:disabled {
+      background-color: #f5f5f5;
+      color: #999;
+      cursor: not-allowed;
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d0d0d0;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #333;
+      background-color: #fff;
+      cursor: pointer;
+    }
+
+    .form-select:focus {
+      outline: none;
+      border-color: #725bb4;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .tab {
+      padding: 10px 16px;
+      font-size: 13px;
+      color: #666;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+
+    .tab:hover {
+      color: #725bb4;
+    }
+
+    .tab.active {
+      color: #725bb4;
+      border-bottom-color: #725bb4;
+      font-weight: 500;
+    }
+
+    /* Filter Criteria Row */
+    .criteria-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      margin-bottom: 12px;
+    }
+
+    .criteria-field {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .criteria-operator {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .criteria-value {
+      flex: 1.5;
+      min-width: 180px;
+    }
+
+    .criteria-delete {
+      padding: 10px;
+      color: #999;
+      cursor: pointer;
+      font-size: 16px;
+      margin-bottom: 2px;
+    }
+
+    .criteria-delete:hover {
+      color: #dc3545;
+    }
+
+    /* Date Range Input */
+    .date-range-input {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #d0d0d0;
+      border-radius: 4px;
+      padding: 6px 12px;
+      background: #fff;
+    }
+
+    .date-range-input input {
+      border: none;
+      outline: none;
+      font-size: 13px;
+      color: #333;
+      width: 100px;
+    }
+
+    .date-range-input input::placeholder {
+      color: #999;
+    }
+
+    .date-range-input .separator {
+      color: #999;
+    }
+
+    .date-range-input .calendar-icon {
+      color: #999;
+      cursor: pointer;
+    }
+
+    /* Number Range Input */
+    .number-range-input {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .number-range-input input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid #d0d0d0;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    .number-range-input input:focus {
+      outline: none;
+      border-color: #725bb4;
+    }
+
+    .number-range-input .separator {
+      color: #999;
+      font-size: 12px;
+    }
+
+    /* Buttons */
+    .btn-add-filter {
+      background-color: #725bb4;
+      color: #fff;
+      border: 1px solid #725bb4;
+      padding: 0 16px;
+      border-radius: 32px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      line-height: 1;
+    }
+
+    .btn-add-filter:hover {
+      background-color: #5a6268;
+    }
+
+    .btn-remove-all {
+      background-color: #725bb4;
+      color: #fff;
+      border: 1px solid #725bb4;
+      padding: 0 16px;
+      border-radius: 32px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 32px;
+      line-height: 1;
+    }
+
+    .btn-remove-all:hover {
+      background-color: #5a6268;
+    }
+
+    .btn-update {
+      background-color: #725bb4;
+      color: #fff;
+      border: 1px solid #725bb4;
+      padding: 0 20px;
+      border-radius: 32px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 32px;
+      line-height: 1;
+    }
+
+    .btn-update:hover {
+      background-color: #5a6268;
+    }
+
+    .btn-save {
+      background-color: #725bb4;
+      color: #fff;
+      border: 1px solid #725bb4;
+      padding: 0 20px;
+      border-radius: 32px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 32px;
+      line-height: 1;
+      display: none;
+    }
+
+    .btn-save:hover {
+      background-color: #5a6268;
+    }
+
+    .btn-share {
+      background-color: #fff;
+      color: #333;
+      border: 1px solid #725bb4;
+      padding: 0 20px;
+      border-radius: 32px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 32px;
+      line-height: 1;
+      display: none;
+    }
+
+    .btn-share:hover {
+      background-color: #725bb4;
+      color: #fff;
+    }
+
+    /* Share Modal Refinements */
+    .share-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+
+    .share-card:hover {
+      border-color: #725bb4;
+      background-color: #f8f6ff;
+    }
+
+    .share-card.active {
+      border-color: #725bb4;
+      background-color: #f0eaff;
+    }
+
+    .share-card-icon {
+      font-size: 20px;
+      color: #725bb4;
+      margin-top: 2px;
+    }
+
+    .share-card-content {
+      flex: 1;
+    }
+
+    .share-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .share-card-description {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .share-card-check {
+      color: #725bb4;
+      font-size: 16px;
+      display: none;
+    }
+
+    .share-card.active .share-card-check {
+      display: block;
+    }
+
+    .share-recipient-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .share-recipient-name {
+      font-size: 13px;
+      color: #333;
+    }
+
+    .share-recipient-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .share-permission-select {
+      border: none;
+      background: none;
+      font-size: 12px;
+      color: #666;
+      cursor: pointer;
+    }
+
+    .share-remove {
+      color: #999;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .share-remove:hover {
+      color: #dc3545;
+    }
+
+    /* Default Filter Enhancements */
+    .default-badge {
+      background-color: #725bb4;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-left: 8px;
+    }
+
+    .shared-badge {
+      background-color: #fff;
+      color: #1e8e3e;
+      border: 1px solid #C4EDD2;
+      background-color: #F1F9F4;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      margin-left: 8px;
+      text-transform: uppercase;
+    }
+
+    .default-filter-section {
+      background-color: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 24px 0 12px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .default-filter-content {
+      flex: 1;
+    }
+
+    .default-filter-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .default-filter-desc {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .toggle-switch-container {
+      position: relative;
+      width: 44px;
+      height: 24px;
+    }
+
+    .toggle-switch-input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    .toggle-switch-input:checked+.toggle-slider {
+      background-color: #725bb4;
+    }
+
+    .toggle-switch-input:checked+.toggle-slider:before {
+      transform: translateX(20px);
+    }
+
+    /* Kebab Menu & Actions */
+    .filter-item {
+      position: relative;
+    }
+
+    .kebab-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      cursor: pointer;
+      color: #999;
+      opacity: 1;
+      /* Always visible */
+      transition: all 0.2s;
+      margin-left: auto;
+    }
+
+    .filter-item .kebab-icon {
+      opacity: 1;
+    }
+
+    .kebab-icon:hover {
+      background-color: #eee;
+      color: #725bb4;
+    }
+
+    .kebab-icon::after {
+      content: '⋮';
+      font-size: 18px;
+    }
+
+    .filter-action-menu {
+      position: absolute;
+      background-color: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 1001;
+      min-width: 140px;
+      display: none;
+    }
+
+    .filter-action-menu.show {
+      display: block;
+    }
+
+    .action-menu-item {
+      padding: 8px 12px;
+      font-size: 13px;
+      color: #333;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .action-menu-item:hover {
+      background-color: #f5f5f5;
+      color: #725bb4;
+    }
+
+    /* Confirmation Modal */
+    .confirm-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 3000;
+    }
+
+    .confirm-modal-overlay.show {
+      display: flex;
+    }
+
+    .confirm-modal {
+      background-color: #fff;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 400px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      text-align: center;
+    }
+
+    .confirm-modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 12px;
+    }
+
+    .confirm-modal-text {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 24px;
+    }
+
+    .confirm-modal-footer {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, .3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .btn-loading {
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .modal.readonly .btn-share,
+    .modal.readonly .btn-preview,
+    .modal.readonly .btn-delete,
+    .modal.readonly .btn-add-filter,
+    .modal.readonly .btn-remove-all,
+    .modal.readonly .btn-remove-row,
+    .modal.readonly .criteria-delete {
+      display: none !important;
+    }
+
+    .modal.readonly .form-input,
+    .modal.readonly .form-select {
+      pointer-events: none;
+      background-color: #f5f5f5;
+    }
+
+    .share-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .share-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .share-card:hover {
+      background-color: #f9f9f9;
+    }
+
+    .share-card.active {
+      border-color: #725bb4;
+      background-color: #f7f5fd;
+    }
+
+    .share-card-radio {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ccc;
+      border-radius: 50%;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .share-card.active .share-card-radio {
+      border-color: #725bb4;
+    }
+
+    .share-card.active .share-card-radio::after {
+      content: '';
+      width: 10px;
+      height: 10px;
+      background-color: #725bb4;
+      border-radius: 50%;
+    }
+
+    .share-card-info {
+      flex-grow: 1;
+    }
+
+    .share-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .share-card-desc {
+      font-size: 13px;
+      color: #757575;
+    }
+
+    .share-recipients-area {
+      margin-top: 20px;
+      display: none;
+    }
+
+    .share-recipient-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background-color: #f5f5f5;
+      border-radius: 4px;
+      margin-top: 8px;
+    }
+
+    .share-recipient-name {
+      font-size: 13px;
+      color: #333;
+    }
+
+    .share-recipient-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .share-permission-select {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 12px;
+      padding: 2px 4px;
+      background: #fff;
+    }
+
+    .share-remove {
+      cursor: pointer;
+      color: #757575;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .share-remove:hover {
+      color: #d32f2f;
+    }
+
+    .btn-preview {
+      background-color: #fff;
+      color: #333;
+      border: 1px solid #725bb4;
+      padding: 0 20px;
+      border-radius: 32px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 32px;
+      line-height: 1;
+    }
+
+    .btn-preview:hover {
+      background-color: #725bb4;
+      color: #fff;
+    }
+
+    .btn-delete {
+      background-color: #FFFFFF;
+      color: #D30000;
+      border: 1px solid #D30000;
+      padding: 0 20px;
+      border-radius: 32px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 32px;
+      line-height: 1;
+    }
+
+    .btn-delete:hover {
+      background-color: #D30000;
+      color: #FFFFFF;
+    }
+
+    .btn-cancel {
+      background-color: #fff;
+      color: #333;
+      border: 1px solid #725bb4;
+      padding: 0 20px;
+      border-radius: 32px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 32px;
+      line-height: 1;
+    }
+
+    .btn-cancel:hover {
+      background-color: #725bb4;
+      color: #fff;
+    }
+
+    .criteria-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+    }
+
+    /* Calendar Picker Styles */
+    .calendar-container {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      z-index: 3000;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 16px;
+      display: none;
+    }
+
+    .calendar-container.show {
+      display: flex;
+      gap: 24px;
+    }
+
+    .calendar-month {
+      width: 280px;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .calendar-nav {
+      background-color: #725bb4;
+      border: 1px solid #725bb4;
+      cursor: pointer;
+      color: #fff;
+      font-size: 16px;
+      padding: 4px 8px;
+      border-radius: 32px;
+    }
+
+    .calendar-nav:hover {
+      background-color: #5a6268;
+      border-radius: 32px;
+    }
+
+    .calendar-title {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+    }
+
+    .calendar-day-header {
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+      padding: 8px 4px;
+      font-weight: 500;
+    }
+
+    .calendar-day {
+      text-align: center;
+      padding: 8px 4px;
+      font-size: 13px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .calendar-day:hover {
+      background-color: #f0eaff;
+    }
+
+    .calendar-day.other-month {
+      color: #ccc;
+    }
+
+    .calendar-day.today {
+      border: 1px solid #725bb4;
+    }
+
+    .calendar-day.selected {
+      background-color: #725bb4;
+      color: #fff;
+    }
+
+    .calendar-day.in-range {
+      background-color: #f0eaff;
+    }
+
+    .value-container {
+      position: relative;
+    }
+
+    /* Loading Indicator */
+    .btn-update.loading,
+    .btn-preview.loading {
+      position: relative;
+      color: transparent;
+      pointer-events: none;
+    }
+
+    .btn-update.loading::after,
+    .btn-preview.loading::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 16px;
+      height: 16px;
+      border: 2px solid #fff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    /* Success Toast */
+    .toast {
+      position: fixed;
+      bottom: 80px;
+      right: 24px;
+      background-color: #28a745;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 32px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      z-index: 3000;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .toast.show {
+      display: flex;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .toast-icon {
+      font-size: 16px;
+    }
+
+    /* Tag/Chip Input Styles */
+    .tag-input-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 8px 12px;
+      border: 1px solid #d0d0d0;
+      border-radius: 4px;
+      background-color: #fff;
+      min-height: 38px;
+      align-items: center;
+    }
+
+    .tag-input-container:focus-within {
+      outline: none;
+      border-color: #725bb4;
+    }
+
+    .tag-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background-color: #e8e8e8;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #333;
+    }
+
+    .tag-chip-remove {
+      cursor: pointer;
+      color: #666;
+      font-size: 14px;
+      line-height: 1;
+      padding: 0 2px;
+    }
+
+    .tag-chip-remove:hover {
+      color: #dc3545;
+    }
+
+    .tag-input {
+      border: none;
+      outline: none;
+      flex: 1;
+      min-width: 120px;
+      font-size: 13px;
+      padding: 4px 0;
+    }
+
+    .tag-input::placeholder {
+      color: #999;
+    }
+
+    /* Tag Dropdown Styles */
+    .tag-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      margin-top: 4px;
+      background-color: #fff;
+      border: 1px solid #d0d0d0;
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+    }
+
+    .tag-dropdown.show {
+      display: block;
+    }
+
+    .tag-dropdown-item {
+      padding: 10px 16px;
+      font-size: 13px;
+      color: #333;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tag-dropdown-item:hover {
+      background-color: #f5f5f5;
+    }
+
+    .tag-dropdown-item.selected {
+      background-color: #e8f4fd;
+    }
+
+    .tag-dropdown-item.selected .tag-checkmark {
+      color: #725bb4;
+    }
+
+    .tag-checkmark {
+      color: #725bb4;
+      font-size: 14px;
+    }
+
+    .tag-value-container {
+      position: relative;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="logo">GAPPIFY</div>
+    <nav class="nav">
+      <a href="#" class="nav-item">REVIEW CENTER</a>
+      <a href="#" class="nav-item active">TRANSACTIONS</a>
+      <a href="#" class="nav-item">QJE'S</a>
+      <a href="#" class="nav-item">ACCRUAL MANAGER</a>
+      <a href="#" class="nav-item">INSIGHTS</a>
+    </nav>
+    <div class="user-info">
+      <span class="user-icon">👤</span>
+      <span>irishv+uathc3.gappify</span>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <button class="btn-dropdown">December 2025 <span class="arrow">▼</span></button>
+    <div class="filter-dropdown-container">
+      <button class="btn-dropdown" id="filterBtn" onclick="toggleFilterDropdown()">
+        <span id="selectedFilterName">All lines</span> <span class="arrow">▼</span>
+      </button>
+      <div class="filter-dropdown" id="filterDropdown">
+        <div class="create-filter-item" onclick="createNewFilter()">
+          <span>+</span> Create new filter
+        </div>
+        <div class="filter-section">
+          <div class="filter-section-header">My Filters</div>
+          <div class="filter-item" data-filter="sent" data-editable="true" data-name="Sent lines"
+            onclick="selectFilter('Sent lines', 'sent', true)">
+            <div class="filter-item-content">
+              <span class="filter-item-name">Sent lines</span>
+            </div>
+          </div>
+          <div class="filter-item" data-filter="amount-gt-20000" data-editable="true"
+            data-name="Proposed amount > 20,000"
+            onclick="selectFilter('Proposed amount > 20,000', 'amount-gt-20000', true)">
+            <div class="filter-item-content">
+              <span class="filter-item-name">Proposed amount > 20,000</span>
+            </div>
+          </div>
+          <div class="filter-item" data-filter="start-after-dec1" data-editable="true"
+            data-name="Service start date is after Dec 1"
+            onclick="selectFilter('Service start date is after Dec 1', 'start-after-dec1', true)">
+            <div class="filter-item-content">
+              <span class="filter-item-name">Service start date is after Dec 1</span>
+            </div>
+          </div>
+          <div class="filter-item" data-filter="acme" data-editable="true" data-name="Acme vendor"
+            onclick="selectFilter('Acme vendor', 'acme', true)">
+            <div class="filter-item-content">
+              <span class="filter-item-name">Acme vendor</span>
+            </div>
+          </div>
+        </div>
+        <div class="filter-section">
+          <div class="filter-section-header">System Filters</div>
+          <div class="filter-item active" data-filter="all" onclick="selectFilter('All lines', 'all', false)">
+            <div class="filter-item-content">
+              <span class="filter-item-name">All lines</span>
+            </div>
+          </div>
+          <div class="filter-item" data-filter="amount-gt-0"
+            onclick="selectFilter('Lines with Amount > 0.00', 'amount-gt-0', false)">
+            <div class="filter-item-content">
+              <span class="filter-item-name">Lines with Amount > 0.00</span>
+            </div>
+          </div>
+          <div class="filter-item" data-filter="rejected" onclick="selectFilter('Rejected Lines', 'rejected', false)">
+            <div class="filter-item-content">
+              <span class="filter-item-name">Rejected Lines</span>
+            </div>
+          </div>
+          <div class="filter-item" data-filter="overriden"
+            onclick="selectFilter('Overriden Lines', 'overriden', false)">
+            <div class="filter-item-content">
+              <span class="filter-item-name">Overriden Lines</span>
+            </div>
+          </div>
+          <div class="filter-item" data-filter="error" onclick="selectFilter('Lines with Error', 'error', false)">
+            <div class="filter-item-content">
+              <span class="filter-item-name">Lines with Error</span>
+            </div>
+          </div>
+        </div>
+        <div class="filter-section">
+          <div class="filter-section-header">Shared With Me</div>
+          <div class="filter-item" data-filter="submitted-lines"
+            onclick="selectFilter('Submitted Lines', 'submitted-lines', false)">
+            <div class="filter-item-content">
+              <span class="filter-item-name">Submitted Lines</span>
+              <span class="filter-item-meta">by janesmith@mail.com</span>
+            </div>
+          </div>
+          <div class="filter-item" data-filter="draft-lines"
+            onclick="selectFilter('Draft Lines', 'draft-lines', false)">
+            <div class="filter-item-content">
+              <span class="filter-item-name">Draft Lines</span>
+              <span class="filter-item-meta">by mikechen@mail.com</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="edit-filter-btn" id="editFilterBtn" onclick="openEditModal()" title="Edit filter">✏️</button>
+    <button class="edit-filter-btn" id="previewToolbarBtn" onclick="previewFilter()" title="Preview filter">👁️</button>
+    <div class="search-bar">
+      <input type="text" placeholder="Search Vendor Name, Department - Debit, Account - Debit, PO Number...">
+      <span class="search-icon">ⓘ</span>
+    </div>
+    <div class="toolbar-actions">
+      <button class="btn-success"><span>+</span> Add New line</button>
+      <button class="btn-secondary"><span>📥</span> Import</button>
+      <button class="btn-secondary"><span>📤</span> Export to CSV</button>
+    </div>
+  </div>
+
+  <div class="action-bar">
+    <div class="selection-info">0 item/s selected</div>
+    <div class="action-buttons">
+      <div class="edit-toggle"><span>Edit</span>
+        <div class="toggle-switch"></div>
+      </div>
+      <button class="btn-success"><span>🔒</span> Create QJE</button>
+      <button class="btn-danger"><span>✕</span> No QJE</button>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th class="actions-cell">Actions</th>
+          <th class="checkbox-cell"><input type="checkbox"></th>
+          <th class="sortable">Vendor Name <span class="sort-icon">↕</span></th>
+          <th class="sortable">Vendor ID <span class="sort-icon">↕</span></th>
+          <th class="sortable">Vendor Email <span class="sort-icon">↕</span></th>
+          <th class="sortable">Vendor Amount <span class="sort-icon">↕</span></th>
+          <th class="sortable">Internal Amount <span class="sort-icon">↕</span></th>
+          <th class="sortable">Calculated Amount <span class="sort-icon">↕</span></th>
+          <th class="sortable">Proposed Amount <span class="sort-icon">↕</span></th>
+          <th class="sortable">Vendor Status <span class="sort-icon">↕</span></th>
+          <th class="sortable">Service Start Date <span class="sort-icon">↕</span></th>
+          <th class="sortable">Service End Date <span class="sort-icon">↕</span></th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr data-status="Sent" data-amount="15750" data-start="2025-12-01" data-vendor="Acme Corporation">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><span class="check-icon">✓</span></td>
+          <td>Acme Corporation</td>
+          <td>VND-7X9K2M</td>
+          <td>billing-acme.corp</td>
+          <td class="amount-cell">15,750.00</td>
+          <td class="amount-cell">15,750.00</td>
+          <td class="amount-cell">15,750.00</td>
+          <td class="amount-cell">15,750.00</td>
+          <td><span class="status-badge">Sent</span></td>
+          <td>12/01/2025</td>
+          <td>12/31/2025</td>
+        </tr>
+        <tr data-status="QJE Posted" data-amount="8420.50" data-start="2025-11-15" data-vendor="TechFlow Solutions">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><span class="check-icon">✓</span></td>
+          <td>TechFlow Solutions</td>
+          <td>VND-3P8N5Q</td>
+          <td>ap-techflow.io</td>
+          <td class="amount-cell">8,420.50</td>
+          <td class="amount-cell">8,420.50</td>
+          <td class="amount-cell">8,420.50</td>
+          <td class="amount-cell">8,420.50</td>
+          <td><span class="status-badge">QJE Posted</span></td>
+          <td>11/15/2025</td>
+          <td>12/15/2025</td>
+        </tr>
+        <tr data-status="Submitted" data-amount="32100.75" data-start="2025-12-05" data-vendor="Global Dynamics Inc">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><input type="checkbox"></td>
+          <td>Global Dynamics Inc</td>
+          <td>VND-1R4T7Y</td>
+          <td>finance-globaldynamics.com</td>
+          <td class="amount-cell">32,100.75</td>
+          <td class="amount-cell">32,100.75</td>
+          <td class="amount-cell">32,100.75</td>
+          <td class="amount-cell">32,100.75</td>
+          <td><span class="status-badge">Submitted</span></td>
+          <td>12/05/2025</td>
+          <td>01/05/2026</td>
+        </tr>
+        <tr data-status="QJE Created" data-amount="4890.25" data-start="2025-11-20" data-vendor="Pinnacle Services LLC">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><span class="check-icon">✓</span></td>
+          <td>Pinnacle Services LLC</td>
+          <td>VND-6W2E9L</td>
+          <td>accounts-pinnaclesvcs.com</td>
+          <td class="amount-cell">4,890.25</td>
+          <td class="amount-cell">4,890.25</td>
+          <td class="amount-cell">4,890.25</td>
+          <td class="amount-cell">4,890.25</td>
+          <td><span class="status-badge">QJE Created</span></td>
+          <td>11/20/2025</td>
+          <td>12/20/2025</td>
+        </tr>
+        <tr data-status="Draft" data-amount="67500" data-start="2025-12-10" data-vendor="Nexus Enterprises">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><input type="checkbox"></td>
+          <td>Nexus Enterprises</td>
+          <td>VND-8H5J3F</td>
+          <td>invoices-nexusent.com</td>
+          <td class="amount-cell">67,500.00</td>
+          <td class="amount-cell">67,500.00</td>
+          <td class="amount-cell">67,500.00</td>
+          <td class="amount-cell">67,500.00</td>
+          <td><span class="status-badge">Draft</span></td>
+          <td>12/10/2025</td>
+          <td>01/10/2026</td>
+        </tr>
+        <tr data-status="QJE Extracted" data-amount="21340.80" data-start="2025-11-25"
+          data-vendor="Summit Technologies">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><span class="check-icon">✓</span></td>
+          <td>Summit Technologies</td>
+          <td>VND-4C9B1V</td>
+          <td>payables-summittech.co</td>
+          <td class="amount-cell">21,340.80</td>
+          <td class="amount-cell">21,340.80</td>
+          <td class="amount-cell">21,340.80</td>
+          <td class="amount-cell">21,340.80</td>
+          <td><span class="status-badge">QJE Extracted</span></td>
+          <td>11/25/2025</td>
+          <td>12/25/2025</td>
+        </tr>
+        <tr data-status="Sent" data-amount="11275.50" data-start="2025-12-01" data-vendor="Vertex Partners">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><span class="check-icon">✓</span></td>
+          <td>Vertex Partners</td>
+          <td>VND-2M7K4D</td>
+          <td>ar-vertexpartners.net</td>
+          <td class="amount-cell">11,275.50</td>
+          <td class="amount-cell">11,275.50</td>
+          <td class="amount-cell">11,275.50</td>
+          <td class="amount-cell">11,275.50</td>
+          <td><span class="status-badge">Sent</span></td>
+          <td>12/01/2025</td>
+          <td>12/31/2025</td>
+        </tr>
+        <tr data-status="No QJE" data-amount="45680" data-start="2025-11-01" data-vendor="Quantum Systems Corp">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><input type="checkbox"></td>
+          <td>Quantum Systems Corp</td>
+          <td>VND-5T3R8P</td>
+          <td>billing-quantumsys.com</td>
+          <td class="amount-cell">45,680.00</td>
+          <td class="amount-cell">45,680.00</td>
+          <td class="amount-cell">45,680.00</td>
+          <td class="amount-cell">45,680.00</td>
+          <td><span class="status-badge">No QJE</span></td>
+          <td>11/01/2025</td>
+          <td>11/30/2025</td>
+        </tr>
+        <tr data-status="QJE Posted" data-amount="7825.30" data-start="2025-12-08" data-vendor="Horizon Consulting">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><span class="check-icon">✓</span></td>
+          <td>Horizon Consulting</td>
+          <td>VND-9A6U2Z</td>
+          <td>finance-horizonconsult.com</td>
+          <td class="amount-cell">7,825.30</td>
+          <td class="amount-cell">7,825.30</td>
+          <td class="amount-cell">7,825.30</td>
+          <td class="amount-cell">7,825.30</td>
+          <td><span class="status-badge">QJE Posted</span></td>
+          <td>12/08/2025</td>
+          <td>01/08/2026</td>
+        </tr>
+        <tr data-status="Submitted" data-amount="93450" data-start="2025-11-18" data-vendor="Atlas Manufacturing">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><span class="check-icon">✓</span></td>
+          <td>Atlas Manufacturing</td>
+          <td>VND-7G1X5S</td>
+          <td>ap-atlasmfg.com</td>
+          <td class="amount-cell">93,450.00</td>
+          <td class="amount-cell">93,450.00</td>
+          <td class="amount-cell">93,450.00</td>
+          <td class="amount-cell">93,450.00</td>
+          <td><span class="status-badge">Submitted</span></td>
+          <td>11/18/2025</td>
+          <td>12/18/2025</td>
+        </tr>
+        <tr data-status="Draft" data-amount="18920.65" data-start="2025-12-12" data-vendor="Meridian Group">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><input type="checkbox"></td>
+          <td>Meridian Group</td>
+          <td>VND-3F8L2N</td>
+          <td>accounts-meridiangrp.co</td>
+          <td class="amount-cell">18,920.65</td>
+          <td class="amount-cell">18,920.65</td>
+          <td class="amount-cell">18,920.65</td>
+          <td class="amount-cell">18,920.65</td>
+          <td><span class="status-badge">Draft</span></td>
+          <td>12/12/2025</td>
+          <td>01/12/2026</td>
+        </tr>
+        <tr data-status="Sent" data-amount="5340.90" data-start="2025-11-28" data-vendor="Catalyst Innovations">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><span class="check-icon">✓</span></td>
+          <td>Catalyst Innovations</td>
+          <td>VND-6Y4W9H</td>
+          <td>invoicing-catalystinno.com</td>
+          <td class="amount-cell">5,340.90</td>
+          <td class="amount-cell">5,340.90</td>
+          <td class="amount-cell">5,340.90</td>
+          <td class="amount-cell">5,340.90</td>
+          <td><span class="status-badge">Sent</span></td>
+          <td>11/28/2025</td>
+          <td>12/28/2025</td>
+        </tr>
+        <tr data-status="QJE Created" data-amount="28760.40" data-start="2025-12-03" data-vendor="Vanguard Solutions">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><span class="check-icon">✓</span></td>
+          <td>Vanguard Solutions</td>
+          <td>VND-1Q5E7J</td>
+          <td>payments-vanguardsol.net</td>
+          <td class="amount-cell">28,760.40</td>
+          <td class="amount-cell">28,760.40</td>
+          <td class="amount-cell">28,760.40</td>
+          <td class="amount-cell">28,760.40</td>
+          <td><span class="status-badge">QJE Created</span></td>
+          <td>12/03/2025</td>
+          <td>01/03/2026</td>
+        </tr>
+        <tr data-status="QJE Extracted" data-amount="156200" data-start="2025-11-10" data-vendor="Sterling Industries">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><input type="checkbox"></td>
+          <td>Sterling Industries</td>
+          <td>VND-8B2M4C</td>
+          <td>ar-sterlingind.com</td>
+          <td class="amount-cell">156,200.00</td>
+          <td class="amount-cell">156,200.00</td>
+          <td class="amount-cell">156,200.00</td>
+          <td class="amount-cell">156,200.00</td>
+          <td><span class="status-badge">QJE Extracted</span></td>
+          <td>11/10/2025</td>
+          <td>12/10/2025</td>
+        </tr>
+        <tr data-status="No QJE" data-amount="12580.75" data-start="2025-12-15" data-vendor="Omega Logistics">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><span class="check-icon">✓</span></td>
+          <td>Omega Logistics</td>
+          <td>VND-4P9T1R</td>
+          <td>billing-omegalog.com</td>
+          <td class="amount-cell">12,580.75</td>
+          <td class="amount-cell">12,580.75</td>
+          <td class="amount-cell">12,580.75</td>
+          <td class="amount-cell">12,580.75</td>
+          <td><span class="status-badge">No QJE</span></td>
+          <td>12/15/2025</td>
+          <td>01/15/2026</td>
+        </tr>
+        <tr data-status="QJE Posted" data-amount="34890.25" data-start="2025-11-22" data-vendor="Precision Analytics">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><span class="check-icon">✓</span></td>
+          <td>Precision Analytics</td>
+          <td>VND-2K7D5G</td>
+          <td>finance-precisionanalytics.io</td>
+          <td class="amount-cell">34,890.25</td>
+          <td class="amount-cell">34,890.25</td>
+          <td class="amount-cell">34,890.25</td>
+          <td class="amount-cell">34,890.25</td>
+          <td><span class="status-badge">QJE Posted</span></td>
+          <td>11/22/2025</td>
+          <td>12/22/2025</td>
+        </tr>
+        <tr data-status="Submitted" data-amount="78340.50" data-start="2025-12-07" data-vendor="Apex Ventures">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><input type="checkbox"></td>
+          <td>Apex Ventures</td>
+          <td>VND-9N3H6V</td>
+          <td>ap-apexventures.com</td>
+          <td class="amount-cell">78,340.50</td>
+          <td class="amount-cell">78,340.50</td>
+          <td class="amount-cell">78,340.50</td>
+          <td class="amount-cell">78,340.50</td>
+          <td><span class="status-badge">Submitted</span></td>
+          <td>12/07/2025</td>
+          <td>01/07/2026</td>
+        </tr>
+        <tr data-status="Sent" data-amount="6125" data-start="2025-11-30" data-vendor="Silverline Media">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><span class="check-icon">✓</span></td>
+          <td>Silverline Media</td>
+          <td>VND-5L1F8W</td>
+          <td>accounts-silverlinemedia.co</td>
+          <td class="amount-cell">6,125.00</td>
+          <td class="amount-cell">6,125.00</td>
+          <td class="amount-cell">6,125.00</td>
+          <td class="amount-cell">6,125.00</td>
+          <td><span class="status-badge">Sent</span></td>
+          <td>11/30/2025</td>
+          <td>12/30/2025</td>
+        </tr>
+        <tr data-status="Draft" data-amount="41670.80" data-start="2025-12-14" data-vendor="CoreTech Systems">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><span class="check-icon">✓</span></td>
+          <td>CoreTech Systems</td>
+          <td>VND-7Z4A2Q</td>
+          <td>invoices-coretechsys.com</td>
+          <td class="amount-cell">41,670.80</td>
+          <td class="amount-cell">41,670.80</td>
+          <td class="amount-cell">41,670.80</td>
+          <td class="amount-cell">41,670.80</td>
+          <td><span class="status-badge">Draft</span></td>
+          <td>12/14/2025</td>
+          <td>01/14/2026</td>
+        </tr>
+        <tr data-status="QJE Created" data-amount="22450.35" data-start="2025-11-12" data-vendor="Fusion Dynamics">
+          <td class="actions-cell">⋮</td>
+          <td class="checkbox-cell"><input type="checkbox"></td>
+          <td>Fusion Dynamics</td>
+          <td>VND-3E9S6U</td>
+          <td>payables-fusiondyn.net</td>
+          <td class="amount-cell">22,450.35</td>
+          <td class="amount-cell">22,450.35</td>
+          <td class="amount-cell">22,450.35</td>
+          <td class="amount-cell">22,450.35</td>
+          <td><span class="status-badge">QJE Created</span></td>
+          <td>11/12/2025</td>
+          <td>12/12/2025</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination-bar">
+    <span class="pagination-info" id="paginationInfo">Showing 1-20 of 20</span>
+    <div class="pagination-controls">
+      <button class="pagination-btn" disabled>&lt;</button>
+      <input type="text" class="page-input" value="1">
+      <button class="pagination-btn" disabled>&gt;</button>
+    </div>
+    <select class="page-size-select">
+      <option>50 / page</option>
+      <option>100 / page</option>
+      <option>200 / page</option>
+    </select>
+  </div>
+
+  <div class="notification-badge">11</div>
+
+  <!-- Success Toast -->
+  <div class="toast" id="successToast">
+    <span class="toast-icon">✓</span>
+    <span>Filter updated successfully</span>
+  </div>
+
+  <!-- Update Filter Modal -->
+  <div class="modal-overlay" id="editFilterModal" onclick="closeModalOnOverlay(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Update filter</span>
+        <button class="modal-close" onclick="closeEditModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label required">Name</label>
+          <input type="text" class="form-input" id="filterName" value="Vendor Status = Sent">
+        </div>
+
+        <div class="tabs">
+          <div class="tab active">Criteria</div>
+          <div class="tab">Column</div>
+        </div>
+
+        <div id="criteriaContainer">
+          <!-- Criteria rows will be added here dynamically -->
+        </div>
+
+        <div class="criteria-actions">
+          <button class="btn-add-filter" onclick="addCriteriaRow()">Add filter</button>
+          <button class="btn-remove-all" onclick="removeAllCriteria()">Remove all</button>
+        </div>
+
+        <!-- Set as Default Filter Section -->
+        <div class="default-filter-section">
+          <div class="default-filter-content">
+            <div class="default-filter-title">Set as my default filter</div>
+          </div>
+          <label class="toggle-switch-container">
+            <input type="checkbox" id="isDefaultToggle" class="toggle-switch-input">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-share" onclick="openShareModal()">Share</button>
+        <button class="btn-save" onclick="saveFilter()">Save</button>
+        <button class="btn-update" onclick="updateFilter()">Update</button>
+        <button class="btn-preview" onclick="previewFilter()">Preview</button>
+        <button class="btn-delete" onclick="openDeleteConfirmModal()">Delete</button>
+        <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Filter Modal -->
+  <div class="modal-overlay" id="shareFilterModal" onclick="closeShareModalOnOverlay(event)">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <span class="modal-title">Share "<span id="shareModalFilterName"></span>"</span>
+        <button class="modal-close" onclick="closeShareModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label"
+            style="font-size: 11px; color: #757575; text-transform: uppercase; letter-spacing: 0.5px;">Who can
+            access</label>
+
+          <div class="share-options">
+            <!-- Only Me -->
+            <div class="share-card active" id="shareOnlyMe" onclick="updateShareMode('only-me')">
+              <div class="share-card-radio"></div>
+              <div class="share-card-info">
+                <div class="share-card-title">Only me</div>
+                <div class="share-card-desc">Keep this filter private</div>
+              </div>
+            </div>
+
+            <!-- Everyone -->
+            <div class="share-card" id="shareEveryone" onclick="updateShareMode('everyone')">
+              <div class="share-card-radio"></div>
+              <div class="share-card-info">
+                <div class="share-card-title">Everyone</div>
+                <div class="share-card-desc">All users in your organization</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Specific Recipients Area -->
+          <div class="share-recipients-area" id="shareRecipientsArea">
+            <div style="position: relative; margin-top: 16px;">
+              <input type="text" class="form-input" id="shareRecipientInput" placeholder="Search users or roles..."
+                onfocus="showShareDropdown()" oninput="filterShareDropdown()">
+              <div class="tag-dropdown" id="shareRecipientDropdown"
+                style="top: 100%; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <!-- Roles -->
+                <div
+                  style="padding: 8px 12px; font-size: 11px; background: #f5f5f5; color: #757575; font-weight: 600; text-transform: uppercase;">
+                  Roles</div>
+                <div class="tag-dropdown-item" onclick="addShareRecipient('Transactions Manager', 'role')">
+                  <span>Transactions Manager</span>
+                </div>
+                <div class="tag-dropdown-item" onclick="addShareRecipient('Task Manager', 'role')"><span>Task
+                    Manager</span></div>
+                <div class="tag-dropdown-item" onclick="addShareRecipient('QJE Manager', 'role')"><span>QJE
+                    Manager</span></div>
+                <div class="tag-dropdown-item" onclick="addShareRecipient('Close Manager', 'role')"><span>Close
+                    Manager</span></div>
+
+                <!-- Users -->
+                <div
+                  style="padding: 8px 12px; font-size: 11px; background: #f5f5f5; color: #757575; font-weight: 600; text-transform: uppercase;">
+                  Users</div>
+                <div class="tag-dropdown-item" onclick="addShareRecipient('Mike Chen', 'user')"><span>Mike Chen</span>
+                </div>
+                <div class="tag-dropdown-item" onclick="addShareRecipient('Jane Smith', 'user')"><span>Jane Smith</span>
+                </div>
+                <div class="tag-dropdown-item" onclick="addShareRecipient('John Doe', 'user')"><span>John Doe</span>
+                </div>
+                <div class="tag-dropdown-item" onclick="addShareRecipient('Peter Parker', 'user')"><span>Peter
+                    Parker</span></div>
+              </div>
+            </div>
+
+            <div id="shareRecipientsList" style="margin-top: 12px;">
+              <!-- Selected recipients will appear here -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content: flex-end; gap: 12px; padding: 16px 24px;">
+        <button class="btn-cancel" onclick="closeShareModal()"
+          style="border: 1px solid #e0e0e0; background: #fff; color: #333; height: 36px; padding: 0 24px;">Cancel</button>
+        <button class="btn-update" id="confirmShareBtn" onclick="shareFilterAction()"
+          style="background-color: #725bb4; color: #fff; border: none; padding: 0 24px; border-radius: 32px; height: 36px; font-weight: 500; font-size: 14px;">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Action Menu Dropdown -->
+  <div id="filterActionMenu" class="filter-action-menu">
+    <div id="menuActionPreview" class="action-menu-item" onclick="handleMenuAction('viewFilterCriteria')">
+      <span>👁️</span> View Filter Criteria
+    </div>
+    <div id="menuActionUpdate" class="action-menu-item" onclick="handleMenuAction('update')">
+      <span>✏️</span> Update
+    </div>
+    <div id="menuActionShare" class="action-menu-item" onclick="handleMenuAction('share')">
+      <span>🔗</span> Share
+    </div>
+    <div id="menuActionDefault" class="action-menu-item" onclick="handleMenuAction('default')">
+      <span>⭐</span> Set As Default
+    </div>
+    <div id="menuActionDelete" class="action-menu-item" onclick="handleMenuAction('delete')"
+      style="color: #dc3545; border-top: 1px solid #f0f0f0; margin-top: 4px;">
+      <span>🗑️</span> Delete
+    </div>
+  </div>
+
+  <!-- Set As Default Confirmation Modal -->
+  <div id="defaultConfirmModal" class="confirm-modal-overlay" onclick="closeConfirmModal(event)">
+    <div class="confirm-modal">
+      <div class="confirm-modal-title">Set as Default Filter?</div>
+      <div class="confirm-modal-text">Are you sure you want to set "<span id="confirmFilterName"></span>" as your
+        default filter? This will replace your current default.</div>
+      <div class="confirm-modal-footer">
+        <button class="btn-cancel" onclick="closeConfirmModal()" style="height: 32px; padding: 0 16px;">Cancel</button>
+        <button id="confirmDefaultBtn" class="btn-update" onclick="confirmSetAsDefault()"
+          style="height: 32px; padding: 0 24px;">Set As Default</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Filter Confirmation Modal -->
+  <div id="deleteConfirmModal" class="confirm-modal-overlay" onclick="closeConfirmModal(event)">
+    <div class="confirm-modal">
+      <div class="confirm-modal-title">Delete Filter?</div>
+      <div class="confirm-modal-text">Are you sure you want to delete "<span id="deleteConfirmFilterName"></span>"? This
+        action cannot be undone.</div>
+      <div class="confirm-modal-footer">
+        <button class="btn-cancel" onclick="closeConfirmModal()" style="height: 32px; padding: 0 16px;">Cancel</button>
+        <button id="confirmDeleteBtn" class="btn-update" onclick="confirmDeleteFilter()"
+          style="height: 32px; padding: 0 24px; background-color: #dc3545; border-color: #dc3545;">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentFilterEditable = false;
+    let currentFilterName = 'All lines';
+    let currentFilterType = 'all';
+    let criteriaCounter = 0;
+    let isPreviewMode = false;
+
+    // Initialize filter data with correct criteria for each filter
+    let savedFilters = {
+      'all': {
+        name: 'All lines',
+        isDefault: true,
+        criteria: []
+      },
+      'sent': {
+        name: 'Sent lines',
+        isDefault: false,
+        criteria: [
+          { field: 'vendor_status', operator: 'contains', value: 'Sent', value2: '' }
+        ]
+      },
+      'amount-gt-20000': {
+        name: 'Proposed amount > 20,000',
+        isDefault: false,
+        criteria: [
+          { field: 'proposed_amount', operator: 'is_greater_than', value: '20000', value2: '' }
+        ]
+      },
+      'start-after-dec1': {
+        name: 'Service start date is after Dec 1',
+        isDefault: false,
+        criteria: [
+          { field: 'service_start_date', operator: 'is_after', value: '12/01/2025', value2: '' }
+        ]
+      },
+      'acme': {
+        name: 'Acme vendor',
+        isDefault: false,
+        criteria: [
+          { field: 'vendor_name', operator: 'contains', value: 'Acme', value2: '' }
+        ]
+      },
+      'amount-gt-0': { name: 'Lines with Amount > 0.00', isDefault: false, criteria: [] },
+      'rejected': { name: 'Rejected Lines', isDefault: false, criteria: [] },
+      'overriden': { name: 'Overriden Lines', isDefault: false, criteria: [] },
+      'error': { name: 'Lines with Error', isDefault: false, criteria: [] },
+      'submitted-lines': {
+        name: 'Submitted Lines',
+        isDefault: false,
+        criteria: [
+          { field: 'vendor_status', operator: 'is_equals', value: 'Submitted', value2: '' }
+        ]
+      },
+      'draft-lines': {
+        name: 'Draft Lines',
+        isDefault: false,
+        criteria: [
+          { field: 'vendor_status', operator: 'is_equals', value: 'Draft', value2: '' }
+        ]
+      }
+    };
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function (event) {
+      // Close filter dropdown
+      if (!event.target.closest('.filter-dropdown-container') && !event.target.closest('.btn-dropdown')) {
+        const filterDropdown = document.getElementById('filterDropdown');
+        if (filterDropdown && filterDropdown.classList.contains('show')) {
+          filterDropdown.classList.remove('show');
+        }
+      }
+
+      // Close tag dropdowns
+      if (!event.target.closest('.tag-value-container')) {
+        document.querySelectorAll('.tag-dropdown.show').forEach(d => d.classList.remove('show'));
+      }
+
+      // Close calendars
+      if (!event.target.closest('.date-range-input') && !event.target.closest('.value-container')) {
+        document.querySelectorAll('.calendar-container.show').forEach(c => c.classList.remove('show'));
+      }
+    });
+
+    const textFields = ['vendor_name', 'vendor_id', 'vendor_email', 'vendor_status'];
+    const numericFields = ['vendor_amount', 'internal_amount', 'calculated_amount', 'proposed_amount'];
+    const dateFields = ['service_start_date', 'service_end_date'];
+
+    const textOperators = [
+      { value: 'is_empty', label: 'Is empty' },
+      { value: 'is_not_empty', label: 'Is not empty' },
+      { value: 'is_equals', label: 'Is equals' },
+      { value: 'is_not_equals', label: 'Is not equals' },
+      { value: 'contains', label: 'Contains' },
+      { value: 'does_not_contain', label: 'Does not contain' },
+      { value: 'starts_with', label: 'Starts with' },
+      { value: 'ends_with', label: 'Ends with' }
+    ];
+
+    const numericOperators = [
+      { value: 'is_empty', label: 'Is empty' },
+      { value: 'is_not_empty', label: 'Is not empty' },
+      { value: 'is_equals', label: 'Is equals' },
+      { value: 'is_not_equals', label: 'Is not equals' },
+      { value: 'is_greater_than', label: 'Is greater than' },
+      { value: 'is_greater_than_or_equals', label: 'Is greater than or equals' },
+      { value: 'is_less_than', label: 'Is less than' },
+      { value: 'is_less_than_or_equals', label: 'Is less than or equals' },
+      { value: 'is_between', label: 'Is between' },
+      { value: 'is_not_between', label: 'Is not between' }
+    ];
+
+    const dateOperators = [
+      { value: 'is_empty', label: 'Is empty' },
+      { value: 'is_not_empty', label: 'Is not empty' },
+      { value: 'is_equals', label: 'Is equals' },
+      { value: 'is_not_equals', label: 'Is not equals' },
+      { value: 'is_between', label: 'Is between' },
+      { value: 'is_not_between', label: 'Is not between' },
+      { value: 'is_before', label: 'Is before' },
+      { value: 'is_after', label: 'Is after' }
+    ];
+
+    function toggleFilterDropdown() {
+      document.getElementById('filterDropdown').classList.toggle('show');
+    }
+
+    function selectFilter(filterName, filterType, editable) {
+      // Use saved filter name if available, otherwise use the passed name
+      let displayName = filterName;
+      if (editable && savedFilters[filterType]) {
+        displayName = savedFilters[filterType].name;
+      }
+
+      document.getElementById('selectedFilterName').textContent = displayName;
+      document.getElementById('filterDropdown').classList.remove('show');
+      currentFilterName = displayName;
+      currentFilterType = filterType;
+
+      const editBtn = document.getElementById('editFilterBtn');
+      editBtn.classList.toggle('show', editable);
+
+      const btnShare = document.querySelector('.btn-share');
+      if (btnShare) btnShare.style.display = editable ? 'inline-flex' : 'none';
+
+      const previewToolbarBtn = document.getElementById('previewToolbarBtn');
+      const isSharedFilter = document.querySelector(`.filter-item[data-filter="${filterType}"]`)?.closest('.filter-section')?.querySelector('.filter-section-header')?.textContent.includes('Shared');
+
+      if (previewToolbarBtn) {
+        previewToolbarBtn.style.display = (!editable && isSharedFilter) ? 'inline-flex' : 'none';
+      }
+
+      // Always reset to pencil icon when selecting/switching filters
+      if (editBtn) {
+        editBtn.innerHTML = '✏️';
+        editBtn.title = 'Edit filter';
+      }
+      currentFilterEditable = editable;
+
+      document.querySelectorAll('.filter-item').forEach(item => {
+        item.classList.remove('active');
+        const itemFilterType = item.getAttribute('data-filter');
+        if (itemFilterType === filterType) {
+          item.classList.add('active');
+          // Update the displayed name if it's editable and has been saved
+          if (editable && savedFilters[filterType]) {
+            const nameSpan = item.querySelector('.filter-item-name');
+            if (nameSpan) {
+              nameSpan.textContent = savedFilters[filterType].name;
+            }
+          }
+        }
+
+        // Render badges (Shared and Default)
+        const kebab = item.querySelector('.kebab-icon');
+
+        // Shared Badge
+        let sharedBadge = item.querySelector('.shared-badge');
+        if (savedFilters[itemFilterType] && savedFilters[itemFilterType].isShared) {
+          if (!sharedBadge) {
+            sharedBadge = document.createElement('span');
+            sharedBadge.className = 'shared-badge';
+            sharedBadge.textContent = 'Shared';
+            if (kebab) item.insertBefore(sharedBadge, kebab);
+            else item.appendChild(sharedBadge);
+          }
+        } else if (sharedBadge) {
+          sharedBadge.remove();
+        }
+
+        // Default Badge
+        let defaultBadge = item.querySelector('.default-badge');
+        if (savedFilters[itemFilterType] && savedFilters[itemFilterType].isDefault) {
+          if (!defaultBadge) {
+            defaultBadge = document.createElement('span');
+            defaultBadge.className = 'default-badge';
+            defaultBadge.textContent = 'DEFAULT';
+            if (kebab) item.insertBefore(defaultBadge, kebab);
+            else item.appendChild(defaultBadge);
+          }
+        } else if (defaultBadge) {
+          defaultBadge.remove();
+        }
+      });
+
+      applyFilter(filterType);
+    }
+
+    function refreshFilterListUI() {
+      document.querySelectorAll('.filter-item').forEach(item => {
+        const itemFilterType = item.getAttribute('data-filter');
+        const itemEditable = item.getAttribute('data-editable') === 'true';
+        let badge = item.querySelector('.default-badge');
+
+        // Ensure kebab icon exists for all items
+        let kebab = item.querySelector('.kebab-icon');
+        if (!kebab) {
+          kebab = document.createElement('span');
+          kebab.className = 'kebab-icon';
+          kebab.onclick = function (e) {
+            e.stopPropagation();
+            toggleFilterActionMenu(e, itemFilterType);
+          };
+          item.appendChild(kebab);
+        }
+
+        // Render badges (Shared and Default)
+
+        // Shared Badge
+        let sharedBadge = item.querySelector('.shared-badge');
+        if (savedFilters[itemFilterType] && savedFilters[itemFilterType].isShared) {
+          if (!sharedBadge) {
+            sharedBadge = document.createElement('span');
+            sharedBadge.className = 'shared-badge';
+            sharedBadge.textContent = 'Shared';
+            if (kebab) item.insertBefore(sharedBadge, kebab);
+            else item.appendChild(sharedBadge);
+          }
+        } else if (sharedBadge) {
+          sharedBadge.remove();
+        }
+
+        // Default Badge
+        let defaultBadge = item.querySelector('.default-badge');
+        if (savedFilters[itemFilterType] && savedFilters[itemFilterType].isDefault) {
+          if (!defaultBadge) {
+            defaultBadge = document.createElement('span');
+            defaultBadge.className = 'default-badge';
+            defaultBadge.textContent = 'DEFAULT';
+            // Insert before kebab
+            if (kebab) item.insertBefore(defaultBadge, kebab);
+            else item.appendChild(defaultBadge);
+          }
+        } else if (defaultBadge) {
+          defaultBadge.remove();
+        }
+
+        // Update name if changed
+        if (savedFilters[itemFilterType]) {
+          const nameSpan = item.querySelector('.filter-item-name');
+          if (nameSpan) {
+            nameSpan.textContent = savedFilters[itemFilterType].name;
+          }
+        }
+      });
+    }
+
+    let menuContextFilterId = null;
+
+    function toggleFilterActionMenu(event, filterId) {
+      const menu = document.getElementById('filterActionMenu');
+      const rect = event.currentTarget.getBoundingClientRect();
+      const filterItem = event.currentTarget.closest('.filter-item');
+      const sectionHeader = filterItem.closest('.filter-section').querySelector('.filter-section-header').textContent.trim();
+
+      menuContextFilterId = filterId;
+
+      // Show/Hide options based on section
+      const isMyFilter = sectionHeader === 'My Filters';
+      const isSharedFilter = sectionHeader === 'Shared With Me';
+
+      document.getElementById('menuActionUpdate').style.display = isMyFilter ? 'flex' : 'none';
+      document.getElementById('menuActionShare').style.display = isMyFilter ? 'flex' : 'none';
+      document.getElementById('menuActionDelete').style.display = isMyFilter ? 'flex' : 'none';
+      document.getElementById('menuActionPreview').style.display = isSharedFilter ? 'flex' : 'none';
+
+      menu.style.top = (rect.bottom + window.scrollY + 5) + 'px';
+      menu.style.left = (rect.right - 140) + 'px'; // Align right with icon
+
+      menu.classList.toggle('show');
+    }
+
+    function handleMenuAction(action) {
+      const menu = document.getElementById('filterActionMenu');
+      if (menu) menu.classList.remove('show');
+
+      // If called from toolbar, we might not have a menuContextFilterId, use currentFilterType
+      const filterId = menuContextFilterId || currentFilterType;
+      if (!filterId) return;
+
+      if (action === 'update') {
+        const filterName = savedFilters[filterId]?.name || filterId;
+        const editable = true; // Kebab only shows for editable/relevant filters
+        selectFilter(filterName, filterId, editable);
+        openEditModal();
+      } else if (action === 'share') {
+        const filterName = savedFilters[filterId]?.name || filterId;
+        const editable = true;
+        selectFilter(filterName, filterId, editable); // Ensure it's selected for modal sync
+        openShareModal();
+      } else if (action === 'default') {
+        const item = document.querySelector(`.filter-item[data-filter="${filterId}"]`);
+        const filterName = savedFilters[filterId]?.name || (item ? item.querySelector('.filter-item-name').textContent.trim() : filterId);
+        document.getElementById('confirmFilterName').textContent = filterName;
+        document.getElementById('defaultConfirmModal').classList.add('show');
+      } else if (action === 'viewFilterCriteria') {
+        const item = document.querySelector(`.filter-item[data-filter="${filterId}"]`);
+        const filterName = savedFilters[filterId]?.name || (item ? item.querySelector('.filter-item-name').textContent.trim() : filterId);
+        const editable = false; // View mode should not trigger pencil icon
+        isPreviewMode = true;
+        selectFilter(filterName, filterId, editable);
+        openEditModal();
+      } else if (action === 'delete') {
+        openDeleteConfirmModal(filterId);
+      }
+    }
+
+    function openDeleteConfirmModal(filterId) {
+      const id = filterId || menuContextFilterId || currentFilterType;
+      const item = document.querySelector(`.filter-item[data-filter="${id}"]`);
+      const filterName = savedFilters[id]?.name || (item ? item.querySelector('.filter-item-name').textContent.trim() : id);
+      document.getElementById('deleteConfirmFilterName').textContent = filterName;
+      document.getElementById('deleteConfirmModal').classList.add('show');
+    }
+
+    function closeConfirmModal(event) {
+      if (!event || event.target.classList.contains('confirm-modal-overlay') || event.target.closest('.btn-cancel')) {
+        document.getElementById('defaultConfirmModal').classList.remove('show');
+        document.getElementById('deleteConfirmModal').classList.remove('show');
+      }
+    }
+
+    function confirmSetAsDefault() {
+      const btn = document.getElementById('confirmDefaultBtn');
+      btn.classList.add('btn-loading');
+      btn.innerHTML = '<span class="spinner"></span>Set As Default';
+
+      setTimeout(() => {
+        // Business logic to set as default
+        Object.keys(savedFilters).forEach(key => {
+          savedFilters[key].isDefault = false;
+        });
+
+        if (savedFilters[menuContextFilterId]) {
+          savedFilters[menuContextFilterId].isDefault = true;
+        } else {
+          // If not in savedFilters (e.g. shared filters), register it
+          const item = document.querySelector(`.filter-item[data-filter="${menuContextFilterId}"]`);
+          const filterName = item ? item.querySelector('.filter-item-name').textContent.trim() : menuContextFilterId;
+          savedFilters[menuContextFilterId] = {
+            name: filterName,
+            isDefault: true,
+            criteria: [] // Shared filters might not have criteria we can edit
+          };
+        }
+
+        btn.classList.remove('btn-loading');
+        btn.innerHTML = 'Set As Default';
+        document.getElementById('defaultConfirmModal').classList.remove('show');
+
+        // Refresh UI
+        refreshFilterListUI();
+
+        // Show success toast
+        const toast = document.getElementById('successToast');
+        const toastMsg = toast.querySelector('span:not(.toast-icon)');
+        toastMsg.textContent = 'Default filter updated!';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+      }, 1000);
+    }
+
+    function confirmDeleteFilter() {
+      const btn = document.getElementById('confirmDeleteBtn');
+      btn.classList.add('btn-loading');
+      btn.innerHTML = '<span class="spinner"></span>Deleting...';
+
+      setTimeout(() => {
+        const filterToDelete = menuContextFilterId || currentFilterType;
+
+        // Remove from savedFilters
+        delete savedFilters[filterToDelete];
+
+        // Remove from DOM
+        const item = document.querySelector(`.filter-item[data-filter="${filterToDelete}"]`);
+        if (item) {
+          item.remove();
+        }
+
+        // If the deleted filter was the currently selected one, select 'All lines'
+        if (filterToDelete === currentFilterType) {
+          selectFilter('All lines', 'all', false);
+        }
+
+        btn.classList.remove('btn-loading');
+        btn.innerHTML = 'Delete';
+        document.getElementById('deleteConfirmModal').classList.remove('show');
+
+        // Also close the edit modal if it was open
+        closeEditModal();
+
+        // Show success toast
+        const toast = document.getElementById('successToast');
+        const toastMsg = toast.querySelector('span:not(.toast-icon)');
+        toastMsg.textContent = 'Filter deleted successfully!';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+      }, 1000);
+    }
+    function applyFilter(filterType) {
+      // Check if this filter has saved criteria (dynamic filter)
+      if (savedFilters[filterType] && savedFilters[filterType].criteria) {
+        applyCriteriaFilter(savedFilters[filterType].criteria);
+        return;
+      }
+
+      const rows = document.querySelectorAll('#tableBody tr');
+      let visibleCount = 0;
+
+      rows.forEach(row => {
+        const status = row.getAttribute('data-status');
+        const amount = parseFloat(row.getAttribute('data-amount'));
+        const startDate = row.getAttribute('data-start');
+        const vendor = row.getAttribute('data-vendor');
+        let show = false;
+
+        switch (filterType) {
+          case 'all': show = true; break;
+          case 'sent': show = status === 'Sent'; break;
+          case 'amount-gt-20000': show = amount > 20000; break;
+          case 'start-after-dec1': show = startDate >= '2025-12-01'; break;
+          case 'acme': show = vendor.toLowerCase().includes('acme'); break;
+          case 'amount-gt-0': show = amount > 0; break;
+          case 'rejected': show = status === 'Rejected'; break; // Added missing cases for completeness if needed
+          case 'overriden': show = status === 'Overriden'; break;
+          case 'error': show = status === 'Error'; break;
+          default: show = true;
+        }
+
+        row.style.display = show ? '' : 'none';
+        if (show) visibleCount++;
+      });
+
+      document.getElementById('paginationInfo').textContent =
+        visibleCount > 0 ? `Showing 1-${visibleCount} of ${visibleCount}` : 'No results';
+    }
+
+    function openEditModal() {
+      // Only allow editing for editable filters, or if in preview mode
+      if (!currentFilterEditable && !isPreviewMode) {
+        return;
+      }
+
+      // Load saved filter data if it exists
+      const savedFilter = savedFilters[currentFilterType];
+
+      if (savedFilter) {
+        document.getElementById('filterName').value = savedFilter.name;
+        document.getElementById('isDefaultToggle').checked = !!savedFilter.isDefault;
+        document.getElementById('criteriaContainer').innerHTML = '';
+        criteriaCounter = 0;
+
+        // Restore all criteria rows
+        if (savedFilter.criteria && savedFilter.criteria.length > 0) {
+          savedFilter.criteria.forEach(criteria => {
+            addCriteriaRow(criteria.field, criteria.operator, criteria.value || '', criteria.value2 || '');
+          });
+        } else {
+          // Default criteria if no saved data
+          addCriteriaRow('vendor_status', 'contains', 'Sent');
+        }
+      } else {
+        // No saved data, use defaults based on filter type
+        document.getElementById('filterName').value = currentFilterName;
+        document.getElementById('criteriaContainer').innerHTML = '';
+        criteriaCounter = 0;
+
+        // Initialize default criteria based on filter type
+        let defaultCriteria = getDefaultCriteriaForFilter(currentFilterType);
+        if (defaultCriteria && defaultCriteria.length > 0) {
+          defaultCriteria.forEach(criteria => {
+            addCriteriaRow(criteria.field, criteria.operator, criteria.value || '', criteria.value2 || '');
+          });
+        } else {
+          // Fallback default
+          addCriteriaRow('vendor_status', 'contains', 'Sent');
+        }
+      }
+
+      document.querySelector('.modal-title').textContent = 'Update filter';
+      document.querySelector('.btn-save').style.display = 'none';
+      document.querySelector('.btn-update').style.display = 'inline-flex';
+      document.querySelector('.btn-delete').style.display = 'inline-flex';
+      document.querySelector('.btn-share').style.display = 'inline-flex'; // Show share button for existing filters
+
+      document.getElementById('editFilterModal').classList.add('show');
+
+      if (isPreviewMode) {
+        document.querySelector('.modal-title').textContent = 'View filter criteria';
+        document.querySelector('#editFilterModal .modal').classList.add('readonly');
+        document.getElementById('filterName').disabled = true;
+        document.querySelector('.btn-update').style.display = 'inline-flex';
+        document.querySelector('.btn-update').textContent = 'Update'; // Ensure it says Update
+      }
+    }
+
+    function getDefaultCriteriaForFilter(filterType) {
+      // Return default criteria structure for each filter type if not yet saved
+      const defaults = {
+        'sent': [
+          { field: 'vendor_status', operator: 'contains', value: 'Sent', value2: '' }
+        ],
+        'amount-gt-20000': [
+          { field: 'proposed_amount', operator: 'is_greater_than', value: '20000', value2: '' }
+        ],
+        'start-after-dec1': [
+          { field: 'service_start_date', operator: 'is_after', value: '12/01/2025', value2: '' }
+        ],
+        'acme': [
+          { field: 'vendor_name', operator: 'contains', value: 'Acme', value2: '' }
+        ]
+      };
+
+      return defaults[filterType] || null;
+    }
+
+    function closeEditModal() {
+      document.getElementById('editFilterModal').classList.remove('show');
+      document.querySelector('#editFilterModal .modal').classList.remove('readonly');
+      document.getElementById('filterName').disabled = false;
+      document.getElementById('isDefaultToggle').disabled = false;
+      isPreviewMode = false;
+
+      // Reset button text just in case
+      document.querySelector('.btn-update').textContent = 'Update';
+    }
+
+    function previewFilter() {
+      const previewBtn = document.querySelector('.btn-preview');
+
+      // Show loading state
+      previewBtn.classList.add('loading');
+      previewBtn.disabled = true;
+
+      // Collect all criteria data
+      const criteriaRows = document.querySelectorAll('.criteria-row');
+      const criteria = [];
+
+      criteriaRows.forEach(row => {
+        const fieldSelect = row.querySelector('.criteria-field select');
+        const operatorSelect = row.querySelector('.criteria-operator select');
+        const valueContainer = row.querySelector('.criteria-value');
+
+        if (fieldSelect.value && operatorSelect.value) {
+          const field = fieldSelect.value;
+          const operator = operatorSelect.value;
+          let value = '';
+          let value2 = '';
+
+          // Check if this is a tag input (multi-value)
+          const tagContainer = valueContainer.querySelector('.tag-input-container');
+          if (tagContainer) {
+            // Get all tag values
+            const tagValues = getTagValues(row.id);
+            value = tagValues.join(','); // Store as comma-separated string
+          } else {
+            // Get value based on input type
+            const inputs = valueContainer.querySelectorAll('input');
+            if (inputs.length === 1) {
+              value = inputs[0].value;
+            } else if (inputs.length === 2) {
+              value = inputs[0].value;
+              value2 = inputs[1].value;
+            }
+          }
+
+          criteria.push({ field, operator, value, value2 });
+        }
+      });
+
+      // Simulate preview processing delay
+      setTimeout(() => {
+        // Hide loading state
+        previewBtn.classList.remove('loading');
+        previewBtn.disabled = false;
+
+        // Apply the filter criteria to the table
+        applyCriteriaFilter(criteria);
+
+        // Show success toast
+        const toast = document.getElementById('successToast');
+        toast.querySelector('span:last-child').textContent = 'Preview successful';
+        toast.classList.add('show');
+
+        // Close modal after a brief delay
+        setTimeout(() => {
+          closeEditModal();
+
+          // Change pencil icon to eye icon
+          const editBtn = document.getElementById('editFilterBtn');
+          if (editBtn) {
+            editBtn.innerHTML = '👁️';
+            editBtn.title = 'Preview mode';
+          }
+
+          // Hide toast after modal closes
+          setTimeout(() => {
+            toast.classList.remove('show');
+            toast.querySelector('span:last-child').textContent = 'Filter updated successfully';
+          }, 2000);
+        }, 500);
+      }, 1000); // 1 second delay to simulate preview processing
+    }
+
+    function applyCriteriaFilter(criteria) {
+      const rows = document.querySelectorAll('#tableBody tr');
+      let visibleCount = 0;
+
+      rows.forEach(row => {
+        let show = true;
+
+        // Apply all criteria (AND logic - all must match)
+        criteria.forEach(criterion => {
+          if (!show) return; // Skip if already filtered out
+
+          const field = criterion.field;
+          const operator = criterion.operator;
+          const value = criterion.value;
+          const value2 = criterion.value2;
+
+          let matches = false;
+
+          // Get the cell value based on field
+          let cellValue = '';
+          if (field === 'vendor_name') {
+            cellValue = row.cells[2]?.textContent?.trim() || '';
+          } else if (field === 'vendor_id') {
+            cellValue = row.cells[3]?.textContent?.trim() || '';
+          } else if (field === 'vendor_email') {
+            cellValue = row.cells[4]?.textContent?.trim() || '';
+          } else if (field === 'vendor_status') {
+            cellValue = row.cells[9]?.querySelector('.status-badge')?.textContent?.trim() || row.cells[9]?.textContent?.trim() || '';
+          } else if (field === 'vendor_amount') {
+            cellValue = parseFloat(row.cells[5]?.textContent?.replace(/,/g, '') || 0);
+          } else if (field === 'internal_amount') {
+            cellValue = parseFloat(row.cells[6]?.textContent?.replace(/,/g, '') || 0);
+          } else if (field === 'calculated_amount') {
+            cellValue = parseFloat(row.cells[7]?.textContent?.replace(/,/g, '') || 0);
+          } else if (field === 'proposed_amount') {
+            cellValue = parseFloat(row.cells[8]?.textContent?.replace(/,/g, '') || 0);
+          } else if (field === 'service_start_date') {
+            cellValue = row.cells[10]?.textContent?.trim() || '';
+          } else if (field === 'service_end_date') {
+            cellValue = row.cells[11]?.textContent?.trim() || '';
+          }
+
+          // Apply operator logic
+          if (operator === 'contains') {
+            const values = value.split(',').map(v => v.trim()).filter(v => v);
+            matches = values.some(v => String(cellValue).toLowerCase().includes(v.toLowerCase()));
+          } else if (operator === 'does_not_contain') {
+            const values = value.split(',').map(v => v.trim()).filter(v => v);
+            matches = !values.some(v => String(cellValue).toLowerCase().includes(v.toLowerCase()));
+          } else if (operator === 'is_equals') {
+            const values = value.split(',').map(v => v.trim()).filter(v => v);
+            matches = values.some(v => String(cellValue).toLowerCase() === v.toLowerCase());
+          } else if (operator === 'is_not_equals') {
+            const values = value.split(',').map(v => v.trim()).filter(v => v);
+            matches = !values.some(v => String(cellValue).toLowerCase() === v.toLowerCase());
+          } else if (operator === 'is_greater_than') {
+            matches = parseFloat(cellValue) > parseFloat(value);
+          } else if (operator === 'is_less_than') {
+            matches = parseFloat(cellValue) < parseFloat(value);
+          } else if (operator === 'is_greater_than_or_equals') {
+            matches = parseFloat(cellValue) >= parseFloat(value);
+          } else if (operator === 'is_less_than_or_equals') {
+            matches = parseFloat(cellValue) <= parseFloat(value);
+          } else if (operator === 'is_between') {
+            matches = parseFloat(cellValue) >= parseFloat(value) && parseFloat(cellValue) <= parseFloat(value2);
+          } else if (operator === 'is_after') {
+            // Simple date comparison (assuming MM/DD/YYYY format)
+            matches = cellValue >= value;
+          } else if (operator === 'is_before') {
+            matches = cellValue <= value;
+          } else if (operator === 'starts_with') {
+            matches = String(cellValue).toLowerCase().startsWith(value.toLowerCase());
+          } else if (operator === 'ends_with') {
+            matches = String(cellValue).toLowerCase().endsWith(value.toLowerCase());
+          } else if (operator === 'is_empty') {
+            matches = !cellValue || String(cellValue).trim() === '';
+          } else if (operator === 'is_not_empty') {
+            matches = cellValue && String(cellValue).trim() !== '';
+          }
+
+          if (!matches) {
+            show = false;
+          }
+        });
+
+        row.style.display = show ? '' : 'none';
+        if (show) visibleCount++;
+      });
+
+      document.getElementById('paginationInfo').textContent =
+        visibleCount > 0 ? `Showing 1-${visibleCount} of ${visibleCount}` : 'No results';
+    }
+
+    function updateFilter() {
+      const updateBtn = document.querySelector('.btn-update');
+      const filterName = document.getElementById('filterName').value.trim();
+      const isDefault = document.getElementById('isDefaultToggle').checked;
+
+      if (!filterName) {
+        alert('Please enter a filter name');
+        return;
+      }
+
+      // Show loading state
+      updateBtn.classList.add('loading');
+      updateBtn.disabled = true;
+
+      // Collect all criteria data
+      const criteriaRows = document.querySelectorAll('.criteria-row');
+      const criteria = [];
+
+      criteriaRows.forEach(row => {
+        const fieldSelect = row.querySelector('.criteria-field select');
+        const operatorSelect = row.querySelector('.criteria-operator select');
+        const valueContainer = row.querySelector('.criteria-value');
+
+        if (fieldSelect.value && operatorSelect.value) {
+          const field = fieldSelect.value;
+          const operator = operatorSelect.value;
+          let value = '';
+          let value2 = '';
+
+          // Check if this is a tag input (multi-value)
+          const tagContainer = valueContainer.querySelector('.tag-input-container');
+          if (tagContainer) {
+            // Get all tag values
+            const tagValues = getTagValues(row.id);
+            value = tagValues.join(','); // Store as comma-separated string
+          } else {
+            // Get value based on input type
+            const inputs = valueContainer.querySelectorAll('input');
+            if (inputs.length === 1) {
+              value = inputs[0].value;
+            } else if (inputs.length === 2) {
+              value = inputs[0].value;
+              value2 = inputs[1].value;
+            }
+          }
+
+          criteria.push({ field, operator, value, value2 });
+        }
+      });
+
+      // If this is set to default, clear other defaults
+      if (isDefault) {
+        Object.keys(savedFilters).forEach(key => {
+          savedFilters[key].isDefault = false;
+        });
+      }
+
+      // Save filter data
+      savedFilters[currentFilterType] = {
+        name: filterName,
+        isDefault: isDefault,
+        criteria: criteria
+      };
+
+      // Simulate API call delay
+      setTimeout(() => {
+        // Hide loading state
+        updateBtn.classList.remove('loading');
+        updateBtn.disabled = false;
+
+        // Update the filter name in the dropdown
+        document.getElementById('selectedFilterName').textContent = filterName;
+        currentFilterName = filterName;
+
+        // Refresh the whole UI to update badges
+        refreshFilterListUI();
+
+        // Show success toast
+        const toast = document.getElementById('successToast');
+        toast.classList.add('show');
+
+        // Close modal after a brief delay
+        setTimeout(() => {
+          closeEditModal();
+
+          // Hide toast after modal closes
+          setTimeout(() => {
+            toast.classList.remove('show');
+          }, 2000);
+
+          // Reset pencil icon after update
+          const editBtn = document.getElementById('editFilterBtn');
+          if (editBtn) {
+            editBtn.innerHTML = '✏️';
+            editBtn.title = 'Edit filter';
+          }
+
+          // Re-apply the filter to show updated results
+          applyFilter(currentFilterType);
+
+        }, 500);
+      }, 1500); // 1.5 second delay to simulate saving
+    }
+
+    function createNewFilter() {
+      console.log('createNewFilter called');
+      try {
+        // 1. Reset Modal State to "Create Mode"
+        const modalTitle = document.querySelector('.modal-title');
+        if (modalTitle) modalTitle.textContent = 'Create Filter';
+
+        const nameInput = document.getElementById('filterName');
+        if (nameInput) nameInput.value = '';
+
+        const defaultToggle = document.getElementById('isDefaultToggle');
+        if (defaultToggle) defaultToggle.checked = false;
+
+        // 2. Clear Criteria
+        const criteriaContainer = document.getElementById('criteriaContainer');
+        if (criteriaContainer) criteriaContainer.innerHTML = '';
+        criteriaCounter = 0;
+
+        // Add one default empty row
+        if (typeof addCriteriaRow === 'function') {
+          addCriteriaRow();
+        } else {
+          console.error('addCriteriaRow is not defined');
+        }
+
+        // Show/Hide buttons
+        const btnSave = document.querySelector('.btn-save');
+        const btnUpdate = document.querySelector('.btn-update');
+        const btnDelete = document.querySelector('.btn-delete');
+        const btnShare = document.querySelector('.btn-share');
+
+        if (btnSave) btnSave.style.display = 'inline-flex';
+        if (btnUpdate) btnUpdate.style.display = 'none';
+        if (btnDelete) btnDelete.style.display = 'none';
+        if (btnShare) btnShare.style.display = 'none';
+
+        // 4. Show Modal
+        const modal = document.getElementById('editFilterModal');
+        if (modal) modal.classList.add('show');
+
+      } catch (e) {
+        console.error('Error in createNewFilter:', e);
+        alert('Error creating filter: ' + e.message);
+      }
+    }
+
+    function saveFilter() {
+      const nameInput = document.getElementById('filterName');
+      const name = nameInput ? nameInput.value.trim() : '';
+      const isDefault = document.getElementById('isDefaultToggle').checked;
+
+      if (!name) {
+        alert('Please enter a filter name');
+        return;
+      }
+
+      // Generate ID
+      const filterId = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+      // Collect Criteria
+      const criteriaRows = document.querySelectorAll('.criteria-row');
+      const criteria = [];
+
+      criteriaRows.forEach(row => {
+        const fieldSelect = row.querySelector('.criteria-field select');
+        const operatorSelect = row.querySelector('.criteria-operator select');
+        const valueContainer = row.querySelector('.criteria-value');
+
+        if (fieldSelect.value && operatorSelect.value) {
+          const field = fieldSelect.value;
+          const operator = operatorSelect.value;
+          let value = '';
+          let value2 = '';
+
+          const tagContainer = valueContainer.querySelector('.tag-input-container');
+          if (tagContainer) {
+            const tagValues = getTagValues(row.id);
+            value = tagValues.join(',');
+          } else {
+            const inputs = valueContainer.querySelectorAll('input');
+            if (inputs.length === 1) {
+              value = inputs[0].value;
+            } else if (inputs.length === 2) {
+              value = inputs[0].value;
+              value2 = inputs[1].value;
+            }
+          }
+
+          criteria.push({ field, operator, value, value2 });
+        }
+      });
+
+      // If this is set to default, clear other defaults
+      if (isDefault) {
+        Object.keys(savedFilters).forEach(key => {
+          savedFilters[key].isDefault = false;
+        });
+      }
+
+      // Save Logic
+      savedFilters[filterId] = {
+        name: name,
+        isDefault: isDefault,
+        criteria: criteria
+      };
+
+      // Add to Dropdown (My Filters)
+      const myFiltersSection = document.querySelector('.filter-section:first-child');
+      if (myFiltersSection) {
+        const newFilterItem = document.createElement('div');
+        newFilterItem.className = 'filter-item';
+        newFilterItem.setAttribute('data-filter', filterId);
+        newFilterItem.setAttribute('data-editable', 'true');
+        newFilterItem.setAttribute('data-name', name);
+        newFilterItem.onclick = function () { selectFilter(name, filterId, true); };
+
+        newFilterItem.innerHTML = `<span class="filter-item-name">${name}</span>`;
+        myFiltersSection.appendChild(newFilterItem);
+      }
+
+      // Select the new filter
+      selectFilter(name, filterId, true);
+
+      // Refresh UI to update badges (newly added filter will be updated by selectFilter, but others need it too)
+      refreshFilterListUI();
+
+      closeEditModal();
+    }
+    function closeModalOnOverlay(event) {
+      if (event.target === document.getElementById('editFilterModal')) {
+        closeEditModal();
+      }
+    }
+
+    function openShareModal() {
+      const modal = document.getElementById('shareFilterModal');
+      const filterName = document.getElementById('filterName').value;
+      if (modal) {
+        document.getElementById('shareModalFilterName').textContent = filterName;
+        modal.classList.add('show');
+        // Reset to "Only me" by default
+        updateShareMode('only-me');
+        // Clear recipients
+        document.getElementById('shareRecipientsList').innerHTML = '';
+        document.getElementById('shareRecipientInput').value = '';
+      }
+    }
+
+    function updateShareMode(mode) {
+      // Update cards
+      document.querySelectorAll('.share-card').forEach(card => card.classList.remove('active'));
+      const recipientsArea = document.getElementById('shareRecipientsArea');
+
+      if (mode === 'only-me') {
+        document.getElementById('shareOnlyMe').classList.add('active');
+        recipientsArea.style.display = 'none';
+      } else if (mode === 'everyone') {
+        document.getElementById('shareEveryone').classList.add('active');
+        recipientsArea.style.display = 'none';
+      } else if (mode === 'specific') {
+        document.getElementById('shareSpecific').classList.add('active');
+        recipientsArea.style.display = 'block';
+      }
+    }
+
+    function addShareRecipient(name, type) {
+      const list = document.getElementById('shareRecipientsList');
+      const existing = Array.from(list.querySelectorAll('.share-recipient-name')).map(el => el.textContent);
+
+      if (existing.includes(name)) return;
+
+      const item = document.createElement('div');
+      item.className = 'share-recipient-item';
+      item.innerHTML = `
+        <div class="share-recipient-name">${name}</div>
+        <div class="share-recipient-actions">
+          <select class="share-permission-select">
+            <option value="view">Can view</option>
+            <option value="edit">Can edit</option>
+          </select>
+          <span class="share-remove" onclick="this.closest('.share-recipient-item').remove()">&times;</span>
+        </div>
+      `;
+
+      list.appendChild(item);
+      document.getElementById('shareRecipientDropdown').classList.remove('show');
+      document.getElementById('shareRecipientInput').value = '';
+    }
+
+    function shareFilterAction() {
+      const btn = document.getElementById('confirmShareBtn');
+      btn.classList.add('loading');
+      btn.innerHTML = ''; // Loading spinner CSS handles this
+      btn.disabled = true;
+
+      // Get current share mode
+      let isShared = false;
+      const everyoneCard = document.getElementById('shareEveryone');
+      const specificCard = document.getElementById('shareSpecific');
+
+      if (everyoneCard.classList.contains('active') || specificCard.classList.contains('active')) {
+        isShared = true;
+      }
+
+      setTimeout(() => {
+        // Save share status to the current filter
+        if (savedFilters[currentFilterType]) {
+          savedFilters[currentFilterType].isShared = isShared;
+        }
+
+        btn.classList.remove('loading');
+        btn.innerHTML = 'Save';
+        btn.disabled = false;
+
+        // Show success toast
+        const toast = document.getElementById('successToast');
+        const toastMsg = toast.querySelector('span:not(.toast-icon)');
+        const originalMsg = toastMsg.textContent;
+        toastMsg.textContent = 'Filter shared successfully!';
+        toast.classList.add('show');
+
+        // Refresh UI to show the Shared badge
+        refreshFilterListUI();
+
+        setTimeout(() => {
+          closeShareModal();
+          setTimeout(() => {
+            toast.classList.remove('show');
+            toastMsg.textContent = originalMsg;
+          }, 2000);
+        }, 500);
+      }, 1500);
+    }
+
+    function closeShareModal() {
+      document.getElementById('shareFilterModal').classList.remove('show');
+    }
+
+    function closeShareModalOnOverlay(event) {
+      if (event.target === document.getElementById('shareFilterModal')) {
+        closeShareModal();
+      }
+    }
+
+    function showShareDropdown() {
+      document.getElementById('shareRecipientDropdown').classList.add('show');
+    }
+
+    function filterShareDropdown() {
+      const input = document.getElementById('shareRecipientInput');
+      const filter = input.value.toLowerCase();
+      const items = document.querySelectorAll('#shareRecipientDropdown .tag-dropdown-item');
+
+      items.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(filter) ? 'flex' : 'none';
+      });
+    }
+
+    function getFieldType(fieldValue) {
+      if (textFields.includes(fieldValue)) return 'text';
+      if (numericFields.includes(fieldValue)) return 'numeric';
+      if (dateFields.includes(fieldValue)) return 'date';
+      return null;
+    }
+
+    function getOperatorsForField(fieldType) {
+      switch (fieldType) {
+        case 'text': return textOperators;
+        case 'numeric': return numericOperators;
+        case 'date': return dateOperators;
+        default: return [];
+      }
+    }
+
+    function addCriteriaRow(defaultField = '', defaultOperator = '', defaultValue = '', defaultValue2 = '') {
+      criteriaCounter++;
+      const rowId = 'criteriaRow' + criteriaCounter;
+      const container = document.getElementById('criteriaContainer');
+
+      const row = document.createElement('div');
+      row.className = 'criteria-row';
+      row.id = rowId;
+
+      row.innerHTML = `
+        <div class="criteria-field">
+          <label class="form-label required">Field</label>
+          <select class="form-select" onchange="onFieldChange('${rowId}')">
+            <option value="">Select field...</option>
+            <option value="vendor_name" ${defaultField === 'vendor_name' ? 'selected' : ''}>Vendor Name</option>
+            <option value="vendor_id" ${defaultField === 'vendor_id' ? 'selected' : ''}>Vendor ID</option>
+            <option value="vendor_email" ${defaultField === 'vendor_email' ? 'selected' : ''}>Vendor Email</option>
+            <option value="vendor_amount" ${defaultField === 'vendor_amount' ? 'selected' : ''}>Vendor Amount</option>
+            <option value="internal_amount" ${defaultField === 'internal_amount' ? 'selected' : ''}>Internal Amount</option>
+            <option value="calculated_amount" ${defaultField === 'calculated_amount' ? 'selected' : ''}>Calculated Amount</option>
+            <option value="proposed_amount" ${defaultField === 'proposed_amount' ? 'selected' : ''}>Proposed Amount</option>
+            <option value="vendor_status" ${defaultField === 'vendor_status' ? 'selected' : ''}>Vendor Status</option>
+            <option value="service_start_date" ${defaultField === 'service_start_date' ? 'selected' : ''}>Service Start Date</option>
+            <option value="service_end_date" ${defaultField === 'service_end_date' ? 'selected' : ''}>Service End Date</option>
+          </select>
+        </div>
+        <div class="criteria-operator" id="${rowId}_operator_container">
+          <label class="form-label required">Operator</label>
+          <select class="form-select" id="${rowId}_operator" onchange="onOperatorChange('${rowId}')">
+            <option value="">Select operator...</option>
+          </select>
+        </div>
+        <div class="criteria-value" id="${rowId}_value_container">
+          <label class="form-label required">Value</label>
+          <div id="${rowId}_value_field">
+            <input type="text" class="form-input" placeholder="Enter value..." value="${defaultValue}">
+          </div>
+        </div>
+        ${!isPreviewMode ? `<div class="criteria-delete" onclick="deleteCriteriaRow('${rowId}')">🗑️</div>` : ''}
+      `;
+
+      container.appendChild(row);
+
+      if (defaultField) {
+        onFieldChange(rowId, defaultOperator, defaultValue, defaultValue2);
+      }
+    }
+
+    function onFieldChange(rowId, defaultOperator = '', defaultValue = '', defaultValue2 = '') {
+      const row = document.getElementById(rowId);
+      const fieldSelect = row.querySelector('.criteria-field select');
+      const fieldValue = fieldSelect.value;
+      const fieldType = getFieldType(fieldValue);
+
+      const operatorContainer = document.getElementById(`${rowId}_operator_container`);
+      const operatorSelect = document.getElementById(`${rowId}_operator`);
+      const valueContainer = document.getElementById(`${rowId}_value_container`);
+
+      if (fieldType) {
+        operatorContainer.style.display = 'block';
+        const operators = getOperatorsForField(fieldType);
+
+        operatorSelect.innerHTML = '<option value="">Select operator...</option>' +
+          operators.map(op => `<option value="${op.value}" ${defaultOperator === op.value ? 'selected' : ''}>${op.label}</option>`).join('');
+
+        if (defaultOperator) {
+          onOperatorChange(rowId, defaultValue, defaultValue2);
+        } else {
+          renderValueField(rowId, fieldType, '', false, '', '', fieldValue);
+        }
+      } else {
+        operatorContainer.style.display = 'none';
+        renderValueField(rowId, null, '', false);
+      }
+    }
+
+    function onOperatorChange(rowId, defaultValue = '', defaultValue2 = '') {
+      const row = document.getElementById(rowId);
+      const fieldSelect = row.querySelector('.criteria-field select');
+      const fieldType = getFieldType(fieldSelect.value);
+      const fieldName = fieldSelect.value;
+      const operatorSelect = document.getElementById(`${rowId}_operator`);
+      const operatorValue = operatorSelect.value;
+
+      renderValueField(rowId, fieldType, operatorValue, true, defaultValue, defaultValue2, fieldName);
+    }
+
+    function renderValueField(rowId, fieldType, operator, hasOperator, defaultValue = '', defaultValue2 = '', fieldName = '') {
+      const valueField = document.getElementById(`${rowId}_value_field`);
+
+      const isEmptyOperator = ['is_empty', 'is_not_empty'].includes(operator);
+      const isBetweenOperator = ['is_between', 'is_not_between'].includes(operator);
+      const isDateSingleOperator = ['is_equals', 'is_not_equals', 'is_before', 'is_after'].includes(operator);
+      const isMultiValueOperator = ['contains', 'does_not_contain', 'is_equals', 'is_not_equals'].includes(operator);
+
+      if (!hasOperator || !operator) {
+        valueField.innerHTML = `<input type="text" class="form-input" placeholder="Enter value..." value="${defaultValue}" ${isPreviewMode ? 'disabled' : ''}>`;
+        return;
+      }
+
+      if (isEmptyOperator) {
+        valueField.innerHTML = `<input type="text" class="form-input" placeholder="No value needed" disabled>`;
+        return;
+      }
+
+      // Multi-value tag input for specific operators
+      if (isMultiValueOperator && fieldType !== 'date') {
+        const values = defaultValue ? (Array.isArray(defaultValue) ? defaultValue : defaultValue.split(',').map(v => v.trim()).filter(v => v)) : [];
+        // Use the passed fieldName, or get it from the row if not provided
+        let actualFieldName = fieldName;
+        if (!actualFieldName) {
+          const row = document.getElementById(rowId);
+          const fieldSelect = row ? row.querySelector('.criteria-field select') : null;
+          actualFieldName = fieldSelect ? fieldSelect.value : '';
+        }
+        renderTagInput(rowId, values, fieldType === 'numeric', actualFieldName);
+        return;
+      }
+
+      if (fieldType === 'numeric') {
+        if (isBetweenOperator) {
+          valueField.innerHTML = `
+            <div class="number-range-input">
+              <input type="number" placeholder="From" step="0.01" value="${defaultValue}" ${isPreviewMode ? 'disabled' : ''}>
+              <span class="separator">to</span>
+              <input type="number" placeholder="To" step="0.01" value="${defaultValue2}" ${isPreviewMode ? 'disabled' : ''}>
+            </div>
+          `;
+        } else {
+          valueField.innerHTML = `<input type="number" class="form-input" placeholder="Enter number..." step="0.01" value="${defaultValue}" ${isPreviewMode ? 'disabled' : ''}>`;
+        }
+        return;
+      }
+
+      if (fieldType === 'date') {
+        if (isBetweenOperator) {
+          valueField.innerHTML = `
+            <div class="value-container">
+              <div class="date-range-input" ${isPreviewMode ? '' : `onclick="toggleDatePicker('${rowId}')"`} style="${isPreviewMode ? 'background-color: #f5f5f5; cursor: default;' : ''}">
+                <input type="text" placeholder="Start date" readonly id="${rowId}_start_date" value="${defaultValue}" ${isPreviewMode ? 'disabled' : ''}>
+                <span class="separator">→</span>
+                <input type="text" placeholder="End date" readonly id="${rowId}_end_date" value="${defaultValue2}" ${isPreviewMode ? 'disabled' : ''}>
+                <span class="calendar-icon" style="${isPreviewMode ? 'opacity: 0.5;' : ''}">📅</span>
+              </div>
+              <div class="calendar-container" id="${rowId}_calendar"></div>
+            </div>
+          `;
+        } else if (isDateSingleOperator) {
+          valueField.innerHTML = `
+            <div class="value-container">
+              <input type="text" class="form-input" placeholder="Select date..." readonly ${isPreviewMode ? 'disabled' : `onclick="toggleSingleDatePicker('${rowId}')"`} id="${rowId}_single_date" value="${defaultValue}">
+              <div class="calendar-container" id="${rowId}_calendar"></div>
+            </div>
+          `;
+        }
+        return;
+      }
+
+      // Default text input
+      valueField.innerHTML = `<input type="text" class="form-input" placeholder="Enter value..." value="${defaultValue}" ${isPreviewMode ? 'disabled' : ''}>`;
+    }
+
+    function renderTagInput(rowId, values = [], isNumeric = false, fieldName = '') {
+      const valueField = document.getElementById(`${rowId}_value_field`);
+      const inputType = isNumeric ? 'number' : 'text';
+      const placeholder = isNumeric ? 'Enter number...' : 'Enter value...';
+
+      // Get available values from table if field is specified
+      const availableValues = fieldName ? getAvailableValuesFromTable(fieldName) : [];
+      const showDropdown = availableValues.length > 0 && !isNumeric;
+
+      let tagsHtml = values.map((val, index) => `
+        <div class="tag-chip">
+          <span>${val}</span>
+          ${!isPreviewMode ? `<span class="tag-chip-remove" onclick="removeTag('${rowId}', ${index})">×</span>` : ''}
+        </div>
+      `).join('');
+
+      valueField.innerHTML = `
+        <div class="tag-value-container">
+          <div class="tag-input-container" id="${rowId}_tag_container">
+            ${tagsHtml}
+            <input type="${inputType}" class="tag-input" id="${rowId}_tag_input" placeholder="${placeholder}" 
+                   onkeydown="handleTagInputKeydown(event, '${rowId}')" 
+                   onfocus="showTagDropdown('${rowId}', '${fieldName}')"
+                   oninput="filterTagDropdown('${rowId}', '${fieldName}')"
+                   ${isNumeric ? 'step="0.01"' : ''}
+                   ${isPreviewMode ? 'disabled' : ''}>
+          </div>
+          ${showDropdown ? `<div class="tag-dropdown" id="${rowId}_tag_dropdown"></div>` : ''}
+        </div>
+      `;
+
+      if (showDropdown) {
+        renderTagDropdown(rowId, fieldName, values, '');
+      }
+    }
+
+    function getAvailableValuesFromTable(fieldName) {
+      const rows = document.querySelectorAll('#tableBody tr:not([style*="display: none"])');
+      const values = new Set();
+
+      // Map field names to table column extraction logic
+      const fieldMap = {
+        'vendor_name': (row) => row.cells[2]?.textContent?.trim(),
+        'vendor_id': (row) => row.cells[3]?.textContent?.trim(),
+        'vendor_email': (row) => row.cells[4]?.textContent?.trim(),
+        'vendor_status': (row) => row.cells[9]?.querySelector('.status-badge')?.textContent?.trim() || row.cells[9]?.textContent?.trim(),
+        'vendor_amount': (row) => row.cells[5]?.textContent?.trim(),
+        'internal_amount': (row) => row.cells[6]?.textContent?.trim(),
+        'calculated_amount': (row) => row.cells[7]?.textContent?.trim(),
+        'proposed_amount': (row) => row.cells[8]?.textContent?.trim(),
+        'service_start_date': (row) => row.cells[10]?.textContent?.trim(),
+        'service_end_date': (row) => row.cells[11]?.textContent?.trim()
+      };
+
+      const extractValue = fieldMap[fieldName];
+      if (!extractValue) return [];
+
+      rows.forEach(row => {
+        const value = extractValue(row);
+        if (value) {
+          values.add(value);
+        }
+      });
+
+      return Array.from(values).sort();
+    }
+
+    function renderTagDropdown(rowId, fieldName, selectedValues = [], searchTerm = '') {
+      const dropdown = document.getElementById(`${rowId}_tag_dropdown`);
+      if (!dropdown) return;
+
+      let availableValues = getAvailableValuesFromTable(fieldName);
+
+      // Filter by search term
+      if (searchTerm) {
+        const term = searchTerm.toLowerCase();
+        availableValues = availableValues.filter(v => v.toLowerCase().includes(term));
+      }
+
+      const selectedSet = new Set(selectedValues);
+
+      const itemsHtml = availableValues.map(value => {
+        const isSelected = selectedSet.has(value);
+        return `
+          <div class="tag-dropdown-item ${isSelected ? 'selected' : ''}" 
+               onclick="toggleTagSelection('${rowId}', '${value.replace(/'/g, "\\'")}')">
+            <span>${value}</span>
+            ${isSelected ? '<span class="tag-checkmark">✓</span>' : ''}
+          </div>
+        `;
+      }).join('');
+
+      dropdown.innerHTML = itemsHtml || '<div class="tag-dropdown-item" style="color: #999;">No values found</div>';
+    }
+
+    function showTagDropdown(rowId, fieldName) {
+      const dropdown = document.getElementById(`${rowId}_tag_dropdown`);
+      if (!dropdown) return;
+
+      const selectedValues = getTagValues(rowId);
+      renderTagDropdown(rowId, fieldName, selectedValues, '');
+      dropdown.classList.add('show');
+    }
+
+    function filterTagDropdown(rowId, fieldName) {
+      const input = document.getElementById(`${rowId}_tag_input`);
+      const searchTerm = input.value.trim();
+      const selectedValues = getTagValues(rowId);
+      renderTagDropdown(rowId, fieldName, selectedValues, searchTerm);
+    }
+
+    function toggleTagSelection(rowId, value) {
+      const selectedValues = getTagValues(rowId);
+      const index = selectedValues.indexOf(value);
+
+      if (index > -1) {
+        // Remove if already selected
+        removeTagByValue(rowId, value);
+      } else {
+        // Add if not selected
+        addTagByValue(rowId, value);
+        // Clear the input after adding
+        const input = document.getElementById(`${rowId}_tag_input`);
+        if (input) input.value = '';
+      }
+
+      // Update dropdown
+      const row = document.getElementById(rowId);
+      const fieldSelect = row.querySelector('.criteria-field select');
+      const fieldName = fieldSelect.value;
+      const input = document.getElementById(`${rowId}_tag_input`);
+      const searchTerm = input ? input.value.trim() : '';
+      const updatedValues = getTagValues(rowId);
+      renderTagDropdown(rowId, fieldName, updatedValues, searchTerm);
+    }
+
+    function addTagByValue(rowId, value) {
+      const container = document.getElementById(`${rowId}_tag_container`);
+      const existingTags = Array.from(container.querySelectorAll('.tag-chip span:first-child')).map(s => s.textContent.trim());
+
+      if (existingTags.includes(value)) return; // Don't add duplicates
+
+      const input = document.getElementById(`${rowId}_tag_input`);
+      const chip = document.createElement('div');
+      chip.className = 'tag-chip';
+      chip.innerHTML = `
+        <span>${value}</span>
+        <span class="tag-chip-remove" onclick="removeTag('${rowId}', ${existingTags.length})">×</span>
+      `;
+
+      container.insertBefore(chip, input);
+    }
+
+    function removeTagByValue(rowId, value) {
+      const container = document.getElementById(`${rowId}_tag_container`);
+      const chips = container.querySelectorAll('.tag-chip');
+      chips.forEach((chip, index) => {
+        if (chip.querySelector('span:first-child').textContent.trim() === value) {
+          chip.remove();
+        }
+      });
+    }
+
+    function handleTagInputKeydown(event, rowId) {
+      if (event.key === 'Enter' || event.key === ',') {
+        event.preventDefault();
+        const input = document.getElementById(`${rowId}_tag_input`);
+        const value = input.value.trim();
+        // Only add if there's a value (don't add empty tags)
+        if (value) {
+          addTag(rowId);
+        }
+      } else if (event.key === 'Backspace') {
+        const input = document.getElementById(`${rowId}_tag_input`);
+        if (input.value === '') {
+          const container = document.getElementById(`${rowId}_tag_container`);
+          const chips = container.querySelectorAll('.tag-chip');
+          if (chips.length > 0) {
+            const lastIndex = chips.length - 1;
+            removeTag(rowId, lastIndex);
+          }
+        }
+      } else if (event.key === 'Escape') {
+        // Close dropdown on Escape
+        const dropdown = document.getElementById(`${rowId}_tag_dropdown`);
+        if (dropdown) {
+          dropdown.classList.remove('show');
+        }
+      }
+    }
+
+    function addTag(rowId) {
+      const input = document.getElementById(`${rowId}_tag_input`);
+      const value = input.value.trim();
+
+      if (!value) return;
+
+      const container = document.getElementById(`${rowId}_tag_container`);
+      const existingTags = Array.from(container.querySelectorAll('.tag-chip span:first-child')).map(s => s.textContent.trim());
+
+      if (existingTags.includes(value)) {
+        input.value = '';
+        return; // Don't add duplicates
+      }
+
+      const chip = document.createElement('div');
+      chip.className = 'tag-chip';
+      chip.innerHTML = `
+        <span>${value}</span>
+        <span class="tag-chip-remove" onclick="removeTag('${rowId}', ${existingTags.length})">×</span>
+      `;
+
+      container.insertBefore(chip, input);
+      input.value = '';
+    }
+
+    function removeTag(rowId, index) {
+      const container = document.getElementById(`${rowId}_tag_container`);
+      const chips = container.querySelectorAll('.tag-chip');
+      if (chips[index]) {
+        chips[index].remove();
+      }
+    }
+
+    function getTagValues(rowId) {
+      const container = document.getElementById(`${rowId}_tag_container`);
+      if (!container) return [];
+      const chips = container.querySelectorAll('.tag-chip span:first-child');
+      return Array.from(chips).map(span => span.textContent.trim()).filter(v => v);
+    }
+
+    function toggleDatePicker(rowId) {
+      const calendar = document.getElementById(`${rowId}_calendar`);
+      if (calendar.classList.contains('show')) {
+        calendar.classList.remove('show');
+      } else {
+        renderDateRangePicker(rowId);
+        calendar.classList.add('show');
+      }
+    }
+
+    function toggleSingleDatePicker(rowId) {
+      const calendar = document.getElementById(`${rowId}_calendar`);
+      if (calendar.classList.contains('show')) {
+        calendar.classList.remove('show');
+      } else {
+        renderSingleDatePicker(rowId);
+        calendar.classList.add('show');
+      }
+    }
+
+    function renderDateRangePicker(rowId) {
+      const calendar = document.getElementById(`${rowId}_calendar`);
+      const today = new Date();
+      const currentMonth = today.getMonth();
+      const currentYear = today.getFullYear();
+
+      calendar.innerHTML = `
+        ${renderMonth(currentMonth, currentYear, rowId)}
+        ${renderMonth(currentMonth + 1, currentYear, rowId)}
+      `;
+    }
+
+    function renderSingleDatePicker(rowId) {
+      const calendar = document.getElementById(`${rowId}_calendar`);
+      const today = new Date();
+      calendar.innerHTML = renderMonth(today.getMonth(), today.getFullYear(), rowId, true);
+    }
+
+    function renderMonth(month, year, rowId, isSingle = false) {
+      if (month > 11) { month = 0; year++; }
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const firstDay = new Date(year, month, 1).getDay();
+      const today = new Date();
+
+      let html = `<div class="calendar-month">
+        <div class="calendar-header">
+          <button class="calendar-nav">«</button>
+          <button class="calendar-nav">‹</button>
+          <span class="calendar-title">${monthNames[month]} ${year}</span>
+          <button class="calendar-nav">›</button>
+          <button class="calendar-nav">»</button>
+        </div>
+        <div class="calendar-grid">
+          <div class="calendar-day-header">Su</div>
+          <div class="calendar-day-header">Mo</div>
+          <div class="calendar-day-header">Tu</div>
+          <div class="calendar-day-header">We</div>
+          <div class="calendar-day-header">Th</div>
+          <div class="calendar-day-header">Fr</div>
+          <div class="calendar-day-header">Sa</div>`;
+
+      // Previous month days
+      const prevMonth = month === 0 ? 11 : month - 1;
+      const prevYear = month === 0 ? year - 1 : year;
+      const daysInPrevMonth = new Date(prevYear, prevMonth + 1, 0).getDate();
+      for (let i = firstDay - 1; i >= 0; i--) {
+        html += `<div class="calendar-day other-month">${daysInPrevMonth - i}</div>`;
+      }
+
+      // Current month days
+      for (let day = 1; day <= daysInMonth; day++) {
+        const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+        const dateStr = `${String(month + 1).padStart(2, '0')}/${String(day).padStart(2, '0')}/${year}`;
+        html += `<div class="calendar-day${isToday ? ' today' : ''}" onclick="selectDate('${rowId}', '${dateStr}', ${isSingle})">${day}</div>`;
+      }
+
+      // Next month days
+      const totalCells = firstDay + daysInMonth;
+      const remainingCells = 42 - totalCells;
+      for (let day = 1; day <= remainingCells && totalCells < 42; day++) {
+        html += `<div class="calendar-day other-month">${day}</div>`;
+      }
+
+      html += '</div></div>';
+      return html;
+    }
+
+    function selectDate(rowId, dateStr, isSingle) {
+      if (isSingle) {
+        document.getElementById(`${rowId}_single_date`).value = dateStr;
+        document.getElementById(`${rowId}_calendar`).classList.remove('show');
+      } else {
+        const startInput = document.getElementById(`${rowId}_start_date`);
+        const endInput = document.getElementById(`${rowId}_end_date`);
+
+        if (!startInput.value || (startInput.value && endInput.value)) {
+          startInput.value = dateStr;
+          endInput.value = '';
+        } else {
+          endInput.value = dateStr;
+          document.getElementById(`${rowId}_calendar`).classList.remove('show');
+        }
+      }
+    }
+
+    function deleteCriteriaRow(rowId) {
+      document.getElementById(rowId)?.remove();
+    }
+
+    function removeAllCriteria() {
+      document.getElementById('criteriaContainer').innerHTML = '';
+    }
+
+
+    document.addEventListener('click', function (event) {
+      const container = document.querySelector('.filter-dropdown-container');
+      const actionMenu = document.getElementById('filterActionMenu');
+
+      // Close filter dropdown if clicking outside
+      if (container && !container.contains(event.target)) {
+        document.getElementById('filterDropdown').classList.remove('show');
+      }
+
+      // Close filter action menu if clicking outside
+      if (actionMenu && !actionMenu.contains(event.target) && !event.target.closest('.kebab-icon')) {
+        actionMenu.classList.remove('show');
+      }
+
+      // Close calendars when clicking outside
+      if (!event.target.closest('.value-container')) {
+        document.querySelectorAll('.calendar-container').forEach(cal => cal.classList.remove('show'));
+      }
+
+      // Close tag dropdowns when clicking outside
+      if (!event.target.closest('.tag-value-container') && !event.target.closest('#shareRecipientsArea')) {
+        document.querySelectorAll('.tag-dropdown').forEach(dropdown => dropdown.classList.remove('show'));
+      }
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') closeEditModal();
+    });
+
+    // Initialize UI on page load
+    refreshFilterListUI();
+
+    // Hook up toolbar eye icon to View Filter Criteria
+    const previewToolbarBtn = document.getElementById('previewToolbarBtn');
+    if (previewToolbarBtn) {
+      previewToolbarBtn.onclick = function () {
+        if (currentFilterType) {
+          handleMenuAction('viewFilterCriteria');
+        }
+      };
+    }
+  </script>
+</body>
+
+</html>

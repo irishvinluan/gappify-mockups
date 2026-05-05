@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Accruals – Notification Tray Mockup</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f0f0;
+      min-height: 100vh;
+      padding: 40px 24px;
+    }
+
+    /* ── Mockup label ── */
+    .mockup-label {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .mockup-label h1 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #666;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .mockup-label p {
+      font-size: 12px;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    /* ── Screen frame ── */
+    .screen {
+      background: #fff;
+      border-radius: 12px;
+      overflow: visible;
+      border: 1px solid #ddd;
+      max-width: 960px;
+      margin: 0 auto;
+      box-shadow: 0 2px 20px rgba(0,0,0,.08);
+    }
+
+    /* ── Top nav ── */
+    .nav {
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      border-radius: 12px 12px 0 0;
+      position: relative;
+    }
+    .nav-left { display: flex; align-items: center; gap: 10px; }
+    .nav-logo {
+      width: 26px; height: 26px;
+      background: #7C3AED;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-title { font-size: 13.5px; font-weight: 700; color: #111; }
+    .beta-pill {
+      font-size: 10px; font-weight: 700;
+      color: #7C3AED; background: #EDE9FE;
+      border-radius: 4px; padding: 2px 6px; letter-spacing: .03em;
+    }
+    .tab-group {
+      display: flex; background: #f3f3f3;
+      border-radius: 7px; padding: 3px; gap: 2px;
+    }
+    .tab {
+      font-size: 12px; padding: 4px 11px;
+      border-radius: 5px; border: none;
+      background: transparent; color: #777;
+      cursor: pointer; font-weight: 500;
+    }
+    .tab.on {
+      background: #fff; color: #111;
+      box-shadow: 0 1px 3px rgba(0,0,0,.09);
+    }
+    .period-btn {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 12px; color: #333;
+      border: 1px solid #e0e0e0; background: #fff;
+      border-radius: 7px; padding: 5px 10px; cursor: pointer;
+    }
+    .nav-right { display: flex; align-items: center; gap: 7px; }
+    .scope-btn {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 12px; color: #444;
+      border: 1px solid #e0e0e0; background: #fff;
+      border-radius: 7px; padding: 5px 10px; cursor: pointer;
+    }
+    .scope-num {
+      background: #f0f0f0; color: #333;
+      font-size: 10px; font-weight: 700;
+      padding: 1px 5px; border-radius: 4px;
+    }
+    .icon-btn {
+      width: 32px; height: 32px;
+      border: 1px solid #e0e0e0; background: #fff;
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; position: relative;
+    }
+    .icon-btn.active { border-color: #c4b5fd; background: #f5f3ff; }
+    .regen-btn {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 700; color: #fff;
+      background: #7C3AED; border: none;
+      border-radius: 7px; padding: 7px 13px; cursor: pointer;
+    }
+    .avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #C2410C; color: #fff;
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .red-dot {
+      position: absolute; top: -4px; right: -4px;
+      min-width: 16px; height: 16px;
+      padding: 0 4px;
+      background: #EF4444; border-radius: 10px;
+      border: 1.5px solid #fff;
+      font-size: 9px; font-weight: 700; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      line-height: 1;
+    }
+
+    /* ── Annotation tooltip ── */
+    .annotation {
+      position: absolute;
+      top: -38px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #111;
+      color: #fff;
+      font-size: 10.5px;
+      font-weight: 500;
+      white-space: nowrap;
+      padding: 5px 9px;
+      border-radius: 5px;
+      pointer-events: none;
+      z-index: 20;
+    }
+    .annotation::after {
+      content: '';
+      position: absolute;
+      bottom: -5px; left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-bottom: none;
+      border-top-color: #111;
+    }
+
+    /* ── Tray wrapper (anchored under bell) ── */
+    .bell-wrap { position: relative; }
+    .tray {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 372px;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      box-shadow: 0 6px 24px rgba(0,0,0,.10);
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    /* ── Tray internals ── */
+    .t-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 13px 16px 11px;
+    }
+    .t-title {
+      font-size: 13.5px; font-weight: 700; color: #111;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .t-badge {
+      background: #EF4444; color: #fff;
+      font-size: 10px; font-weight: 700;
+      padding: 2px 6px; border-radius: 20px;
+    }
+    .t-actions { display: flex; gap: 12px; }
+    .t-link {
+      font-size: 11.5px; background: none;
+      border: none; cursor: pointer; padding: 0;
+    }
+    .t-link.purple { color: #7C3AED; font-weight: 500; }
+    .t-link.gray { color: #999; }
+
+    .t-tabs {
+      display: flex;
+      border-top: 1px solid #f0f0f0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .t-tab {
+      flex: 1; padding: 8px 0;
+      font-size: 11.5px; text-align: center;
+      border: none; background: transparent;
+      color: #999; cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px; font-weight: 500;
+    }
+    .t-tab.on { color: #7C3AED; border-bottom-color: #7C3AED; font-weight: 700; }
+    .t-tab-count {
+      background: #EDE9FE; color: #6D28D9;
+      font-size: 10px; padding: 1px 5px;
+      border-radius: 10px; margin-left: 4px;
+    }
+
+    .day-label {
+      padding: 8px 16px 3px;
+      font-size: 10px; font-weight: 700;
+      color: #aaa; letter-spacing: .07em;
+      text-transform: uppercase;
+      background: #fafafa;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .notif {
+      display: flex; align-items: flex-start;
+      gap: 10px; padding: 11px 14px 11px 16px;
+      border-bottom: 1px solid #f5f5f5;
+      cursor: pointer; transition: background .1s;
+    }
+    .notif:hover { background: #fafafa; }
+    .notif.unread { background: #fdfcff; }
+    .notif.unread:hover { background: #f5f2ff; }
+    .notif:last-of-type { border-bottom: none; }
+
+    .n-icon {
+      width: 30px; height: 30px;
+      border-radius: 8px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 1px;
+    }
+    .ic-reject  { background: #FEF2F2; }
+    .ic-warn    { background: #FFFBEB; }
+    .ic-ai      { background: #EDE9FE; }
+    .ic-ok      { background: #F0FDF4; }
+    .ic-info    { background: #EFF6FF; }
+    .ic-export  { background: #F0FDF4; }
+
+    .n-download {
+      display: inline-flex; align-items: center; gap: 4px;
+      margin-top: 5px;
+      font-size: 11.5px; font-weight: 600; color: #16A34A;
+      background: #F0FDF4; border: 1px solid #bbf7d0;
+      border-radius: 5px; padding: 3px 8px;
+      cursor: pointer; text-decoration: none;
+    }
+    .n-download:hover { background: #dcfce7; }
+
+    .n-body { flex: 1; min-width: 0; }
+    .n-top {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 8px;
+    }
+    .n-text { font-size: 12.5px; color: #222; line-height: 1.45; flex: 1; }
+    .n-text b { font-weight: 600; }
+    .n-time { font-size: 11px; color: #bbb; flex-shrink: 0; white-space: nowrap; margin-top: 1px; }
+    .n-sub { font-size: 11.5px; color: #999; margin-top: 3px; }
+    .n-dot {
+      width: 7px; height: 7px;
+      background: #7C3AED; border-radius: 50%;
+      flex-shrink: 0; margin-top: 5px;
+    }
+
+    .t-footer {
+      padding: 10px 0; text-align: center;
+      border-top: 1px solid #f0f0f0;
+    }
+    .t-footer button {
+      font-size: 12px; font-weight: 600;
+      color: #7C3AED; background: none;
+      border: none; cursor: pointer;
+    }
+
+    /* ── Page body placeholder ── */
+    .page-body {
+      padding: 20px 18px;
+      background: #fff;
+      border-radius: 0 0 12px 12px;
+    }
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat-card {
+      border: 1px solid #ebebeb;
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .stat-label { font-size: 10.5px; font-weight: 600; color: #aaa; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 5px; }
+    .stat-val { font-size: 20px; font-weight: 700; color: #111; }
+    .stat-unit { font-size: 11px; color: #aaa; margin-left: 3px; font-weight: 400; }
+    .stat-sub { font-size: 11px; color: #aaa; margin-top: 3px; }
+    .conf-row { display: flex; gap: 10px; margin-top: 4px; }
+    .conf-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 3px; }
+    .conf-item { font-size: 11px; color: #555; display: flex; align-items: center; }
+    .progress-wrap { margin-top: 5px; height: 4px; background: #f0f0f0; border-radius: 2px; overflow: hidden; }
+    .progress-bar { height: 100%; background: #7C3AED; border-radius: 2px; width: 13%; }
+
+    .filter-bar {
+      display: flex; gap: 8px; align-items: center;
+      padding: 10px 0; border-top: 1px solid #f0f0f0;
+      border-bottom: 1px solid #f0f0f0; margin-bottom: 12px;
+    }
+    .filter-btn {
+      font-size: 12px; color: #555;
+      border: 1px solid #e0e0e0; background: #fff;
+      border-radius: 7px; padding: 5px 10px; cursor: pointer;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .table-row {
+      display: flex; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid #f5f5f5;
+      gap: 12px; font-size: 12.5px; color: #333;
+    }
+    .table-header {
+      display: flex; align-items: center;
+      padding: 6px 0; border-bottom: 1px solid #e8e8e8;
+      gap: 12px; font-size: 10.5px; font-weight: 700;
+      color: #aaa; letter-spacing: .04em; text-transform: uppercase;
+    }
+    .col-vendor { flex: 2; }
+    .col-sub    { flex: 1.2; }
+    .col-accrual{ flex: 1.2; text-align: right; }
+    .col-desc   { flex: 2.5; }
+    .col-po     { flex: 1.2; }
+    .col-status { flex: .8; }
+    .col-action { flex: 1; text-align: right; }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 500; padding: 3px 8px;
+      border-radius: 20px;
+    }
+    .pill-pending { background: #f3f3f3; color: #666; }
+    .pill-reviewed { background: #EDE9FE; color: #6D28D9; }
+    .action-review {
+      font-size: 11.5px; font-weight: 600; color: #fff;
+      background: #7C3AED; border: none;
+      border-radius: 6px; padding: 5px 10px; cursor: pointer;
+    }
+    .action-submit {
+      font-size: 11.5px; font-weight: 600; color: #fff;
+      background: #16A34A; border: none;
+      border-radius: 6px; padding: 5px 10px; cursor: pointer;
+    }
+    .action-reject {
+      font-size: 11.5px; font-weight: 600; color: #fff;
+      background: #DC2626; border: none;
+      border-radius: 6px; padding: 5px 9px; cursor: pointer;
+    }
+    .coa-tags { display: flex; flex-wrap: wrap; gap: 3px; }
+    .coa-tag {
+      font-size: 10px; padding: 2px 5px;
+      background: #f3f3f3; border-radius: 4px; color: #555;
+    }
+    .vendor-name { font-weight: 600; font-size: 13px; color: #111; }
+    .amount { font-size: 13px; font-weight: 600; color: #111; }
+    .amount span { font-size: 10.5px; color: #aaa; font-weight: 400; margin-left: 2px; }
+  </style>
+</head>
+<body>
+
+  <div class="mockup-label">
+    <h1>AI Accruals — Notification Tray</h1>
+    <p>Epic mockup · May 2026 · For developer handoff</p>
+  </div>
+
+  <div class="screen">
+
+    <!-- ── Nav bar ── -->
+    <div class="nav">
+
+      <div class="nav-left">
+        <div class="nav-logo">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M7 1.5L12.5 5v4L7 12.5 1.5 9V5z" fill="white" opacity=".95"/>
+          </svg>
+        </div>
+        <span class="nav-title">AI Accruals</span>
+        <span class="beta-pill">BETA</span>
+
+        <div class="tab-group">
+          <button class="tab on">Analysis View</button>
+          <button class="tab">JE View</button>
+        </div>
+
+        <button class="period-btn">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <rect x="1" y="2" width="10" height="9" rx="1.5" stroke="#555" stroke-width="1"/>
+            <path d="M4 1v2M8 1v2M1 5h10" stroke="#555" stroke-width="1" stroke-linecap="round"/>
+          </svg>
+          Apr 2026
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M3 4l2 2 2-2" stroke="#888" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="nav-right">
+
+        <button class="scope-btn">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <circle cx="6" cy="4" r="2.5" stroke="#666" stroke-width="1"/>
+            <path d="M1.5 10.5C1.5 8.5 3.5 7 6 7s4.5 1.5 4.5 3.5" stroke="#666" stroke-width="1" stroke-linecap="round"/>
+          </svg>
+          Vendor Scope <span class="scope-num">13</span>
+        </button>
+
+        <!-- Bell icon with annotation + tray -->
+        <div class="bell-wrap">
+          <div class="annotation">Bell icon — red dot = unread notifications</div>
+          <button class="icon-btn active" id="bell-btn" onclick="toggleTray()">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+              <path d="M7.5 1.5a5 5 0 0 1 5 5v3.5l1 1.5h-12l1-1.5V6.5a5 5 0 0 1 5-5z" stroke="#7C3AED" stroke-width="1.1" stroke-linejoin="round"/>
+              <path d="M6 12.5a1.5 1.5 0 0 0 3 0" stroke="#7C3AED" stroke-width="1.1"/>
+            </svg>
+            <span class="red-dot" id="red-dot">4</span>
+          </button>
+
+          <!-- Notification tray -->
+          <div class="tray" id="tray" style="display:none;">
+
+            <div class="t-header">
+              <span class="t-title">
+                Notifications
+                <span class="t-badge" id="badge">4</span>
+              </span>
+              <div class="t-actions">
+                <button class="t-link purple" onclick="markAllRead()">Mark all as read</button>
+              </div>
+            </div>
+
+            <div class="t-tabs">
+              <button class="t-tab on" onclick="switchTab('all', this)">All</button>
+              <button class="t-tab" onclick="switchTab('unread', this)">Unread <span class="t-tab-count">4</span></button>
+            </div>
+
+            <div class="day-label">Today</div>
+
+            <!-- Export ready -->
+            <div class="notif unread" onclick="markRead(this)">
+              <div class="n-icon ic-export">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M7 2v7M4 6.5l3 3 3-3" stroke="#16A34A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M2.5 10.5v.5a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1v-.5" stroke="#16A34A" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="n-body">
+                <div class="n-top">
+                  <span class="n-text"><b>JE View export is ready</b></span>
+                  <span class="n-time">Just now</span>
+                </div>
+                <div class="n-sub">Apr 2026 · 13 lines</div>
+                <a class="n-download" href="#" onclick="event.stopPropagation(); markRead(this.closest('.notif'))">
+                  <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                    <path d="M5.5 1.5v5M3 4.5l2.5 2.5L8 4.5" stroke="#16A34A" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M1.5 8.5v.5a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-.5" stroke="#16A34A" stroke-width="1.1" stroke-linecap="round"/>
+                  </svg>
+                  Download file
+                </a>
+              </div>
+              <div class="n-dot"></div>
+            </div>
+
+            <!-- Source Data - Vendor export ready -->
+            <div class="notif unread" onclick="markRead(this)">
+              <div class="n-icon ic-export">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M7 2v7M4 6.5l3 3 3-3" stroke="#16A34A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M2.5 10.5v.5a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1v-.5" stroke="#16A34A" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="n-body">
+                <div class="n-top">
+                  <span class="n-text"><b>Source Data – Vendor export is ready</b></span>
+                  <span class="n-time">30m ago</span>
+                </div>
+                <div class="n-sub">Apr 2026 · 13 vendors</div>
+                <a class="n-download" href="#" onclick="event.stopPropagation(); markRead(this.closest('.notif'))">
+                  <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                    <path d="M5.5 1.5v5M3 4.5l2.5 2.5L8 4.5" stroke="#16A34A" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M1.5 8.5v.5a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-.5" stroke="#16A34A" stroke-width="1.1" stroke-linecap="round"/>
+                  </svg>
+                  Download file
+                </a>
+              </div>
+              <div class="n-dot"></div>
+            </div>
+
+            <!-- Export failed -->
+            <div class="notif unread" onclick="markRead(this)">
+              <div class="n-icon ic-reject">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <circle cx="7" cy="7" r="5" stroke="#DC2626" stroke-width="1.2"/>
+                  <path d="M5 5l4 4M9 5l-4 4" stroke="#DC2626" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="n-body">
+                <div class="n-top">
+                  <span class="n-text"><b>Analysis View export failed</b></span>
+                  <span class="n-time">1h ago</span>
+                </div>
+                <div class="n-sub">Mar 2026 · Something went wrong. Try exporting again.</div>
+              </div>
+              <div class="n-dot"></div>
+            </div>
+
+            <!-- Export ready -->
+            <div class="notif unread" onclick="markRead(this)">
+              <div class="n-icon ic-export">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M7 2v7M4 6.5l3 3 3-3" stroke="#16A34A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M2.5 10.5v.5a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1v-.5" stroke="#16A34A" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="n-body">
+                <div class="n-top">
+                  <span class="n-text"><b>Analysis View export is ready</b></span>
+                  <span class="n-time">3h ago</span>
+                </div>
+                <div class="n-sub">Apr 2026 · 13 lines</div>
+                <a class="n-download" href="#" onclick="event.stopPropagation(); markRead(this.closest('.notif'))">
+                  <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                    <path d="M5.5 1.5v5M3 4.5l2.5 2.5L8 4.5" stroke="#16A34A" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M1.5 8.5v.5a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-.5" stroke="#16A34A" stroke-width="1.1" stroke-linecap="round"/>
+                  </svg>
+                  Download file
+                </a>
+              </div>
+              <div class="n-dot"></div>
+            </div>
+
+            <div class="day-label">Yesterday</div>
+
+            <!-- Export ready (read) -->
+            <div class="notif" onclick="markRead(this)">
+              <div class="n-icon ic-export">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M7 2v7M4 6.5l3 3 3-3" stroke="#16A34A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M2.5 10.5v.5a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1v-.5" stroke="#16A34A" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="n-body">
+                <div class="n-top">
+                  <span class="n-text"><b>JE View export is ready</b></span>
+                  <span class="n-time">Yesterday</span>
+                </div>
+                <div class="n-sub">Mar 2026 · 11 lines</div>
+                <a class="n-download" href="#" onclick="event.stopPropagation(); markRead(this.closest('.notif'))">
+                  <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                    <path d="M5.5 1.5v5M3 4.5l2.5 2.5L8 4.5" stroke="#16A34A" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M1.5 8.5v.5a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-.5" stroke="#16A34A" stroke-width="1.1" stroke-linecap="round"/>
+                  </svg>
+                  Download file
+                </a>
+              </div>
+            </div>
+
+            <!-- Export ready (read) -->
+            <div class="notif" onclick="markRead(this)">
+              <div class="n-icon ic-export">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M7 2v7M4 6.5l3 3 3-3" stroke="#16A34A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M2.5 10.5v.5a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1v-.5" stroke="#16A34A" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="n-body">
+                <div class="n-top">
+                  <span class="n-text"><b>Analysis View export is ready</b></span>
+                  <span class="n-time">Yesterday</span>
+                </div>
+                <div class="n-sub">Mar 2026 · 11 lines</div>
+                <a class="n-download" href="#" onclick="event.stopPropagation(); markRead(this.closest('.notif'))">
+                  <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                    <path d="M5.5 1.5v5M3 4.5l2.5 2.5L8 4.5" stroke="#16A34A" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M1.5 8.5v.5a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-.5" stroke="#16A34A" stroke-width="1.1" stroke-linecap="round"/>
+                  </svg>
+                  Download file
+                </a>
+              </div>
+            </div>
+
+            <div id="empty-unread" style="display:none; padding: 32px 16px; text-align:center;">
+              <div style="font-size:12.5px; color:#aaa;">You're all caught up!</div>
+            </div>
+
+
+          </div>
+        </div>
+
+        <button class="regen-btn">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M10.5 6A4.5 4.5 0 1 1 6 1.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M6 1.5h3V4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Regenerate AI Accruals
+        </button>
+
+        <button class="icon-btn">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <circle cx="7" cy="7" r="2" fill="#888"/>
+            <circle cx="2" cy="7" r="2" fill="#888"/>
+            <circle cx="12" cy="7" r="2" fill="#888"/>
+          </svg>
+        </button>
+
+        <div class="avatar">GS</div>
+      </div>
+    </div>
+
+    <!-- ── Page body (dimmed to focus on tray) ── -->
+    <div class="page-body">
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-label">GL Booked</div>
+          <div class="stat-val">$96,250<span class="stat-unit">USD</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Reviewed</div>
+          <div class="stat-val">$237,984<span class="stat-unit">USD</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Posted</div>
+          <div class="stat-val">$0<span class="stat-unit">USD</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Vendors</div>
+          <div class="stat-val" style="color:#7C3AED;">13</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">AI Confidence</div>
+          <div class="conf-row">
+            <span class="conf-item"><span class="conf-dot" style="background:#16A34A;"></span>High 9</span>
+            <span class="conf-item"><span class="conf-dot" style="background:#D97706;"></span>Med 0</span>
+            <span class="conf-item"><span class="conf-dot" style="background:#DC2626;"></span>Low 1</span>
+          </div>
+          <div style="font-size:11px;color:#aaa;margin-top:4px;">Review Progress — 13%</div>
+          <div class="progress-wrap"><div class="progress-bar"></div></div>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <button class="filter-btn">Saved filters ▾</button>
+        <button class="filter-btn">All Vendors ▾</button>
+        <button class="filter-btn">All Subsidiaries ▾</button>
+        <button class="filter-btn">All Departments ▾</button>
+        <button class="filter-btn">Status ▾</button>
+        <button class="filter-btn">+ More filters</button>
+        <button class="filter-btn" style="margin-left:auto;">Group by: None ▾</button>
+      </div>
+
+      <div class="table-header">
+        <div style="width:20px;"></div>
+        <div class="col-vendor">Vendor</div>
+        <div class="col-sub">Subsidiary</div>
+        <div class="col-sub">COA</div>
+        <div class="col-accrual">Adjusted accrual</div>
+        <div class="col-desc">Description</div>
+        <div class="col-po">PO number</div>
+        <div class="col-status">Status</div>
+        <div class="col-action">Action</div>
+      </div>
+
+      <div class="table-row">
+        <input type="checkbox" style="width:14px;height:14px;accent-color:#7C3AED;"/>
+        <div class="col-vendor"><div class="vendor-name">Accenture Federal Services</div></div>
+        <div class="col-sub" style="font-size:12px;color:#555;">Honeycomb US</div>
+        <div class="col-sub"><div class="coa-tags"><span class="coa-tag">6110C</span><span class="coa-tag">Opera</span><span class="coa-tag">Profe</span></div></div>
+        <div class="col-accrual"><span class="amount">185,000<span>USD</span></span></div>
+        <div class="col-desc" style="font-size:12px;color:#444;">Confirmed unbilled services — Digital Transformation Phase 3 (Apr 2026)</div>
+        <div class="col-po" style="font-size:12px;color:#555;">PO-ACN-2026</div>
+        <div class="col-status"><span class="status-pill pill-reviewed">● Reviewed</span></div>
+        <div class="col-action" style="display:flex;gap:5px;justify-content:flex-end;">
+          <button class="action-submit">✓ Submit</button>
+          <button class="action-reject">✕ Reject</button>
+        </div>
+      </div>
+
+      <div class="table-row">
+        <input type="checkbox" style="width:14px;height:14px;accent-color:#7C3AED;"/>
+        <div class="col-vendor"><div class="vendor-name">Amazon Web Services Inc.</div></div>
+        <div class="col-sub" style="font-size:12px;color:#555;">Honeycomb US</div>
+        <div class="col-sub"><div class="coa-tags"><span class="coa-tag">6180I</span><span class="coa-tag">Engin</span><span class="coa-tag">Infra</span></div></div>
+        <div class="col-accrual"><span class="amount">110,245<span>USD</span></span></div>
+        <div class="col-desc" style="font-size:12px;color:#444;">EC2 Reserved Instances &amp; On-Demand Compute</div>
+        <div class="col-po" style="font-size:12px;color:#555;">PO-AWS-COMP</div>
+        <div class="col-status"><span class="status-pill pill-pending">● Pending</span></div>
+        <div class="col-action" style="display:flex;gap:5px;justify-content:flex-end;">
+          <button class="action-review">👁 Review</button>
+        </div>
+      </div>
+
+      <div class="table-row">
+        <input type="checkbox" style="width:14px;height:14px;accent-color:#7C3AED;"/>
+        <div class="col-vendor"><div class="vendor-name">Deloitte Consulting LLP</div></div>
+        <div class="col-sub" style="font-size:12px;color:#555;">Honeycomb US</div>
+        <div class="col-sub"><div class="coa-tags"><span class="coa-tag">6110C</span><span class="coa-tag">Finan</span><span class="coa-tag">Advis</span></div></div>
+        <div class="col-accrual"><span class="amount">110,000<span>USD</span></span></div>
+        <div class="col-desc" style="font-size:12px;color:#444;">Deloitte Finance Transformation — April milestone</div>
+        <div class="col-po" style="font-size:12px;color:#555;">PO-DEL-FIN</div>
+        <div class="col-status"><span class="status-pill pill-pending">● Pending</span></div>
+        <div class="col-action" style="display:flex;gap:5px;justify-content:flex-end;">
+          <button class="action-review">👁 Review</button>
+        </div>
+      </div>
+
+      <div class="table-row">
+        <input type="checkbox" style="width:14px;height:14px;accent-color:#7C3AED;"/>
+        <div class="col-vendor"><div class="vendor-name">Kirkland &amp; Ellis LLP</div></div>
+        <div class="col-sub" style="font-size:12px;color:#555;">Honeycomb US</div>
+        <div class="col-sub"><div class="coa-tags"><span class="coa-tag">6160L</span><span class="coa-tag">Legal</span><span class="coa-tag">Profe</span></div></div>
+        <div class="col-accrual"><span class="amount">21,177<span>USD</span></span></div>
+        <div class="col-desc" style="font-size:12px;color:#444;">Legal &amp; Compliance Fees</div>
+        <div class="col-po" style="font-size:12px;color:#555;">PO-KE-2026</div>
+        <div class="col-status"><span class="status-pill pill-pending">● Pending</span></div>
+        <div class="col-action" style="display:flex;gap:5px;justify-content:flex-end;">
+          <button class="action-review">👁 Review</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let unreadCount = 4;
+    let currentTab = 'all';
+
+    function toggleTray() {
+      const tray = document.getElementById('tray');
+      tray.style.display = tray.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function switchTab(tab, el) {
+      currentTab = tab;
+      document.querySelectorAll('.t-tab').forEach(t => t.classList.remove('on'));
+      el.classList.add('on');
+      refreshTabView();
+    }
+
+    function refreshTabView() {
+      document.querySelectorAll('.notif').forEach(n => {
+        n.style.display = (currentTab === 'unread' && !n.classList.contains('unread')) ? 'none' : '';
+      });
+
+      document.querySelectorAll('.day-label').forEach(label => {
+        let next = label.nextElementSibling;
+        let hasVisible = false;
+        while (next && !next.classList.contains('day-label') && next.id !== 'empty-unread') {
+          if (next.classList.contains('notif') && next.style.display !== 'none') {
+            hasVisible = true;
+            break;
+          }
+          next = next.nextElementSibling;
+        }
+        label.style.display = hasVisible ? '' : 'none';
+      });
+
+      document.getElementById('empty-unread').style.display =
+        (currentTab === 'unread' && unreadCount === 0) ? '' : 'none';
+    }
+
+    function markRead(el) {
+      if (!el.classList.contains('unread')) return;
+      el.classList.remove('unread');
+      const dot = el.querySelector('.n-dot');
+      if (dot) dot.remove();
+      unreadCount = Math.max(0, unreadCount - 1);
+      updateBadge();
+      refreshTabView();
+    }
+
+    function markAllRead() {
+      document.querySelectorAll('.notif.unread').forEach(el => {
+        el.classList.remove('unread');
+        const dot = el.querySelector('.n-dot');
+        if (dot) dot.remove();
+      });
+      unreadCount = 0;
+      updateBadge();
+      refreshTabView();
+    }
+
+    function updateBadge() {
+      const badge = document.getElementById('badge');
+      const dot = document.getElementById('red-dot');
+      const tabCount = document.querySelector('.t-tab-count');
+      if (unreadCount === 0) {
+        badge.style.display = 'none';
+        dot.style.display = 'none';
+        if (tabCount) tabCount.style.display = 'none';
+      } else {
+        badge.textContent = unreadCount;
+        badge.style.display = '';
+        dot.textContent = unreadCount;
+        if (tabCount) tabCount.textContent = unreadCount;
+      }
+    }
+
+    document.addEventListener('click', function(e) {
+      const tray = document.getElementById('tray');
+      const bellWrap = document.querySelector('.bell-wrap');
+      if (!bellWrap.contains(e.target)) {
+        tray.style.display = 'none';
+      }
+    });
+  </script>
+
+</body>
+</html>

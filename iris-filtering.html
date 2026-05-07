@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Accruals — More Filters Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --purple: #534AB7;
+    --purple-light: #EEEDFE;
+    --purple-mid: #7F77DD;
+    --teal: #1D9E75;
+    --teal-light: #E1F5EE;
+    --amber: #EF9F27;
+    --red: #D85A30;
+    --red-light: #FAECE7;
+    --gray-bg: #F8F8F7;
+    --gray-border: #E4E3DC;
+    --gray-text: #888780;
+    --text-primary: #1C1C1A;
+    --text-secondary: #5F5E5A;
+    --white: #FFFFFF;
+    --font: 'DM Sans', sans-serif;
+  }
+
+  body {
+    font-family: var(--font);
+    background: #F0EFE8;
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 24px;
+  }
+
+  .page {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--gray-border);
+    overflow: visible;
+    max-width: 1300px;
+    margin: 0 auto;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  }
+
+  /* TOP NAV */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--gray-border);
+  }
+  .back-btn {
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px; border: 1px solid var(--gray-border);
+    color: var(--text-secondary); cursor: pointer;
+    background: transparent;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 600; color: var(--text-primary);
+  }
+  .brand i { color: var(--purple); font-size: 16px; }
+  .badge {
+    background: #E6F1FB; color: #185FA5;
+    font-size: 10px; padding: 2px 7px;
+    border-radius: 4px; font-weight: 600; letter-spacing: 0.04em;
+  }
+  .view-tabs {
+    display: flex;
+    border: 1px solid var(--gray-border);
+    border-radius: 7px;
+    overflow: hidden;
+    margin-left: 6px;
+  }
+  .view-tab {
+    padding: 5px 14px;
+    font-size: 12px; font-family: var(--font);
+    color: var(--text-secondary);
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    transition: background 0.15s;
+  }
+  .view-tab:hover { background: var(--gray-bg); }
+  .view-tab.active {
+    background: var(--gray-bg);
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+  .period-btn {
+    display: flex; align-items: center; gap: 5px;
+    padding: 5px 10px;
+    border: 1px solid var(--gray-border);
+    border-radius: 7px;
+    font-size: 12px; font-family: var(--font);
+    color: var(--text-secondary);
+    cursor: pointer;
+    background: var(--white);
+  }
+  .spacer { flex: 1; }
+  .icon-btn {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 7px; border: 1px solid var(--gray-border);
+    color: var(--text-secondary); cursor: pointer;
+    background: transparent; font-size: 16px;
+  }
+  .regen-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 16px;
+    background: var(--purple);
+    color: white;
+    border-radius: 8px;
+    font-size: 12px; font-weight: 600; font-family: var(--font);
+    cursor: pointer; border: none;
+    transition: background 0.15s;
+  }
+  .regen-btn:hover { background: #4540A0; }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--gray-border);
+    gap: 0;
+  }
+  .stat {
+    flex: 1;
+    padding: 0 20px;
+    border-right: 1px solid var(--gray-border);
+  }
+  .stat:first-child { padding-left: 0; }
+  .stat:last-child { border-right: none; }
+  .stat-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 4px;
+    margin-bottom: 5px;
+  }
+  .stat-value {
+    font-size: 18px; font-weight: 600;
+    color: var(--text-primary);
+    display: flex; align-items: baseline; gap: 4px;
+  }
+  .stat-unit { font-size: 11px; font-weight: 400; color: var(--text-secondary); }
+  .confidence-dots { display: flex; gap: 10px; margin-top: 4px; font-size: 11px; }
+  .dot-green { color: var(--teal); }
+  .dot-amber { color: var(--amber); }
+  .dot-red { color: #E24B4A; }
+  .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .progress-pct { font-size: 13px; font-weight: 600; }
+  .progress-bar-wrap { height: 4px; background: var(--gray-bg); border-radius: 2px; margin-bottom: 5px; }
+  .progress-bar-fill { width: 13%; height: 100%; background: var(--purple); border-radius: 2px; }
+  .progress-legend { font-size: 10px; color: var(--text-secondary); display: flex; gap: 8px; }
+
+  /* FILTER BAR */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 20px;
+    border-bottom: 1px solid var(--gray-border);
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .clear-all-btn {
+    font-size: 12px; font-weight: 500;
+    color: var(--text-secondary); cursor: pointer;
+    background: none; border: none; font-family: var(--font);
+    white-space: nowrap;
+  }
+  .clear-all-btn:hover { color: var(--text-primary); }
+  .filter-chip {
+    display: flex; align-items: center; gap: 4px;
+    padding: 5px 10px;
+    border: 1px solid var(--gray-border);
+    border-radius: 7px;
+    font-size: 12px; font-family: var(--font);
+    color: var(--text-secondary);
+    cursor: pointer;
+    background: var(--white);
+    white-space: nowrap;
+    transition: background 0.12s, border-color 0.12s;
+  }
+  .filter-chip:hover { background: var(--gray-bg); border-color: #CCC; }
+
+  /* SAVED FILTERS DROPDOWN */
+  .saved-filters-wrap { position: relative; }
+  .saved-filters-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    border-radius: 10px;
+    width: 280px;
+    z-index: 999;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+    overflow: hidden;
+  }
+  .saved-filters-dropdown.open { display: block; }
+  .saved-filter-section-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--gray-text);
+    padding: 10px 14px 4px;
+  }
+  .saved-filter-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 14px;
+    font-size: 13px; font-family: var(--font);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .saved-filter-item:hover { background: var(--gray-bg); }
+  .saved-filter-item > i { font-size: 14px; color: var(--text-secondary); flex-shrink: 0; }
+  .saved-filter-meta { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+  .saved-filter-name { font-size: 13px; color: var(--text-primary); }
+  .saved-filter-by { font-size: 11px; color: var(--gray-text); }
+  .saved-filter-actions { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+  .saved-filter-edit-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; border-radius: 5px; flex-shrink: 0;
+    color: var(--text-secondary); font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.1s, background 0.1s;
+  }
+  .saved-filter-item:hover .saved-filter-edit-btn { opacity: 1; }
+  .saved-filter-edit-btn:hover { background: var(--gray-border); color: var(--text-primary); }
+  .saved-filter-star {
+    display: flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; border-radius: 5px; flex-shrink: 0;
+    font-size: 14px; color: var(--text-secondary);
+    opacity: 0; transition: opacity 0.1s, background 0.1s, color 0.1s;
+    cursor: pointer;
+  }
+  .saved-filter-item:hover .saved-filter-star { opacity: 1; }
+  .saved-filter-star:hover { background: #fef3c7; color: #d97706; }
+  .saved-filter-star.is-default { opacity: 1; color: #f59e0b; }
+  .saved-filter-star.is-default:hover { background: #fef3c7; color: #d97706; }
+  .default-badge {
+    font-size: 10px; font-weight: 600; color: #92400e;
+    background: #fef3c7; border: 1px solid #fde68a;
+    border-radius: 4px; padding: 1px 5px; margin-left: 4px;
+    flex-shrink: 0;
+  }
+  .saved-filters-empty {
+    padding: 8px 14px 12px;
+    font-size: 12px; color: var(--gray-text); font-style: italic;
+  }
+  .saved-filters-divider { height: 1px; background: var(--gray-border); margin: 4px 0; }
+
+  /* VIEW-ONLY MODAL */
+  .view-modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(28,28,26,0.45);
+    z-index: 2000;
+    align-items: center; justify-content: center;
+  }
+  .view-modal-overlay.open { display: flex; }
+  .view-modal {
+    background: var(--white);
+    border-radius: 12px;
+    width: 500px; max-width: 95vw;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.18);
+    overflow: hidden;
+  }
+  .condition-readonly {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+    margin-bottom: 8px;
+  }
+  .condition-readonly-cell {
+    padding: 8px 10px;
+    border: 1px solid var(--gray-border); border-radius: 7px;
+    font-size: 13px; font-family: var(--font); color: var(--text-secondary);
+    background: var(--gray-bg);
+  }
+
+  .more-filters-wrap { position: relative; }
+  .more-btn {
+    display: flex; align-items: center; gap: 5px;
+    padding: 5px 12px;
+    border: 1px solid var(--gray-border);
+    border-radius: 7px;
+    font-size: 12px; font-weight: 400; font-family: var(--font);
+    color: var(--text-secondary);
+    cursor: pointer;
+    background: var(--white);
+    white-space: nowrap;
+    transition: background 0.12s;
+  }
+  .more-btn:hover { background: var(--gray-bg); }
+
+  /* DROPDOWN */
+  .dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    border-radius: 10px;
+    width: 240px;
+    z-index: 999;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+    overflow: hidden;
+  }
+  .dropdown.open { display: block; }
+  .dropdown-scroll {
+    max-height: 220px;
+    overflow-y: auto;
+  }
+
+  .search-box {
+    display: flex; align-items: center; gap: 7px;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--gray-border);
+  }
+  .search-box i { color: var(--text-secondary); font-size: 14px; }
+  .search-box input {
+    border: none; background: transparent;
+    font-size: 12px; font-family: var(--font);
+    color: var(--text-primary); outline: none; flex: 1;
+  }
+  .search-box input::placeholder { color: var(--gray-text); }
+
+  .dropdown-section-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--gray-text);
+    padding: 8px 12px 4px;
+  }
+  .dropdown-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px;
+    font-size: 12px; font-family: var(--font);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .dropdown-item:hover { background: var(--gray-bg); }
+
+  .dropdown-divider { height: 1px; background: var(--gray-border); margin: 6px 0; }
+
+  .dropdown-item.custom {
+    color: var(--purple);
+    font-weight: 600;
+    gap: 8px;
+  }
+  .dropdown-item.custom:hover { background: var(--purple-light); }
+  .dropdown-item.custom i { font-size: 15px; color: var(--purple); }
+
+  .filter-divider {
+    width: 1px; height: 20px;
+    background: var(--gray-border);
+    flex-shrink: 0; margin: 0 2px;
+  }
+  .filter-actions {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .group-by-chip {
+    display: flex; align-items: center; gap: 4px;
+    padding: 5px 10px;
+    border: 1px solid var(--gray-border);
+    border-radius: 7px;
+    font-size: 12px; font-family: var(--font);
+    color: var(--text-secondary);
+    cursor: pointer; background: var(--white);
+    white-space: nowrap;
+  }
+  .search-vendor {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 10px;
+    border: 1px solid var(--gray-border);
+    border-radius: 7px;
+    font-size: 12px;
+    color: var(--gray-text);
+    background: var(--white);
+    white-space: nowrap;
+  }
+  .save-filter-btn {
+    font-size: 12px; font-weight: 600;
+    color: var(--purple); cursor: pointer;
+    white-space: nowrap;
+    background: none; border: none; font-family: var(--font);
+  }
+  .add-line-btn {
+    display: flex; align-items: center; gap: 4px;
+    padding: 5px 10px;
+    border: 1px solid var(--gray-border);
+    border-radius: 7px;
+    font-size: 12px; font-family: var(--font);
+    color: var(--text-primary);
+    cursor: pointer; background: var(--white);
+    white-space: nowrap;
+  }
+  .col-toggle {
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--gray-border); border-radius: 7px;
+    color: var(--text-secondary); cursor: pointer; background: var(--white);
+    font-size: 16px;
+  }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead th {
+    padding: 8px 12px;
+    text-align: left;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--gray-border);
+    white-space: nowrap;
+    background: var(--gray-bg);
+  }
+  tbody td {
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--gray-border);
+    color: var(--text-primary);
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: #FAFAF8; }
+
+  .vendor-name { font-weight: 500; }
+  .tag {
+    display: inline-flex; padding: 2px 6px;
+    border-radius: 4px; font-size: 10px; font-weight: 600;
+    margin-right: 2px;
+  }
+  .tag-blue { background: #E6F1FB; color: #185FA5; }
+  .tag-green { background: var(--teal-light); color: #0F6E56; }
+  .tag-gray { background: #F1EFE8; color: #5F5E5A; }
+
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px; border-radius: 20px;
+    font-size: 11px; font-weight: 500;
+  }
+  .status-reviewed { background: var(--purple-light); color: var(--purple); }
+  .status-pending { background: #F1EFE8; color: #5F5E5A; }
+
+  .actions { display: flex; gap: 5px; align-items: center; }
+  .btn-submit {
+    background: var(--teal); color: white;
+    border: none; padding: 4px 10px;
+    border-radius: 6px; font-size: 11px; font-weight: 600; font-family: var(--font);
+    cursor: pointer;
+  }
+  .btn-reject {
+    background: white; color: var(--red);
+    border: 1px solid var(--red);
+    padding: 4px 10px; border-radius: 6px;
+    font-size: 11px; font-weight: 600; font-family: var(--font);
+    cursor: pointer;
+  }
+  .btn-review {
+    background: var(--purple); color: white;
+    border: none; padding: 4px 10px;
+    border-radius: 6px; font-size: 11px; font-weight: 600; font-family: var(--font);
+    cursor: pointer; display: flex; align-items: center; gap: 4px;
+  }
+  .action-icon {
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--gray-border); border-radius: 6px;
+    color: var(--text-secondary); cursor: pointer; font-size: 14px;
+    background: white;
+  }
+
+  /* CUSTOM FILTER MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(28,28,26,0.45);
+    z-index: 2000;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--white);
+    border-radius: 12px;
+    width: 500px;
+    max-width: 95vw;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.18);
+    overflow: hidden;
+  }
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--gray-border);
+  }
+  .modal-title { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .modal-title i { color: var(--purple); }
+  .modal-close {
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px; cursor: pointer;
+    color: var(--text-secondary); font-size: 16px;
+    border: none; background: transparent;
+  }
+  .modal-close:hover { background: var(--gray-bg); }
+  .modal-body { padding: 20px; }
+  .modal-field { margin-bottom: 16px; }
+  .modal-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--text-secondary); margin-bottom: 6px;
+  }
+  .modal-input {
+    width: 100%; padding: 8px 10px;
+    border: 1px solid var(--gray-border); border-radius: 7px;
+    font-size: 13px; font-family: var(--font); color: var(--text-primary);
+    background: var(--white); outline: none;
+    transition: border-color 0.15s;
+  }
+  .modal-input:focus { border-color: var(--purple); }
+  .modal-select {
+    width: 100%; padding: 8px 10px;
+    border: 1px solid var(--gray-border); border-radius: 7px;
+    font-size: 13px; font-family: var(--font); color: var(--text-primary);
+    background: var(--white); outline: none; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23888780' stroke-width='2' d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+    cursor: pointer;
+  }
+  .condition-row {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+    margin-bottom: 8px; align-items: start;
+  }
+  .cond-value-cell { position: relative; }
+  /* Multi-select dropdown */
+  .cond-multiselect { position: relative; }
+  .cond-ms-display {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 10px; border: 1px solid var(--gray-border); border-radius: 7px;
+    font-size: 13px; cursor: pointer; background: var(--white);
+    user-select: none; gap: 6px;
+  }
+  .cond-ms-display:hover { border-color: #c4bef0; }
+  .cond-ms-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-primary); }
+  .cond-ms-placeholder { color: #aaa; }
+  .cond-ms-dropdown {
+    display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 300;
+    background: var(--white); border: 1px solid var(--gray-border); border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12); overflow: hidden;
+  }
+  .cond-multiselect.open .cond-ms-dropdown { display: block; }
+  .cond-ms-search-wrap {
+    display: flex; align-items: center; gap: 6px; padding: 7px 10px;
+    border-bottom: 1px solid var(--gray-border);
+  }
+  .cond-ms-search { flex: 1; border: none; outline: none; font-size: 12px; font-family: var(--font); background: none; }
+  .cond-ms-options { max-height: 150px; overflow-y: auto; }
+  .cond-ms-option {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 12px; font-size: 13px; cursor: pointer; color: var(--text-primary);
+  }
+  .cond-ms-option:hover { background: var(--gray-bg); }
+  .cond-ms-option input[type="checkbox"] { cursor: pointer; }
+  /* Between inputs */
+  .cond-between { display: flex; align-items: center; gap: 6px; }
+  .cond-between .modal-input { flex: 1; min-width: 0; }
+  .cond-between-sep { font-size: 12px; color: var(--text-secondary); flex-shrink: 0; }
+  /* Disabled value */
+  .modal-input:disabled { background: #f5f4f2; color: #bbb; cursor: not-allowed; }
+  .add-condition-btn {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 12px; font-weight: 600; color: var(--purple);
+    background: none; border: none; cursor: pointer; font-family: var(--font);
+    padding: 0; margin-top: 4px;
+  }
+  .modal-footer {
+    display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+    padding: 14px 20px;
+    border-top: 1px solid var(--gray-border);
+    background: var(--white);
+  }
+  .btn-cancel {
+    padding: 7px 16px;
+    border: none;
+    font-size: 13px; font-weight: 500; font-family: var(--font);
+    color: var(--text-secondary); background: transparent;
+    cursor: pointer;
+  }
+  .btn-preview {
+    padding: 7px 16px;
+    border: 1px solid var(--purple); border-radius: 7px;
+    font-size: 13px; font-weight: 500; font-family: var(--font);
+    color: var(--purple); background: var(--white);
+    cursor: pointer; display: flex; align-items: center; gap: 5px;
+    transition: background 0.15s;
+  }
+  .btn-preview:hover { background: var(--purple-light); }
+
+  .btn-save-wrap { position: relative; display: flex; }
+  .btn-save {
+    padding: 7px 14px;
+    background: var(--purple); color: white;
+    border: none; border-radius: 7px 0 0 7px;
+    font-size: 13px; font-weight: 600; font-family: var(--font);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-save:hover:not(:disabled) { background: #4540A0; }
+  .btn-save:disabled {
+    background: #C5C1F0;
+    cursor: not-allowed;
+    opacity: 1;
+  }
+  .btn-save-caret {
+    padding: 7px 9px;
+    background: var(--purple); color: white;
+    border: none; border-left: 1px solid rgba(255,255,255,0.25);
+    border-radius: 0 7px 7px 0;
+    font-size: 13px; cursor: pointer;
+    display: flex; align-items: center;
+    transition: background 0.15s;
+  }
+  .btn-save-caret:hover { background: #4540A0; }
+  .btn-save-caret:disabled {
+    background: #C5C1F0;
+    cursor: not-allowed;
+  }
+  .save-dropdown {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 6px);
+    right: 0;
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    border-radius: 8px;
+    min-width: 180px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+    z-index: 100;
+    overflow: hidden;
+  }
+  .save-dropdown.open { display: block; }
+  .save-dropdown-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 14px;
+    font-size: 13px; font-family: var(--font);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .save-dropdown-item:hover { background: var(--gray-bg); }
+  .save-dropdown-item i { font-size: 15px; color: var(--text-secondary); }
+
+  /* VISIBILITY RADIO */
+  .visibility-row {
+    display: flex; gap: 20px;
+    margin-top: 2px;
+  }
+  .visibility-option {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--text-primary);
+    cursor: pointer;
+  }
+  .visibility-option input[type="radio"] {
+    accent-color: var(--purple);
+    width: 15px; height: 15px;
+    cursor: pointer;
+  }
+
+  /* CHIP FILTER PANEL */
+  .chip-filter-panel {
+    display: none;
+    position: fixed;
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    border-radius: 10px;
+    width: 260px;
+    z-index: 1500;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    overflow: hidden;
+  }
+  .chip-filter-panel.open { display: block; }
+  .chip-filter-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--gray-border);
+    font-size: 13px; font-weight: 600; color: var(--text-primary);
+  }
+  .chip-filter-search {
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--gray-border);
+    background: var(--gray-bg);
+  }
+  .chip-filter-search i { font-size: 13px; color: var(--gray-text); }
+  .chip-filter-search input {
+    border: none; background: transparent;
+    font-size: 12px; font-family: var(--font);
+    outline: none; flex: 1; color: var(--text-primary);
+  }
+  .chip-filter-search input::placeholder { color: var(--gray-text); }
+  .chip-filter-options { max-height: 200px; overflow-y: auto; padding: 4px 0; }
+  .chip-filter-option {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 14px;
+    font-size: 13px; font-family: var(--font);
+    cursor: pointer; transition: background 0.1s;
+    color: var(--text-primary);
+  }
+  .chip-filter-option:hover { background: var(--gray-bg); }
+  .chip-filter-option.checked { color: var(--purple); font-weight: 500; }
+  .chip-filter-option input[type="checkbox"] {
+    accent-color: var(--purple); width: 15px; height: 15px; cursor: pointer; flex-shrink: 0;
+  }
+  .chip-filter-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    border-top: 1px solid var(--gray-border);
+  }
+  .chip-filter-count { font-size: 12px; color: var(--gray-text); }
+  .chip-filter-clear {
+    font-size: 12px; font-weight: 500; color: var(--text-secondary);
+    background: none; border: none; cursor: pointer; font-family: var(--font);
+  }
+  .chip-filter-ok {
+    padding: 5px 16px;
+    background: var(--purple); color: white;
+    border: none; border-radius: 6px;
+    font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font);
+  }
+
+  .filters-being-saved {
+    background: var(--gray-bg);
+    border-radius: 7px;
+    padding: 12px 14px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .filters-being-saved-row {
+    font-size: 13px; color: var(--text-secondary);
+  }
+  .filters-being-saved-empty {
+    font-size: 13px; color: var(--gray-text); font-style: italic;
+  }
+
+  /* PREVIEW BANNER */
+  .preview-banner {
+    display: none;
+    align-items: center; gap: 8px;
+    padding: 8px 20px;
+    background: #FFF8EC;
+    border-bottom: 1px solid #F5DFA0;
+    font-size: 12px; color: #7A5800;
+  }
+  .preview-banner.active { display: flex; }
+  .preview-banner i { font-size: 14px; color: #EF9F27; }
+  .preview-banner-actions { margin-left: auto; display: flex; gap: 8px; }
+  .btn-preview-save {
+    padding: 4px 12px;
+    background: var(--purple); color: white;
+    border: none; border-radius: 6px;
+    font-size: 12px; font-weight: 600; font-family: var(--font);
+    cursor: pointer;
+  }
+  .btn-preview-discard {
+    padding: 4px 10px;
+    background: none; color: #7A5800;
+    border: 1px solid #F5DFA0; border-radius: 6px;
+    font-size: 12px; font-weight: 500; font-family: var(--font);
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <button class="back-btn"><i class="ti ti-chevron-left"></i></button>
+    <div class="brand">
+      <i class="ti ti-sparkles"></i>
+      AI Accruals
+      <span class="badge">BETA</span>
+    </div>
+    <div class="view-tabs">
+      <button class="view-tab">Analysis View</button>
+      <button class="view-tab active">JE View</button>
+    </div>
+    <button class="period-btn">
+      <i class="ti ti-calendar" style="font-size:13px"></i>
+      Apr 2026
+      <i class="ti ti-chevron-down" style="font-size:12px"></i>
+    </button>
+    <div class="spacer"></div>
+    <button class="icon-btn"><i class="ti ti-message"></i></button>
+    <button class="regen-btn">
+      <i class="ti ti-sparkles" style="font-size:13px"></i>
+      Regenerate AI Accruals
+    </button>
+    <button class="icon-btn"><i class="ti ti-settings"></i></button>
+    <div style="width:30px;height:30px;border-radius:50%;background:var(--purple);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">GS</div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-label">GL Booked <i class="ti ti-info-circle" style="font-size:12px"></i></div>
+      <div class="stat-value">$96,250 <span class="stat-unit">USD</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Total Reviewed <i class="ti ti-info-circle" style="font-size:12px"></i></div>
+      <div class="stat-value">$237,984.62 <span class="stat-unit">USD</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Total Posted <i class="ti ti-info-circle" style="font-size:12px"></i></div>
+      <div class="stat-value">$0 <span class="stat-unit">USD</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Active Vendors</div>
+      <div class="stat-value" style="color:var(--purple)">13</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">AI Confidence</div>
+      <div class="confidence-dots">
+        <span class="dot-green">● High 9</span>
+        <span class="dot-amber">● Med 0</span>
+        <span class="dot-red">● Low 1</span>
+      </div>
+    </div>
+    <div class="stat" style="min-width:180px">
+      <div class="stat-label">
+        Review Progress
+        <div class="progress-header" style="margin-left:auto;margin-bottom:0">
+          <span class="progress-pct">13%</span>
+          <span style="font-size:10px;color:var(--text-secondary);margin-left:6px">2 / 15 lines</span>
+        </div>
+      </div>
+      <div class="progress-bar-wrap" style="margin-top:6px"><div class="progress-bar-fill"></div></div>
+      <div class="progress-legend">
+        <span>● Pending 13</span>
+        <span>● Reviewed 2</span>
+        <span>● Posted 0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <div class="saved-filters-wrap">
+      <button class="filter-chip" id="savedFiltersChip" onclick="toggleSavedFilters()">
+        <i class="ti ti-bookmark" style="font-size:13px"></i>
+        Saved filters
+        <i class="ti ti-chevron-down" style="font-size:12px"></i>
+      </button>
+      <div class="saved-filters-dropdown" id="savedFiltersDropdown">
+        <div class="saved-filter-section-label">Basic Filters</div>
+        <div id="basicFiltersList">
+          <div class="saved-filters-empty">No basic filters yet.</div>
+        </div>
+        <div class="saved-filters-divider"></div>
+        <div class="saved-filter-section-label">Advanced Filters</div>
+        <div id="advancedFiltersList">
+          <div class="saved-filters-empty">No advanced filters yet.</div>
+        </div>
+        <div class="saved-filters-divider"></div>
+        <div class="saved-filter-section-label">Shared With Me</div>
+        <div id="sharedFiltersList"></div>
+      </div>
+    </div>
+    <button class="filter-chip" id="chipVendor" onclick="openChipFilter('chipVendor', event)">All Vendors <i class="ti ti-chevron-down" style="font-size:12px"></i></button>
+    <button class="filter-chip" id="chipSubsidiary" onclick="openChipFilter('chipSubsidiary', event)">All Subsidiaries <i class="ti ti-chevron-down" style="font-size:12px"></i></button>
+    <button class="filter-chip" id="chipDepartment" onclick="openChipFilter('chipDepartment', event)">All Departments <i class="ti ti-chevron-down" style="font-size:12px"></i></button>
+    <button class="filter-chip" id="chipStatus" onclick="openChipFilter('chipStatus', event)">Status <i class="ti ti-chevron-down" style="font-size:12px"></i></button>
+
+    <!-- MORE FILTERS -->
+    <div class="more-filters-wrap">
+      <button class="more-btn" id="moreFiltersBtn" onclick="toggleDropdown()">
+        <i class="ti ti-plus" style="font-size:13px"></i>
+        More filters
+      </button>
+      <div class="dropdown" id="dropdown">
+        <div class="search-box">
+          <i class="ti ti-search"></i>
+          <input type="text" placeholder="Search fields…" id="fieldSearch" oninput="filterItems()" />
+        </div>
+        <div class="dropdown-item custom" onclick="openModal()">
+          <i class="ti ti-adjustments-horizontal"></i>
+          Create advanced filter
+        </div>
+        <div class="dropdown-divider" style="margin: 0;"></div>
+        <div class="dropdown-scroll">
+          <div class="dropdown-section-label">COA</div>
+          <div class="dropdown-item" data-label="GL Account (Debit)">GL Account (Debit)</div>
+          <div class="dropdown-item" data-label="GL Account (Credit)">GL Account (Credit)</div>
+          <div class="dropdown-item" data-label="Department (Debit)">Department (Debit)</div>
+          <div class="dropdown-item" data-label="Department (Credit)">Department (Credit)</div>
+          <div class="dropdown-item" data-label="Class (Debit)">Class (Debit)</div>
+          <div class="dropdown-item" data-label="Class (Credit)">Class (Credit)</div>
+          <div class="dropdown-item" data-label="Location (Debit)">Location (Debit)</div>
+          <div class="dropdown-item" data-label="Location (Credit)">Location (Credit)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-divider"></div>
+
+    <button class="group-by-chip">
+      <i class="ti ti-layout-list" style="font-size:13px"></i>
+      Group by: None
+      <i class="ti ti-chevron-down" style="font-size:12px"></i>
+    </button>
+
+    <div class="search-vendor">
+      <i class="ti ti-search" style="font-size:13px"></i>
+      <span>Search vendor…</span>
+    </div>
+    <button class="clear-all-btn" id="clearAllBtn" onclick="clearAllFilters()" style="display:none">Clear all</button>
+    <button class="save-filter-btn" id="saveFilterBarBtn" onclick="saveQuickFilter()">Save filter</button>
+
+    <div class="filter-actions">
+      <button class="add-line-btn">
+        <i class="ti ti-plus" style="font-size:13px"></i>
+        Add line
+      </button>
+      <button class="col-toggle"><i class="ti ti-layout-columns"></i></button>
+    </div>
+  </div>
+
+  <!-- PREVIEW BANNER -->
+  <div class="preview-banner" id="previewBanner">
+    <i class="ti ti-eye"></i>
+    <span>Previewing filter — results are not saved.</span>
+    <div class="preview-banner-actions">
+      <button class="btn-preview-discard" onclick="discardPreview()">Discard</button>
+      <button class="btn-preview-save" onclick="openSaveOptions()">Save</button>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:20px"><input type="checkbox" /></th>
+          <th style="width:16px"></th>
+          <th>Vendor</th>
+          <th>Subsidiary</th>
+          <th>COA</th>
+          <th>Adjusted Accrual</th>
+          <th>Description</th>
+          <th>PO Number</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-vendor="Accenture Federal Services" data-subsidiary="Honeycomb US" data-department="Operations,Professional Services" data-status="Reviewed">
+          <td><input type="checkbox" /></td>
+          <td><i class="ti ti-chevron-right" style="font-size:13px;color:var(--text-secondary)"></i></td>
+          <td class="vendor-name">Accenture Federal Services</td>
+          <td>Honeycomb US</td>
+          <td><span class="tag tag-gray">6110C</span><span class="tag tag-blue">Opera</span><span class="tag tag-green">Profe</span></td>
+          <td>185,000 <span style="color:var(--text-secondary);font-size:11px">USD</span></td>
+          <td style="max-width:260px;white-space:normal;font-size:11px">Confirmed unbilled services – Digital Transformation Phase 3 (Apr 2026)</td>
+          <td style="color:var(--text-secondary)">PO-ACN-2…</td>
+          <td><span class="status-pill status-reviewed">● Reviewed</span></td>
+          <td>
+            <div class="actions">
+              <button class="btn-submit">✓ Submit</button>
+              <button class="btn-reject">✗ Reject</button>
+              <button class="action-icon"><i class="ti ti-paperclip"></i></button>
+              <button class="action-icon"><i class="ti ti-message"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr data-vendor="Amazon Web Services Inc." data-subsidiary="Honeycomb EMEA" data-department="Engineering,Infrastructure" data-status="Pending">
+          <td></td>
+          <td><i class="ti ti-chevron-right" style="font-size:13px;color:var(--text-secondary)"></i></td>
+          <td>Amazon Web Services Inc.</td>
+          <td>Honeycomb EMEA</td>
+          <td><span class="tag tag-gray">6180I</span><span class="tag tag-blue">Engin</span><span class="tag tag-green">Infra</span></td>
+          <td>110,245 <span style="color:var(--text-secondary);font-size:11px">USD</span></td>
+          <td style="font-size:11px">EC2 Reserved Instances & On-Demand Compute</td>
+          <td style="color:var(--text-secondary)">PO-AWS-COMP…</td>
+          <td><span class="status-pill status-pending">● Pending</span></td>
+          <td><button class="action-icon"><i class="ti ti-lock" style="font-size:13px"></i></button></td>
+        </tr>
+        <tr data-vendor="Amazon Web Services Inc." data-subsidiary="Honeycomb APAC" data-department="Engineering,Enterprise Services" data-status="Pending">
+          <td></td>
+          <td><i class="ti ti-chevron-right" style="font-size:13px;color:var(--text-secondary)"></i></td>
+          <td>Amazon Web Services Inc.</td>
+          <td>Honeycomb APAC</td>
+          <td><span class="tag tag-gray">6180I</span><span class="tag tag-blue">Engin</span><span class="tag tag-green">Enter</span></td>
+          <td>44,098 <span style="color:var(--text-secondary);font-size:11px">USD</span></td>
+          <td style="font-size:11px">S3 Storage, Data Transfer & CloudFront</td>
+          <td style="color:var(--text-secondary)">PO-AWS-STOR…</td>
+          <td><span class="status-pill status-pending">● Pending</span></td>
+          <td><button class="action-icon"><i class="ti ti-lock" style="font-size:13px"></i></button></td>
+        </tr>
+        <tr data-vendor="Amazon Web Services Inc." data-subsidiary="Honeycomb US" data-department="Information Technology,Management" data-status="Pending">
+          <td><input type="checkbox" /></td>
+          <td><i class="ti ti-chevron-right" style="font-size:13px;color:var(--text-secondary)"></i></td>
+          <td class="vendor-name">Amazon Web Services Inc.</td>
+          <td>Honeycomb US</td>
+          <td><span class="tag tag-gray">6180I</span><span class="tag tag-blue">Infor</span><span class="tag tag-green">Manag</span></td>
+          <td>33,074 <span style="color:var(--text-secondary);font-size:11px">USD</span></td>
+          <td style="font-size:11px">Enterprise Support Annual Plan</td>
+          <td style="color:var(--text-secondary)">PO-AWS-SUPP…</td>
+          <td><span class="status-pill status-pending">● Pending</span></td>
+          <td>
+            <div class="actions">
+              <button class="btn-review"><i class="ti ti-eye" style="font-size:12px"></i> Review</button>
+              <button class="action-icon"><i class="ti ti-paperclip"></i></button>
+              <button class="action-icon"><i class="ti ti-message"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr data-vendor="BCD Travel Inc." data-subsidiary="Honeycomb Canada" data-department="Operations" data-status="Pending">
+          <td><input type="checkbox" /></td>
+          <td><i class="ti ti-chevron-right" style="font-size:13px;color:var(--text-secondary)"></i></td>
+          <td class="vendor-name">BCD Travel Inc.</td>
+          <td>Honeycomb Canada</td>
+          <td><span class="tag tag-gray">6140T</span><span class="tag tag-blue">Opera</span></td>
+          <td>22,233 <span style="color:var(--text-secondary);font-size:11px">USD</span></td>
+          <td style="color:var(--text-secondary)">—</td>
+          <td style="color:var(--text-secondary)">—</td>
+          <td><span class="status-pill status-pending">● Pending</span></td>
+          <td>
+            <div class="actions">
+              <button class="btn-review"><i class="ti ti-eye" style="font-size:12px"></i> Review</button>
+            </div>
+          </td>
+        </tr>
+        <tr data-vendor="Deloitte Consulting LLP" data-subsidiary="Honeycomb EMEA" data-department="Finance,Advisory" data-status="Pending">
+          <td><input type="checkbox" /></td>
+          <td><i class="ti ti-chevron-right" style="font-size:13px;color:var(--text-secondary)"></i></td>
+          <td class="vendor-name">Deloitte Consulting LLP</td>
+          <td>Honeycomb EMEA</td>
+          <td><span class="tag tag-gray">6110C</span><span class="tag tag-blue">Finan</span><span class="tag tag-green">Advis</span></td>
+          <td>110,000 <span style="color:var(--text-secondary);font-size:11px">USD</span></td>
+          <td style="max-width:260px;white-space:normal;font-size:11px">Deloitte Finance Transformation — April milestone: process design deliverable</td>
+          <td style="color:var(--text-secondary)">PO-DEL-FIN…</td>
+          <td><span class="status-pill status-pending">● Pending</span></td>
+          <td>
+            <div class="actions">
+              <button class="btn-review"><i class="ti ti-eye" style="font-size:12px"></i> Review</button>
+            </div>
+          </td>
+        </tr>
+        <tr data-vendor="Kirkland &amp; Ellis LLP" data-subsidiary="Honeycomb US" data-department="Legal,Professional Services" data-status="Pending">
+          <td><input type="checkbox" /></td>
+          <td><i class="ti ti-chevron-right" style="font-size:13px;color:var(--text-secondary)"></i></td>
+          <td class="vendor-name">Kirkland & Ellis LLP</td>
+          <td>Honeycomb US</td>
+          <td><span class="tag tag-gray">6160L</span><span class="tag tag-blue">Legal</span><span class="tag tag-green">Profe</span></td>
+          <td>21,177 <span style="color:var(--text-secondary);font-size:11px">USD</span></td>
+          <td style="font-size:11px">Legal & Compliance Fees</td>
+          <td style="color:var(--text-secondary)">PO-KE-20…</td>
+          <td><span class="status-pill status-pending">● Pending</span></td>
+          <td>
+            <div class="actions">
+              <button class="btn-review"><i class="ti ti-eye" style="font-size:12px"></i> Review</button>
+            </div>
+          </td>
+        </tr>
+        <tr data-vendor="Korn Ferry International" data-subsidiary="Honeycomb APAC" data-department="Human Resources,Corporate" data-status="Pending">
+          <td></td>
+          <td><i class="ti ti-chevron-right" style="font-size:13px;color:var(--text-secondary)"></i></td>
+          <td>Korn Ferry International</td>
+          <td>Honeycomb APAC</td>
+          <td><span class="tag tag-gray">6170R</span><span class="tag tag-blue">Human</span><span class="tag tag-green">Corpo</span></td>
+          <td>40,500 <span style="color:var(--text-secondary);font-size:11px">USD</span></td>
+          <td style="font-size:11px">Recruiting & Staffing Fees – Human Resources</td>
+          <td style="color:var(--text-secondary)">PO-KF-20…</td>
+          <td><span class="status-pill status-pending">● Pending</span></td>
+          <td><button class="action-icon"><i class="ti ti-lock" style="font-size:13px"></i></button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- CUSTOM FILTER MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">
+        Create advanced filter
+      </div>
+      <button class="modal-close" onclick="closeModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field">
+        <div class="modal-label">Filter name</div>
+        <input type="text" class="modal-input" id="filterNameInput" placeholder="e.g. High-value pending vendors" oninput="checkSaveReady()" />
+      </div>
+      <div class="modal-field">
+        <div class="modal-label">Visibility</div>
+        <div class="visibility-row">
+          <label class="visibility-option">
+            <input type="radio" name="visibility" value="private" checked /> Private
+          </label>
+          <label class="visibility-option">
+            <input type="radio" name="visibility" value="public" /> Public (anyone in org)
+          </label>
+        </div>
+      </div>
+      <div class="modal-field">
+        <div class="modal-label">Conditions</div>
+        <div id="conditionRows">
+          <div class="condition-row">
+            <select class="modal-select" onchange="onCondFieldChange(this)">
+              <option>Field</option>
+              <option>Vendor</option><option>Subsidiary</option><option>Department</option>
+              <option>GL Account</option><option>Status</option><option>Description</option>
+              <option>PO Number</option><option>Adjusted Accrual</option>
+              <option>AI Confidence</option><option>Period End Date</option>
+            </select>
+            <select class="modal-select" onchange="onCondOpChange(this)">
+              <option>Operator</option>
+            </select>
+            <div class="cond-value-cell">
+              <input type="text" class="modal-input" placeholder="Value" disabled style="background:#f5f4f2;color:#bbb;cursor:not-allowed" />
+            </div>
+          </div>
+        </div>
+        <button class="add-condition-btn" onclick="addCondition()">
+          <i class="ti ti-plus" style="font-size:13px"></i>
+          Add condition
+        </button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-preview" onclick="activatePreview()">
+        <i class="ti ti-eye" style="font-size:14px"></i>
+        Preview
+      </button>
+      <div class="btn-save-wrap">
+        <button class="btn-save" id="btnSave" onclick="handleSave()" disabled>Save filter</button>
+        <button class="btn-save-caret" id="btnSaveCaret" onclick="toggleSaveDropdown()" disabled>
+          <i class="ti ti-chevron-up" style="font-size:13px"></i>
+        </button>
+        <div class="save-dropdown" id="saveDropdown">
+          <div class="save-dropdown-item" onclick="handleSave(true)">
+            <i class="ti ti-world"></i>
+            Save publicly (anyone in org)
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHIP FILTER PANEL -->
+<div class="chip-filter-panel" id="chipFilterPanel">
+  <div class="chip-filter-header">
+    <span id="chipFilterTitle">Vendor is</span>
+    <i class="ti ti-chevron-down" style="font-size:13px;color:var(--text-secondary)"></i>
+  </div>
+  <div class="chip-filter-search">
+    <i class="ti ti-search"></i>
+    <input type="text" id="chipFilterSearchInput" placeholder="Search…" oninput="searchChipOptions(this.value)" />
+  </div>
+  <div class="chip-filter-options" id="chipFilterOptions"></div>
+  <div class="chip-filter-footer">
+    <span class="chip-filter-count" id="chipFilterCount">None selected</span>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="chip-filter-clear" onclick="clearCurrentChipFilter()">Clear</button>
+      <button class="chip-filter-ok" onclick="applyChipFilter()">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- SAVE BASIC FILTER MODAL -->
+<div class="modal-overlay" id="saveBasicModalOverlay" onclick="handleSaveBasicOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Save Filter</div>
+      <button class="modal-close" onclick="closeSaveBasicModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field">
+        <div class="modal-label">Name</div>
+        <input type="text" class="modal-input" id="basicFilterNameInput" placeholder="e.g. Engineering Q2 review" oninput="checkBasicSaveReady()" />
+      </div>
+      <div class="modal-field">
+        <div class="modal-label">Visibility</div>
+        <div class="visibility-row">
+          <label class="visibility-option">
+            <input type="radio" name="basicVisibility" value="private" checked /> Private
+          </label>
+          <label class="visibility-option">
+            <input type="radio" name="basicVisibility" value="public" /> Public (anyone in org)
+          </label>
+        </div>
+      </div>
+      <div class="modal-field">
+        <div class="modal-label">Filters being saved</div>
+        <div class="filters-being-saved" id="filtersBeSavedList">
+          <div class="filters-being-saved-empty">No filters active.</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeSaveBasicModal()">Cancel</button>
+      <button class="btn-save" id="btnSaveBasic" onclick="confirmSaveBasicFilter()" disabled>Save filter</button>
+    </div>
+  </div>
+</div>
+
+<!-- VIEW-ONLY MODAL -->
+<div class="view-modal-overlay" id="viewModalOverlay" onclick="handleViewOverlayClick(event)">
+  <div class="view-modal">
+    <div class="modal-header">
+      <div class="modal-title" id="viewModalTitle">Consulting &amp; Legal — April 2026</div>
+      <button class="modal-close" onclick="closeViewModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field">
+        <div class="modal-label">Shared by</div>
+        <div style="font-size:13px;color:var(--text-secondary)">reyn@gappify.com</div>
+      </div>
+      <div class="modal-field">
+        <div class="modal-label">Visibility</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-secondary)">
+          <i class="ti ti-world" style="font-size:14px"></i> Public (anyone in org)
+        </div>
+      </div>
+      <div class="modal-field">
+        <div class="modal-label">Conditions</div>
+        <div class="condition-readonly">
+          <div class="condition-readonly-cell">Vendor</div>
+          <div class="condition-readonly-cell">contains</div>
+          <div class="condition-readonly-cell">Consulting</div>
+        </div>
+        <div class="condition-readonly">
+          <div class="condition-readonly-cell">GL Account</div>
+          <div class="condition-readonly-cell">is</div>
+          <div class="condition-readonly-cell">6160L</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeViewModal()" style="color:var(--text-primary);font-weight:600">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('change', function(e) {
+    if (e.target.closest('#conditionRows')) checkSaveReady();
+  });
+  document.addEventListener('input', function(e) {
+    if (e.target.closest('#conditionRows')) checkSaveReady();
+  });
+
+  const chipDefaults = {
+    chipVendor:     'All Vendors',
+    chipSubsidiary: 'All Subsidiaries',
+    chipDepartment: 'All Departments',
+    chipStatus:     'Status',
+  };
+
+  let activeBasicFilterIndex = null;
+  let currentChipState = [];
+
+  function activateChip(chipId, label, value) {
+    const chip = document.getElementById(chipId);
+    if (!chip) return;
+    const truncated = value.length > 18 ? value.slice(0, 18) + '…' : value;
+    chip.innerHTML = `${label} is ${truncated} <i class="ti ti-x" style="font-size:10px;margin-left:3px;opacity:0.6" onclick="event.stopPropagation();resetChip('${chipId}')"></i>`;
+    chip.style.borderColor = 'var(--purple)';
+    chip.style.color = 'var(--purple)';
+    chip.style.background = 'var(--purple-light)';
+    currentChipState = currentChipState.filter(c => c.chipId !== chipId);
+    currentChipState.push({ chipId, label, value });
+    updateSaveFilterBarBtn();
+  }
+
+  function resetChip(chipId) {
+    const chip = document.getElementById(chipId);
+    if (!chip) return;
+    chip.innerHTML = `${chipDefaults[chipId]} <i class="ti ti-chevron-down" style="font-size:12px"></i>`;
+    chip.style.borderColor = '';
+    chip.style.color = '';
+    chip.style.background = '';
+    currentChipState = currentChipState.filter(c => c.chipId !== chipId);
+    updateSaveFilterBarBtn();
+  }
+
+  function resetAllChips() {
+    Object.keys(chipDefaults).forEach(id => {
+      const chip = document.getElementById(id);
+      if (!chip) return;
+      chip.innerHTML = `${chipDefaults[id]} <i class="ti ti-chevron-down" style="font-size:12px"></i>`;
+      chip.style.borderColor = '';
+      chip.style.color = '';
+      chip.style.background = '';
+    });
+    currentChipState = [];
+    updateSaveFilterBarBtn();
+  }
+
+  function updateSaveFilterBarBtn() {
+    // Button is always visible; no-op kept for future use
+  }
+
+  function saveQuickFilter() {
+    // Pre-fill name if updating an existing filter
+    const existingName = activeBasicFilterIndex !== null ? basicFilters[activeBasicFilterIndex].name : '';
+    document.getElementById('basicFilterNameInput').value = existingName;
+    document.querySelector('input[name="basicVisibility"][value="private"]').checked = true;
+
+    // Populate filters being saved
+    const list = document.getElementById('filtersBeSavedList');
+    if (currentChipState.length === 0) {
+      list.innerHTML = '<div class="filters-being-saved-empty">No filters active.</div>';
+    } else {
+      list.innerHTML = currentChipState.map(c =>
+        `<div class="filters-being-saved-row">${c.label}: ${c.value}</div>`
+      ).join('');
+    }
+
+    checkBasicSaveReady();
+    document.getElementById('saveBasicModalOverlay').classList.add('open');
+  }
+
+  function checkBasicSaveReady() {
+    const name = document.getElementById('basicFilterNameInput').value.trim();
+    document.getElementById('btnSaveBasic').disabled = name === '';
+  }
+
+  function confirmSaveBasicFilter() {
+    const name = document.getElementById('basicFilterNameInput').value.trim();
+    const isPublic = document.querySelector('input[name="basicVisibility"][value="public"]').checked;
+    const entry = { name, public: isPublic, filters: currentChipState.map(c => ({ ...c })) };
+
+    if (activeBasicFilterIndex !== null) {
+      basicFilters[activeBasicFilterIndex] = entry;
+    } else {
+      basicFilters.push(entry);
+      activeBasicFilterIndex = basicFilters.length - 1;
+    }
+    renderBasicFilters();
+    closeSaveBasicModal();
+
+    // Update saved filters chip
+    const chip = document.getElementById('savedFiltersChip');
+    chip.innerHTML = `<i class="ti ti-bookmark" style="font-size:13px"></i> ${name} <span onclick="event.stopPropagation();clearActiveFilter()" style="margin-left:2px;opacity:0.6;font-size:11px">✕</span>`;
+    chip.style.borderColor = 'var(--purple)';
+    chip.style.color = 'var(--purple)';
+    chip.style.background = 'var(--purple-light)';
+    document.getElementById('saveFilterBarBtn').style.display = 'none';
+  }
+
+  function closeSaveBasicModal() {
+    document.getElementById('saveBasicModalOverlay').classList.remove('open');
+  }
+
+  function handleSaveBasicOverlayClick(e) {
+    if (e.target === document.getElementById('saveBasicModalOverlay')) closeSaveBasicModal();
+  }
+
+  const basicFilters = [
+    { name: 'Pending Only', public: false,
+      filters: [{ chipId: 'chipStatus', label: 'Status', value: 'Pending' }] },
+    { name: 'AWS Vendors', public: false,
+      filters: [{ chipId: 'chipVendor', label: 'Vendor', value: 'Amazon Web Services Inc.' }] },
+  ];
+  const advancedFilters = [
+    { name: 'High-value pending', public: false, conditions: [
+      { field: 'Adjusted Accrual', op: 'greater than', value: '100000' },
+      { field: 'Status', op: 'is', value: 'Pending' },
+    ]},
+    { name: 'Reviewed — Honeycomb US', public: true, conditions: [
+      { field: 'Status', op: 'is', value: 'Reviewed' },
+      { field: 'Subsidiary', op: 'is', value: 'Honeycomb US' },
+    ]},
+  ];
+  const sharedFilters = [
+    { name: 'Consulting & Legal — April 2026', by: 'reyn@gappify.com' },
+  ];
+  // defaultFilter is per-user; only stored in this session
+  // { section: 'basic'|'advanced'|'shared', index: number }
+  let defaultFilter = null;
+  let editingIndex = null;
+
+  // ── ADVANCED FILTER CONDITION ROW LOGIC ───────────────────────
+
+  const fieldConfig = {
+    'Vendor':           'text-enum',
+    'Subsidiary':       'text-enum',
+    'Department':       'text-enum',
+    'GL Account':       'text-enum',
+    'Status':           'text-enum',
+    'Description':      'text-free',
+    'PO Number':        'text-free',
+    'Adjusted Accrual': 'numeric',
+    'AI Confidence':    'numeric',
+    'Period End Date':  'date',
+  };
+
+  const fieldEnumValues = {
+    'Vendor':     ['Accenture Federal Services','Amazon Web Services Inc.','BCD Travel Inc.','Deloitte Consulting LLP','Kirkland & Ellis LLP','Korn Ferry International'],
+    'Subsidiary': ['Honeycomb US','Honeycomb EMEA','Honeycomb APAC','Honeycomb Canada'],
+    'Department': ['Operations','Engineering','Finance','Legal','Human Resources','Information Technology','Professional Services','Infrastructure','Enterprise Services','Management','Advisory','Corporate'],
+    'GL Account': ['6110C','6180I','6140T','6160L','6170R'],
+    'Status':     ['Pending','Reviewed'],
+  };
+
+  const operatorsByType = {
+    'text-enum': ['Operator','Is empty','Is not empty','Is equals','Is not equals','Contains','Does not contain','Starts with'],
+    'text-free': ['Operator','Is empty','Is not empty','Is equals','Is not equals','Contains','Does not contain','Starts with'],
+    'numeric':   ['Operator','Is empty','Is not empty','Is equals','Is not equals','Is greater than','Is greater than or equals','Is less than','Is less than or equals','Is between','Is not between'],
+    'date':      ['Operator','Is empty','Is not empty','Is equals','Is not equals','Is between','Is not between'],
+  };
+
+  function getValueMode(field, op) {
+    if (!field || field === 'Field' || !op || op === 'Operator') return 'empty';
+    if (op === 'Is empty' || op === 'Is not empty') return 'disabled';
+    const type = fieldConfig[field];
+    if (!type) return 'empty';
+    if ((type === 'text-enum') && (op === 'Is equals' || op === 'Is not equals')) return 'multiselect';
+    if ((type === 'numeric' || type === 'date') && (op === 'Is between' || op === 'Is not between')) return 'between';
+    if (type === 'numeric') return 'number';
+    if (type === 'date') return 'date';
+    return 'text';
+  }
+
+  function buildValueCell(field, op, value) {
+    value = value || '';
+    const mode = getValueMode(field, op);
+    if (mode === 'empty' || mode === 'disabled') {
+      const ph = mode === 'disabled' ? '—' : 'Value';
+      return `<input type="text" class="modal-input" placeholder="${ph}" disabled />`;
+    }
+    if (mode === 'multiselect') {
+      const selected = value ? value.split(',').map(v => v.trim()).filter(Boolean) : [];
+      const opts = (fieldEnumValues[field] || []).map(v => {
+        const chk = selected.includes(v) ? 'checked' : '';
+        return `<label class="cond-ms-option"><input type="checkbox" ${chk} value="${v}" onchange="updateCondMsLabel(this)" />${v}</label>`;
+      }).join('');
+      const labelText = selected.length ? selected.join(', ') : 'Select values…';
+      const labelCls = selected.length ? '' : 'cond-ms-placeholder';
+      return `<div class="cond-multiselect">
+        <div class="cond-ms-display" onclick="toggleCondMs(this)">
+          <span class="cond-ms-label ${labelCls}">${labelText}</span>
+          <i class="ti ti-chevron-down" style="font-size:11px;color:var(--text-secondary);flex-shrink:0"></i>
+        </div>
+        <div class="cond-ms-dropdown">
+          <div class="cond-ms-search-wrap">
+            <i class="ti ti-search" style="font-size:12px;color:var(--text-secondary)"></i>
+            <input class="cond-ms-search" placeholder="Search…" oninput="filterCondMs(this)" />
+          </div>
+          <div class="cond-ms-options">${opts}</div>
+        </div>
+      </div>`;
+    }
+    if (mode === 'between') {
+      const isDate = fieldConfig[field] === 'date';
+      const inputType = isDate ? 'text' : 'number';
+      const ph = isDate ? 'MM/DD/YYYY' : '0';
+      const oninput = isDate ? 'oninput="formatDateInput(this)"' : 'oninput="checkSaveReady()"';
+      const parts = value ? value.split('|') : ['',''];
+      return `<div class="cond-between">
+        <input type="${inputType}" class="modal-input" placeholder="${ph}" value="${parts[0]||''}" ${oninput} ${isDate?'maxlength="10"':''} />
+        <span class="cond-between-sep">and</span>
+        <input type="${inputType}" class="modal-input" placeholder="${ph}" value="${parts[1]||''}" ${oninput} ${isDate?'maxlength="10"':''} />
+      </div>`;
+    }
+    if (mode === 'number') {
+      return `<input type="number" class="modal-input" placeholder="Enter number…" value="${value}" oninput="checkSaveReady()" />`;
+    }
+    if (mode === 'date') {
+      return `<input type="text" class="modal-input" placeholder="MM/DD/YYYY" maxlength="10" value="${value}" oninput="formatDateInput(this)" />`;
+    }
+    // text
+    return `<input type="text" class="modal-input" placeholder="Enter value…" value="${value}" oninput="checkSaveReady()" />`;
+  }
+
+  function buildConditionRowHtml(c = {}) {
+    const allFields = ['Field','Vendor','Subsidiary','Department','GL Account','Status','Description','PO Number','Adjusted Accrual','AI Confidence','Period End Date'];
+    const field = c.field || 'Field';
+    const fieldType = fieldConfig[field];
+    const ops = fieldType ? operatorsByType[fieldType] : ['Operator'];
+    const op = c.op || 'Operator';
+    const fieldOpts = allFields.map(f => `<option${field===f?' selected':''}>${f}</option>`).join('');
+    const opOpts = ops.map(o => `<option${op===o?' selected':''}>${o}</option>`).join('');
+    return `<div class="condition-row">
+      <select class="modal-select" onchange="onCondFieldChange(this)">${fieldOpts}</select>
+      <select class="modal-select" onchange="onCondOpChange(this)">${opOpts}</select>
+      <div class="cond-value-cell">${buildValueCell(field, op, c.value||'')}</div>
+    </div>`;
+  }
+
+  function onCondFieldChange(select) {
+    const row = select.closest('.condition-row');
+    const field = select.value;
+    const fieldType = fieldConfig[field];
+    const opSel = row.querySelector('select:nth-child(2)');
+    const ops = fieldType ? operatorsByType[fieldType] : ['Operator'];
+    opSel.innerHTML = ops.map(o => `<option>${o}</option>`).join('');
+    row.querySelector('.cond-value-cell').innerHTML = buildValueCell(field, 'Operator', '');
+    checkSaveReady();
+  }
+
+  function onCondOpChange(select) {
+    const row = select.closest('.condition-row');
+    const field = row.querySelector('select:first-child').value;
+    const op = select.value;
+    row.querySelector('.cond-value-cell').innerHTML = buildValueCell(field, op, '');
+    checkSaveReady();
+  }
+
+  function toggleCondMs(display) {
+    const ms = display.closest('.cond-multiselect');
+    document.querySelectorAll('.cond-multiselect.open').forEach(el => { if (el !== ms) el.classList.remove('open'); });
+    ms.classList.toggle('open');
+    if (ms.classList.contains('open')) {
+      const s = ms.querySelector('.cond-ms-search');
+      if (s) setTimeout(() => s.focus(), 0);
+    }
+  }
+
+  function filterCondMs(input) {
+    const q = input.value.toLowerCase();
+    input.closest('.cond-ms-dropdown').querySelectorAll('.cond-ms-option').forEach(opt => {
+      opt.style.display = opt.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  }
+
+  function updateCondMsLabel(checkbox) {
+    const ms = checkbox.closest('.cond-multiselect');
+    const checked = [...ms.querySelectorAll('.cond-ms-option input:checked')].map(cb => cb.value);
+    const lbl = ms.querySelector('.cond-ms-label');
+    lbl.textContent = checked.length ? checked.join(', ') : 'Select values…';
+    lbl.className = 'cond-ms-label' + (checked.length ? '' : ' cond-ms-placeholder');
+    checkSaveReady();
+  }
+
+  function formatDateInput(input) {
+    let v = input.value.replace(/\D/g, '');
+    if (v.length > 2) v = v.slice(0,2) + '/' + v.slice(2);
+    if (v.length > 5) v = v.slice(0,5) + '/' + v.slice(5,9);
+    input.value = v;
+    checkSaveReady();
+  }
+
+  function getConditions() {
+    return Array.from(document.querySelectorAll('#conditionRows .condition-row')).map(row => {
+      const fieldSel = row.querySelector('select:first-child');
+      const opSel = row.querySelector('select:nth-child(2)');
+      if (!fieldSel || !opSel) return null;
+      const field = fieldSel.value;
+      const op = opSel.value;
+      if (field === 'Field' || op === 'Operator') return null;
+      const mode = getValueMode(field, op);
+      let value = '';
+      if (mode === 'disabled') {
+        value = '';
+      } else if (mode === 'multiselect') {
+        const checked = [...row.querySelectorAll('.cond-ms-option input:checked')].map(cb => cb.value);
+        if (!checked.length) return null;
+        value = checked.join(', ');
+      } else if (mode === 'between') {
+        const inputs = row.querySelectorAll('.cond-between input');
+        if (!inputs[0] || (!inputs[0].value && !inputs[1].value)) return null;
+        value = `${inputs[0].value}|${inputs[1].value}`;
+      } else if (mode !== 'empty') {
+        const inp = row.querySelector('.cond-value-cell input');
+        value = inp ? inp.value.trim() : '';
+        if (!value) return null;
+      }
+      return { field, op, value };
+    }).filter(Boolean);
+  }
+
+  // Close condition multi-selects when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.cond-multiselect')) {
+      document.querySelectorAll('.cond-multiselect.open').forEach(el => el.classList.remove('open'));
+    }
+  });
+
+  // ── CHIP FILTER LOGIC ──────────────────────────────────────────
+  const chipData = {
+    chipVendor:     { label: 'Vendor',      attr: 'data-vendor',     options: ['Accenture Federal Services','Amazon Web Services Inc.','BCD Travel Inc.','Deloitte Consulting LLP','Kirkland & Ellis LLP','Korn Ferry International'] },
+    chipSubsidiary: { label: 'Subsidiary',  attr: 'data-subsidiary', options: ['Honeycomb US', 'Honeycomb EMEA', 'Honeycomb APAC', 'Honeycomb Canada'] },
+    chipDepartment: { label: 'Department',  attr: 'data-department', options: ['Operations','Engineering','Finance','Legal','Human Resources','Information Technology','Professional Services','Infrastructure','Enterprise Services','Management','Advisory','Corporate'] },
+    chipStatus:     { label: 'Status',      attr: 'data-status',     options: ['Pending','Reviewed'] },
+  };
+
+  const activeChipFilters = {}; // { chipId: Set of selected values }
+  let currentChipId = null;
+  let tempSelections = new Set();
+
+  function openChipFilter(chipId, event) {
+    event.stopPropagation();
+    const panel = document.getElementById('chipFilterPanel');
+    // Toggle off if same chip clicked again
+    if (panel.classList.contains('open') && currentChipId === chipId) {
+      panel.classList.remove('open');
+      return;
+    }
+    currentChipId = chipId;
+    const data = chipData[chipId];
+    tempSelections = new Set(activeChipFilters[chipId] || []);
+
+    document.getElementById('chipFilterTitle').textContent = `${data.label} is`;
+    document.getElementById('chipFilterSearchInput').value = '';
+
+    renderChipOptions(data.options);
+    updateChipFilterCount();
+
+    // Position panel below the chip
+    const rect = document.getElementById(chipId).getBoundingClientRect();
+    panel.style.top = (rect.bottom + 6) + 'px';
+    panel.style.left = rect.left + 'px';
+    panel.classList.add('open');
+  }
+
+  function renderChipOptions(options, query = '') {
+    const filtered = options.filter(o => o.toLowerCase().includes(query.toLowerCase()));
+    document.getElementById('chipFilterOptions').innerHTML = filtered.map(opt => `
+      <label class="chip-filter-option ${tempSelections.has(opt) ? 'checked' : ''}">
+        <input type="checkbox" ${tempSelections.has(opt) ? 'checked' : ''} onchange="toggleChipOption('${opt.replace(/'/g,"\\'")}', this.checked)" />
+        ${opt}
+      </label>
+    `).join('');
+  }
+
+  function searchChipOptions(query) {
+    renderChipOptions(chipData[currentChipId].options, query);
+  }
+
+  function toggleChipOption(value, checked) {
+    if (checked) tempSelections.add(value);
+    else tempSelections.delete(value);
+    // Update checked class on label
+    document.querySelectorAll('.chip-filter-option').forEach(el => {
+      const cb = el.querySelector('input');
+      el.classList.toggle('checked', cb.checked);
+    });
+    updateChipFilterCount();
+  }
+
+  function updateChipFilterCount() {
+    const n = tempSelections.size;
+    document.getElementById('chipFilterCount').textContent = n === 0 ? 'None selected' : `${n} selected`;
+  }
+
+  function applyChipFilter() {
+    const data = chipData[currentChipId];
+    if (tempSelections.size === 0) {
+      delete activeChipFilters[currentChipId];
+      resetChip(currentChipId);
+    } else {
+      activeChipFilters[currentChipId] = new Set(tempSelections);
+      const vals = [...tempSelections];
+      const label = vals.length === 1
+        ? vals[0]
+        : `${vals[0]} +${vals.length - 1} more`;
+      activateChip(currentChipId, data.label, label);
+    }
+    filterTable();
+    document.getElementById('chipFilterPanel').classList.remove('open');
+  }
+
+  function clearAllFilters() {
+    Object.keys(activeChipFilters).forEach(chipId => {
+      delete activeChipFilters[chipId];
+      resetChip(chipId);
+    });
+    document.getElementById('clearAllBtn').style.display = 'none';
+    filterTable();
+    clearActiveFilter();
+  }
+
+  function clearCurrentChipFilter() {
+    tempSelections.clear();
+    renderChipOptions(chipData[currentChipId].options, document.getElementById('chipFilterSearchInput').value);
+    updateChipFilterCount();
+  }
+
+  function filterTable() {
+    document.querySelectorAll('tbody tr').forEach(row => {
+      const visible = Object.entries(activeChipFilters).every(([chipId, selected]) => {
+        const attr = chipData[chipId].attr;
+        const rowVal = row.getAttribute(attr) || '';
+        const rowVals = rowVal.split(',').map(v => v.trim());
+        return [...selected].some(s => rowVals.some(r => r.toLowerCase() === s.toLowerCase()));
+      });
+      row.style.display = visible ? '' : 'none';
+    });
+    const hasActive = Object.keys(activeChipFilters).length > 0;
+    document.getElementById('clearAllBtn').style.display = hasActive ? '' : 'none';
+  }
+
+  // Close chip filter panel when clicking outside
+  document.addEventListener('click', function(e) {
+    const panel = document.getElementById('chipFilterPanel');
+    if (!panel.contains(e.target) && !e.target.closest('[id^="chip"]')) {
+      panel.classList.remove('open');
+    }
+  });
+  // ── END CHIP FILTER LOGIC ───────────────────────────────────────
+
+  renderBasicFilters();
+  renderAdvancedFilters();
+  renderSharedFilters();
+
+  // Auto-apply the default filter on page load
+  (function applyDefaultOnLoad() {
+    if (!defaultFilter) return;
+    const { section, index } = defaultFilter;
+    if (section === 'basic') applyBasicFilter(index);
+    else if (section === 'advanced') applyFilter(index);
+    else if (section === 'shared') applySharedFilter(index);
+  })();
+
+  function toggleSavedFilters() {
+    document.getElementById('savedFiltersDropdown').classList.toggle('open');
+  }
+
+  document.addEventListener('click', function(e) {
+    const wrap = document.querySelector('.saved-filters-wrap');
+    if (wrap && !wrap.contains(e.target)) {
+      document.getElementById('savedFiltersDropdown').classList.remove('open');
+    }
+  });
+
+  // ── DEFAULT FILTER HELPERS ────────────────────────────────────
+  function isDefaultFilter(section, index) {
+    return defaultFilter && defaultFilter.section === section && defaultFilter.index === index;
+  }
+
+  function toggleDefault(section, index) {
+    if (isDefaultFilter(section, index)) {
+      defaultFilter = null;
+    } else {
+      defaultFilter = { section, index };
+    }
+    renderBasicFilters();
+    renderAdvancedFilters();
+    renderSharedFilters();
+  }
+
+  function starHtml(section, index) {
+    const active = isDefaultFilter(section, index);
+    return `<span class="saved-filter-star${active ? ' is-default' : ''}" title="${active ? 'Remove default' : 'Set as default'}" onclick="event.stopPropagation();toggleDefault('${section}',${index})">
+      <i class="ti ti-star${active ? '-filled' : ''}"></i>
+    </span>`;
+  }
+
+  function defaultBadge(section, index) {
+    return isDefaultFilter(section, index) ? `<span class="default-badge">Default</span>` : '';
+  }
+  // ─────────────────────────────────────────────────────────────
+
+  function renderBasicFilters() {
+    const list = document.getElementById('basicFiltersList');
+    if (basicFilters.length === 0) {
+      list.innerHTML = '<div class="saved-filters-empty">No basic filters yet.</div>';
+      return;
+    }
+    list.innerHTML = basicFilters.map((f, i) => `
+      <div class="saved-filter-item" onclick="applyBasicFilter(${i})">
+        <i class="ti ti-${f.public ? 'world' : 'lock'}"></i>
+        <div class="saved-filter-meta">
+          <span class="saved-filter-name">${f.name}</span>${defaultBadge('basic', i)}
+        </div>
+        <div class="saved-filter-actions">${starHtml('basic', i)}</div>
+      </div>
+    `).join('');
+  }
+
+  function applyBasicFilter(index) {
+    const f = basicFilters[index];
+    activeBasicFilterIndex = index;
+    document.getElementById('savedFiltersDropdown').classList.remove('open');
+
+    // Clear existing filters
+    Object.keys(activeChipFilters).forEach(chipId => delete activeChipFilters[chipId]);
+    resetAllChips();
+
+    // Apply each filter — update both the visual chip and activeChipFilters
+    f.filters.forEach(({ chipId, label, value }) => {
+      activeChipFilters[chipId] = new Set([value]);
+      activateChip(chipId, label, value);
+    });
+
+    // Update table + show/hide clear all
+    filterTable();
+
+    const chip = document.getElementById('savedFiltersChip');
+    chip.innerHTML = `<i class="ti ti-bookmark" style="font-size:13px"></i> ${f.name} <span onclick="event.stopPropagation();clearActiveFilter()" style="margin-left:2px;opacity:0.6;font-size:11px">✕</span>`;
+    chip.style.borderColor = 'var(--purple)';
+    chip.style.color = 'var(--purple)';
+    chip.style.background = 'var(--purple-light)';
+  }
+
+  function renderAdvancedFilters() {
+    const list = document.getElementById('advancedFiltersList');
+    if (advancedFilters.length === 0) {
+      list.innerHTML = '<div class="saved-filters-empty">No advanced filters yet.</div>';
+      return;
+    }
+    list.innerHTML = advancedFilters.map((f, i) => `
+      <div class="saved-filter-item" onclick="applyFilter(${i})">
+        <i class="ti ti-${f.public ? 'world' : 'lock'}"></i>
+        <div class="saved-filter-meta">
+          <span class="saved-filter-name">${f.name}</span>${defaultBadge('advanced', i)}
+        </div>
+        <div class="saved-filter-actions">
+          ${starHtml('advanced', i)}
+          <span class="saved-filter-edit-btn" onclick="event.stopPropagation();openEditModal(${i})">
+            <i class="ti ti-pencil"></i>
+          </span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderSharedFilters() {
+    const list = document.getElementById('sharedFiltersList');
+    if (!list) return;
+    if (sharedFilters.length === 0) {
+      list.innerHTML = '<div class="saved-filters-empty">No shared filters.</div>';
+      return;
+    }
+    list.innerHTML = sharedFilters.map((f, i) => `
+      <div class="saved-filter-item" onclick="applySharedFilter(${i})">
+        <i class="ti ti-world"></i>
+        <div class="saved-filter-meta">
+          <span class="saved-filter-name">${f.name}</span>${defaultBadge('shared', i)}
+          <span class="saved-filter-by">by ${f.by}</span>
+        </div>
+        <div class="saved-filter-actions">
+          ${starHtml('shared', i)}
+          <span class="saved-filter-edit-btn" onclick="event.stopPropagation();openViewModal()">
+            <i class="ti ti-eye"></i>
+          </span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function toggleDropdown() {
+    const d = document.getElementById('dropdown');
+    d.classList.toggle('open');
+  }
+
+  document.addEventListener('click', function(e) {
+    const wrap = document.querySelector('.more-filters-wrap');
+    const d = document.getElementById('dropdown');
+    if (!wrap.contains(e.target)) {
+      d.classList.remove('open');
+    }
+  });
+
+  function filterItems() {
+    const q = document.getElementById('fieldSearch').value.toLowerCase();
+    document.querySelectorAll('.dropdown-item:not(.custom)').forEach(item => {
+      const label = (item.dataset.label || item.textContent).toLowerCase();
+      item.style.display = label.includes(q) ? '' : 'none';
+    });
+  }
+
+  function openModal() {
+    editingIndex = null;
+    document.getElementById('dropdown').classList.remove('open');
+    document.getElementById('modalTitle').textContent = 'Create advanced filter';
+    document.getElementById('filterNameInput').value = '';
+    document.querySelector('input[name="visibility"][value="private"]').checked = true;
+    document.getElementById('conditionRows').innerHTML = buildConditionRowHtml();
+    checkSaveReady();
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+
+  function applyFilter(index) {
+    const f = advancedFilters[index];
+    document.getElementById('savedFiltersDropdown').classList.remove('open');
+    const chip = document.getElementById('savedFiltersChip');
+    chip.innerHTML = `<i class="ti ti-bookmark" style="font-size:13px"></i> ${f.name} <span onclick="event.stopPropagation();clearActiveFilter()" style="margin-left:2px;opacity:0.6;font-size:11px">✕</span>`;
+    chip.style.borderColor = 'var(--purple)';
+    chip.style.color = 'var(--purple)';
+    chip.style.background = 'var(--purple-light)';
+  }
+
+  function applySharedFilter(index) {
+    const f = sharedFilters[index];
+    document.getElementById('savedFiltersDropdown').classList.remove('open');
+    const chip = document.getElementById('savedFiltersChip');
+    chip.innerHTML = `<i class="ti ti-bookmark" style="font-size:13px"></i> ${f.name} <span onclick="event.stopPropagation();clearActiveFilter()" style="margin-left:2px;opacity:0.6;font-size:11px">✕</span>`;
+    chip.style.borderColor = 'var(--purple)';
+    chip.style.color = 'var(--purple)';
+    chip.style.background = 'var(--purple-light)';
+  }
+
+  function clearActiveFilter() {
+    activeBasicFilterIndex = null;
+    const chip = document.getElementById('savedFiltersChip');
+    chip.innerHTML = `<i class="ti ti-bookmark" style="font-size:13px"></i> Saved filters <i class="ti ti-chevron-down" style="font-size:12px"></i>`;
+    chip.style.borderColor = '';
+    chip.style.color = '';
+    chip.style.background = '';
+    Object.keys(activeChipFilters).forEach(chipId => delete activeChipFilters[chipId]);
+    resetAllChips();
+    filterTable(); // resets table and hides clear all btn
+  }
+
+  function openEditModal(index) {
+    document.getElementById('savedFiltersDropdown').classList.remove('open');
+    const f = advancedFilters[index];
+    editingIndex = index;
+    document.getElementById('modalTitle').textContent = 'Edit advanced filter';
+    document.getElementById('filterNameInput').value = f.name;
+    document.querySelector(`input[name="visibility"][value="${f.public ? 'public' : 'private'}"]`).checked = true;
+    const rows = f.conditions.length ? f.conditions.map(c => buildConditionRowHtml(c)).join('') : buildConditionRowHtml();
+    document.getElementById('conditionRows').innerHTML = rows;
+    checkSaveReady();
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+
+  function openViewModal() {
+    document.getElementById('savedFiltersDropdown').classList.remove('open');
+    document.getElementById('viewModalOverlay').classList.add('open');
+  }
+
+  function closeViewModal() {
+    document.getElementById('viewModalOverlay').classList.remove('open');
+  }
+
+  function handleViewOverlayClick(e) {
+    if (e.target === document.getElementById('viewModalOverlay')) closeViewModal();
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  function checkSaveReady() {
+    const name = document.getElementById('filterNameInput').value.trim();
+    const conditions = getConditions();
+    const hasValidCondition = conditions.length > 0;
+    const ready = name !== '' && hasValidCondition;
+    document.getElementById('btnSave').disabled = !ready;
+    document.getElementById('btnSaveCaret').disabled = !ready;
+  }
+
+  function toggleSaveDropdown() {
+    document.getElementById('saveDropdown').classList.toggle('open');
+  }
+
+  document.addEventListener('click', function(e) {
+    const wrap = document.querySelector('.btn-save-wrap');
+    if (wrap && !wrap.contains(e.target)) {
+      document.getElementById('saveDropdown').classList.remove('open');
+    }
+  });
+
+  function handleSave(isPublic = false) {
+    const name = document.getElementById('filterNameInput').value.trim();
+    const isPublicVisibility = document.querySelector('input[name="visibility"][value="public"]').checked;
+    const conditions = getConditions();
+    if (name) {
+      const entry = { name, public: isPublic || isPublicVisibility, conditions };
+      if (editingIndex !== null) {
+        advancedFilters[editingIndex] = entry;
+      } else {
+        advancedFilters.push(entry);
+      }
+      renderAdvancedFilters();
+    }
+    document.getElementById('saveDropdown').classList.remove('open');
+    closeModal();
+    discardPreview();
+  }
+
+  function activatePreview() {
+    closeModal();
+    document.getElementById('previewBanner').classList.add('active');
+  }
+
+  function discardPreview() {
+    document.getElementById('previewBanner').classList.remove('active');
+  }
+
+  function addCondition() {
+    document.getElementById('conditionRows').insertAdjacentHTML('beforeend', buildConditionRowHtml());
+  }
+</script>
+</body>
+</html>

@@ -255,6 +255,14 @@
     border-radius: 4px; padding: 1px 5px; margin-left: 4px;
     flex-shrink: 0;
   }
+  .create-filter-btn {
+    display: flex; align-items: center; gap: 7px;
+    padding: 9px 14px;
+    font-size: 13px; font-weight: 600; color: var(--purple);
+    cursor: pointer; font-family: var(--font);
+    transition: background 0.1s;
+  }
+  .create-filter-btn:hover { background: var(--purple-light); }
   .saved-filters-empty {
     padding: 8px 14px 12px;
     font-size: 12px; color: var(--gray-text); font-style: italic;
@@ -392,13 +400,7 @@
     background: var(--white);
     white-space: nowrap;
   }
-  .save-filter-btn {
-    font-size: 12px; font-weight: 600;
-    color: var(--purple); cursor: pointer;
-    white-space: nowrap;
-    background: none; border: none; font-family: var(--font);
-  }
-  .add-line-btn {
+.add-line-btn {
     display: flex; align-items: center; gap: 4px;
     padding: 5px 10px;
     border: 1px solid var(--gray-border);
@@ -543,6 +545,14 @@
     display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
     margin-bottom: 8px; align-items: start;
   }
+  .cond-delete-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 28px; height: 32px; border-radius: 6px; flex-shrink: 0;
+    border: none; background: none; cursor: pointer;
+    color: var(--text-secondary); font-size: 14px;
+    transition: background 0.1s, color 0.1s;
+  }
+  .cond-delete-btn:hover { background: #fee2e2; color: #dc2626; }
   .cond-value-cell { position: relative; }
   /* Multi-select dropdown */
   .cond-multiselect { position: relative; }
@@ -740,18 +750,6 @@
     font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font);
   }
 
-  .filters-being-saved {
-    background: var(--gray-bg);
-    border-radius: 7px;
-    padding: 12px 14px;
-    display: flex; flex-direction: column; gap: 6px;
-  }
-  .filters-being-saved-row {
-    font-size: 13px; color: var(--text-secondary);
-  }
-  .filters-being-saved-empty {
-    font-size: 13px; color: var(--gray-text); font-style: italic;
-  }
 
   /* PREVIEW BANNER */
   .preview-banner {
@@ -864,14 +862,14 @@
         <i class="ti ti-chevron-down" style="font-size:12px"></i>
       </button>
       <div class="saved-filters-dropdown" id="savedFiltersDropdown">
-        <div class="saved-filter-section-label">Basic Filters</div>
-        <div id="basicFiltersList">
-          <div class="saved-filters-empty">No basic filters yet.</div>
+        <div class="create-filter-btn" onclick="openModal()">
+          <i class="ti ti-plus" style="font-size:13px"></i>
+          Create new filter
         </div>
-        <div class="saved-filters-divider"></div>
-        <div class="saved-filter-section-label">Advanced Filters</div>
+        <div class="saved-filters-divider" style="margin-top:4px"></div>
+        <div class="saved-filter-section-label">My Filters</div>
         <div id="advancedFiltersList">
-          <div class="saved-filters-empty">No advanced filters yet.</div>
+          <div class="saved-filters-empty">No filters yet.</div>
         </div>
         <div class="saved-filters-divider"></div>
         <div class="saved-filter-section-label">Shared With Me</div>
@@ -894,11 +892,6 @@
           <i class="ti ti-search"></i>
           <input type="text" placeholder="Search fields…" id="fieldSearch" oninput="filterItems()" />
         </div>
-        <div class="dropdown-item custom" onclick="openModal()">
-          <i class="ti ti-adjustments-horizontal"></i>
-          Create advanced filter
-        </div>
-        <div class="dropdown-divider" style="margin: 0;"></div>
         <div class="dropdown-scroll">
           <div class="dropdown-section-label">COA</div>
           <div class="dropdown-item" data-label="GL Account (Debit)">GL Account (Debit)</div>
@@ -926,7 +919,6 @@
       <span>Search vendor…</span>
     </div>
     <button class="clear-all-btn" id="clearAllBtn" onclick="clearAllFilters()" style="display:none">Clear all</button>
-    <button class="save-filter-btn" id="saveFilterBarBtn" onclick="saveQuickFilter()">Save filter</button>
 
     <div class="filter-actions">
       <button class="add-line-btn">
@@ -1096,7 +1088,7 @@
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title" id="modalTitle">
-        Create advanced filter
+        Create new filter
       </div>
       <button class="modal-close" onclick="closeModal()"><i class="ti ti-x"></i></button>
     </div>
@@ -1133,12 +1125,20 @@
             <div class="cond-value-cell">
               <input type="text" class="modal-input" placeholder="Value" disabled style="background:#f5f4f2;color:#bbb;cursor:not-allowed" />
             </div>
+            <button class="cond-delete-btn" onclick="deleteCondition(this)" title="Remove condition" style="display:none">
+              <i class="ti ti-x"></i>
+            </button>
           </div>
         </div>
-        <button class="add-condition-btn" onclick="addCondition()">
-          <i class="ti ti-plus" style="font-size:13px"></i>
-          Add condition
-        </button>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:4px">
+          <button class="add-condition-btn" onclick="addCondition()">
+            <i class="ti ti-plus" style="font-size:13px"></i>
+            Add condition
+          </button>
+          <button class="add-condition-btn" onclick="clearAllConditions()" style="color:var(--gray-text); font-weight:500">
+            Clear all
+          </button>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -1179,43 +1179,6 @@
     <div style="display:flex;gap:8px;align-items:center">
       <button class="chip-filter-clear" onclick="clearCurrentChipFilter()">Clear</button>
       <button class="chip-filter-ok" onclick="applyChipFilter()">OK</button>
-    </div>
-  </div>
-</div>
-
-<!-- SAVE BASIC FILTER MODAL -->
-<div class="modal-overlay" id="saveBasicModalOverlay" onclick="handleSaveBasicOverlayClick(event)">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Save Filter</div>
-      <button class="modal-close" onclick="closeSaveBasicModal()"><i class="ti ti-x"></i></button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-field">
-        <div class="modal-label">Name</div>
-        <input type="text" class="modal-input" id="basicFilterNameInput" placeholder="e.g. Engineering Q2 review" oninput="checkBasicSaveReady()" />
-      </div>
-      <div class="modal-field">
-        <div class="modal-label">Visibility</div>
-        <div class="visibility-row">
-          <label class="visibility-option">
-            <input type="radio" name="basicVisibility" value="private" checked /> Private
-          </label>
-          <label class="visibility-option">
-            <input type="radio" name="basicVisibility" value="public" /> Public (anyone in org)
-          </label>
-        </div>
-      </div>
-      <div class="modal-field">
-        <div class="modal-label">Filters being saved</div>
-        <div class="filters-being-saved" id="filtersBeSavedList">
-          <div class="filters-being-saved-empty">No filters active.</div>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeSaveBasicModal()">Cancel</button>
-      <button class="btn-save" id="btnSaveBasic" onclick="confirmSaveBasicFilter()" disabled>Save filter</button>
     </div>
   </div>
 </div>
@@ -1273,8 +1236,6 @@
     chipStatus:     'Status',
   };
 
-  let activeBasicFilterIndex = null;
-  let currentChipState = [];
 
   function activateChip(chipId, label, value) {
     const chip = document.getElementById(chipId);
@@ -1284,9 +1245,6 @@
     chip.style.borderColor = 'var(--purple)';
     chip.style.color = 'var(--purple)';
     chip.style.background = 'var(--purple-light)';
-    currentChipState = currentChipState.filter(c => c.chipId !== chipId);
-    currentChipState.push({ chipId, label, value });
-    updateSaveFilterBarBtn();
   }
 
   function resetChip(chipId) {
@@ -1296,8 +1254,6 @@
     chip.style.borderColor = '';
     chip.style.color = '';
     chip.style.background = '';
-    currentChipState = currentChipState.filter(c => c.chipId !== chipId);
-    updateSaveFilterBarBtn();
   }
 
   function resetAllChips() {
@@ -1309,76 +1265,8 @@
       chip.style.color = '';
       chip.style.background = '';
     });
-    currentChipState = [];
-    updateSaveFilterBarBtn();
   }
 
-  function updateSaveFilterBarBtn() {
-    // Button is always visible; no-op kept for future use
-  }
-
-  function saveQuickFilter() {
-    // Pre-fill name if updating an existing filter
-    const existingName = activeBasicFilterIndex !== null ? basicFilters[activeBasicFilterIndex].name : '';
-    document.getElementById('basicFilterNameInput').value = existingName;
-    document.querySelector('input[name="basicVisibility"][value="private"]').checked = true;
-
-    // Populate filters being saved
-    const list = document.getElementById('filtersBeSavedList');
-    if (currentChipState.length === 0) {
-      list.innerHTML = '<div class="filters-being-saved-empty">No filters active.</div>';
-    } else {
-      list.innerHTML = currentChipState.map(c =>
-        `<div class="filters-being-saved-row">${c.label}: ${c.value}</div>`
-      ).join('');
-    }
-
-    checkBasicSaveReady();
-    document.getElementById('saveBasicModalOverlay').classList.add('open');
-  }
-
-  function checkBasicSaveReady() {
-    const name = document.getElementById('basicFilterNameInput').value.trim();
-    document.getElementById('btnSaveBasic').disabled = name === '';
-  }
-
-  function confirmSaveBasicFilter() {
-    const name = document.getElementById('basicFilterNameInput').value.trim();
-    const isPublic = document.querySelector('input[name="basicVisibility"][value="public"]').checked;
-    const entry = { name, public: isPublic, filters: currentChipState.map(c => ({ ...c })) };
-
-    if (activeBasicFilterIndex !== null) {
-      basicFilters[activeBasicFilterIndex] = entry;
-    } else {
-      basicFilters.push(entry);
-      activeBasicFilterIndex = basicFilters.length - 1;
-    }
-    renderBasicFilters();
-    closeSaveBasicModal();
-
-    // Update saved filters chip
-    const chip = document.getElementById('savedFiltersChip');
-    chip.innerHTML = `<i class="ti ti-bookmark" style="font-size:13px"></i> ${name} <span onclick="event.stopPropagation();clearActiveFilter()" style="margin-left:2px;opacity:0.6;font-size:11px">✕</span>`;
-    chip.style.borderColor = 'var(--purple)';
-    chip.style.color = 'var(--purple)';
-    chip.style.background = 'var(--purple-light)';
-    document.getElementById('saveFilterBarBtn').style.display = 'none';
-  }
-
-  function closeSaveBasicModal() {
-    document.getElementById('saveBasicModalOverlay').classList.remove('open');
-  }
-
-  function handleSaveBasicOverlayClick(e) {
-    if (e.target === document.getElementById('saveBasicModalOverlay')) closeSaveBasicModal();
-  }
-
-  const basicFilters = [
-    { name: 'Pending Only', public: false,
-      filters: [{ chipId: 'chipStatus', label: 'Status', value: 'Pending' }] },
-    { name: 'AWS Vendors', public: false,
-      filters: [{ chipId: 'chipVendor', label: 'Vendor', value: 'Amazon Web Services Inc.' }] },
-  ];
   const advancedFilters = [
     { name: 'High-value pending', public: false, conditions: [
       { field: 'Adjusted Accrual', op: 'greater than', value: '100000' },
@@ -1502,7 +1390,34 @@
       <select class="modal-select" onchange="onCondFieldChange(this)">${fieldOpts}</select>
       <select class="modal-select" onchange="onCondOpChange(this)">${opOpts}</select>
       <div class="cond-value-cell">${buildValueCell(field, op, c.value||'')}</div>
+      <button class="cond-delete-btn" onclick="deleteCondition(this)" title="Remove condition">
+        <i class="ti ti-x"></i>
+      </button>
     </div>`;
+  }
+
+  function deleteCondition(btn) {
+    const rows = document.querySelectorAll('#conditionRows .condition-row');
+    if (rows.length <= 1) return; // never remove the last row
+    btn.closest('.condition-row').remove();
+    updateDeleteButtons();
+    checkSaveReady();
+  }
+
+  function clearAllConditions() {
+    document.getElementById('conditionRows').innerHTML = buildConditionRowHtml();
+    updateDeleteButtons();
+    checkSaveReady();
+  }
+
+  function updateDeleteButtons() {
+    const rows = document.querySelectorAll('#conditionRows .condition-row');
+    const multiple = rows.length > 1;
+    rows.forEach(row => {
+      const btn = row.querySelector('.cond-delete-btn');
+      if (btn) btn.style.display = multiple ? 'flex' : 'none';
+      row.style.gridTemplateColumns = multiple ? '1fr 1fr 1fr auto' : '1fr 1fr 1fr';
+    });
   }
 
   function onCondFieldChange(select) {
@@ -1717,7 +1632,6 @@
   });
   // ── END CHIP FILTER LOGIC ───────────────────────────────────────
 
-  renderBasicFilters();
   renderAdvancedFilters();
   renderSharedFilters();
 
@@ -1725,7 +1639,7 @@
   (function applyDefaultOnLoad() {
     if (!defaultFilter) return;
     const { section, index } = defaultFilter;
-    if (section === 'basic') applyBasicFilter(index);
+    if (section === 'basic') { /* basic filters removed */ }
     else if (section === 'advanced') applyFilter(index);
     else if (section === 'shared') applySharedFilter(index);
   })();
@@ -1752,7 +1666,6 @@
     } else {
       defaultFilter = { section, index };
     }
-    renderBasicFilters();
     renderAdvancedFilters();
     renderSharedFilters();
   }
@@ -1769,52 +1682,10 @@
   }
   // ─────────────────────────────────────────────────────────────
 
-  function renderBasicFilters() {
-    const list = document.getElementById('basicFiltersList');
-    if (basicFilters.length === 0) {
-      list.innerHTML = '<div class="saved-filters-empty">No basic filters yet.</div>';
-      return;
-    }
-    list.innerHTML = basicFilters.map((f, i) => `
-      <div class="saved-filter-item" onclick="applyBasicFilter(${i})">
-        <i class="ti ti-${f.public ? 'world' : 'lock'}"></i>
-        <div class="saved-filter-meta">
-          <span class="saved-filter-name">${f.name}</span>${defaultBadge('basic', i)}
-        </div>
-        <div class="saved-filter-actions">${starHtml('basic', i)}</div>
-      </div>
-    `).join('');
-  }
-
-  function applyBasicFilter(index) {
-    const f = basicFilters[index];
-    activeBasicFilterIndex = index;
-    document.getElementById('savedFiltersDropdown').classList.remove('open');
-
-    // Clear existing filters
-    Object.keys(activeChipFilters).forEach(chipId => delete activeChipFilters[chipId]);
-    resetAllChips();
-
-    // Apply each filter — update both the visual chip and activeChipFilters
-    f.filters.forEach(({ chipId, label, value }) => {
-      activeChipFilters[chipId] = new Set([value]);
-      activateChip(chipId, label, value);
-    });
-
-    // Update table + show/hide clear all
-    filterTable();
-
-    const chip = document.getElementById('savedFiltersChip');
-    chip.innerHTML = `<i class="ti ti-bookmark" style="font-size:13px"></i> ${f.name} <span onclick="event.stopPropagation();clearActiveFilter()" style="margin-left:2px;opacity:0.6;font-size:11px">✕</span>`;
-    chip.style.borderColor = 'var(--purple)';
-    chip.style.color = 'var(--purple)';
-    chip.style.background = 'var(--purple-light)';
-  }
-
   function renderAdvancedFilters() {
     const list = document.getElementById('advancedFiltersList');
     if (advancedFilters.length === 0) {
-      list.innerHTML = '<div class="saved-filters-empty">No advanced filters yet.</div>';
+      list.innerHTML = '<div class="saved-filters-empty">No filters yet.</div>';
       return;
     }
     list.innerHTML = advancedFilters.map((f, i) => `
@@ -1881,10 +1752,12 @@
   function openModal() {
     editingIndex = null;
     document.getElementById('dropdown').classList.remove('open');
-    document.getElementById('modalTitle').textContent = 'Create advanced filter';
+    document.getElementById('savedFiltersDropdown').classList.remove('open');
+    document.getElementById('modalTitle').textContent = 'Create new filter';
     document.getElementById('filterNameInput').value = '';
     document.querySelector('input[name="visibility"][value="private"]').checked = true;
     document.getElementById('conditionRows').innerHTML = buildConditionRowHtml();
+    updateDeleteButtons();
     checkSaveReady();
     document.getElementById('modalOverlay').classList.add('open');
   }
@@ -1910,7 +1783,6 @@
   }
 
   function clearActiveFilter() {
-    activeBasicFilterIndex = null;
     const chip = document.getElementById('savedFiltersChip');
     chip.innerHTML = `<i class="ti ti-bookmark" style="font-size:13px"></i> Saved filters <i class="ti ti-chevron-down" style="font-size:12px"></i>`;
     chip.style.borderColor = '';
@@ -1925,11 +1797,12 @@
     document.getElementById('savedFiltersDropdown').classList.remove('open');
     const f = advancedFilters[index];
     editingIndex = index;
-    document.getElementById('modalTitle').textContent = 'Edit advanced filter';
+    document.getElementById('modalTitle').textContent = 'Edit filter';
     document.getElementById('filterNameInput').value = f.name;
     document.querySelector(`input[name="visibility"][value="${f.public ? 'public' : 'private'}"]`).checked = true;
     const rows = f.conditions.length ? f.conditions.map(c => buildConditionRowHtml(c)).join('') : buildConditionRowHtml();
     document.getElementById('conditionRows').innerHTML = rows;
+    updateDeleteButtons();
     checkSaveReady();
     document.getElementById('modalOverlay').classList.add('open');
   }
@@ -2004,6 +1877,7 @@
 
   function addCondition() {
     document.getElementById('conditionRows').insertAdjacentHTML('beforeend', buildConditionRowHtml());
+    updateDeleteButtons();
   }
 </script>
 </body>

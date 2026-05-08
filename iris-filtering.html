@@ -618,11 +618,10 @@
   }
   .btn-preview:hover { background: var(--purple-light); }
 
-  .btn-save-wrap { position: relative; display: flex; }
   .btn-save {
-    padding: 7px 14px;
+    padding: 7px 16px;
     background: var(--purple); color: white;
-    border: none; border-radius: 7px 0 0 7px;
+    border: none; border-radius: 7px;
     font-size: 13px; font-weight: 600; font-family: var(--font);
     cursor: pointer;
     transition: background 0.15s;
@@ -633,44 +632,6 @@
     cursor: not-allowed;
     opacity: 1;
   }
-  .btn-save-caret {
-    padding: 7px 9px;
-    background: var(--purple); color: white;
-    border: none; border-left: 1px solid rgba(255,255,255,0.25);
-    border-radius: 0 7px 7px 0;
-    font-size: 13px; cursor: pointer;
-    display: flex; align-items: center;
-    transition: background 0.15s;
-  }
-  .btn-save-caret:hover { background: #4540A0; }
-  .btn-save-caret:disabled {
-    background: #C5C1F0;
-    cursor: not-allowed;
-  }
-  .save-dropdown {
-    display: none;
-    position: absolute;
-    bottom: calc(100% + 6px);
-    right: 0;
-    background: var(--white);
-    border: 1px solid var(--gray-border);
-    border-radius: 8px;
-    min-width: 180px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
-    z-index: 100;
-    overflow: hidden;
-  }
-  .save-dropdown.open { display: block; }
-  .save-dropdown-item {
-    display: flex; align-items: center; gap: 8px;
-    padding: 9px 14px;
-    font-size: 13px; font-family: var(--font);
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: background 0.1s;
-  }
-  .save-dropdown-item:hover { background: var(--gray-bg); }
-  .save-dropdown-item i { font-size: 15px; color: var(--text-secondary); }
 
   /* VISIBILITY RADIO */
   .visibility-row {
@@ -935,7 +896,7 @@
     <span>Previewing filter — results are not saved.</span>
     <div class="preview-banner-actions">
       <button class="btn-preview-discard" onclick="discardPreview()">Discard</button>
-      <button class="btn-preview-save" onclick="openSaveOptions()">Save</button>
+      <button class="btn-preview-save" onclick="handleSave()">Save</button>
     </div>
   </div>
 
@@ -1101,10 +1062,10 @@
         <div class="modal-label">Visibility</div>
         <div class="visibility-row">
           <label class="visibility-option">
-            <input type="radio" name="visibility" value="private" checked /> Private
+            <input type="radio" name="visibility" value="private" checked onchange="checkSaveReady()" /> Private
           </label>
           <label class="visibility-option">
-            <input type="radio" name="visibility" value="public" /> Public (anyone in org)
+            <input type="radio" name="visibility" value="public" onchange="checkSaveReady()" /> Public (anyone in org)
           </label>
         </div>
       </div>
@@ -1147,18 +1108,7 @@
         <i class="ti ti-eye" style="font-size:14px"></i>
         Preview
       </button>
-      <div class="btn-save-wrap">
-        <button class="btn-save" id="btnSave" onclick="handleSave()" disabled>Save filter</button>
-        <button class="btn-save-caret" id="btnSaveCaret" onclick="toggleSaveDropdown()" disabled>
-          <i class="ti ti-chevron-up" style="font-size:13px"></i>
-        </button>
-        <div class="save-dropdown" id="saveDropdown">
-          <div class="save-dropdown-item" onclick="handleSave(true)">
-            <i class="ti ti-world"></i>
-            Save publicly (anyone in org)
-          </div>
-        </div>
-      </div>
+      <button class="btn-save" id="btnSave" onclick="handleSave()" disabled>Save filter</button>
     </div>
   </div>
 </div>
@@ -1269,12 +1219,12 @@
 
   const advancedFilters = [
     { name: 'High-value pending', public: false, conditions: [
-      { field: 'Adjusted Accrual', op: 'greater than', value: '100000' },
-      { field: 'Status', op: 'is', value: 'Pending' },
+      { field: 'Adjusted Accrual', op: 'Is greater than', value: '100000' },
+      { field: 'Status', op: 'Is equals', value: 'Pending' },
     ]},
     { name: 'Reviewed — Honeycomb US', public: true, conditions: [
-      { field: 'Status', op: 'is', value: 'Reviewed' },
-      { field: 'Subsidiary', op: 'is', value: 'Honeycomb US' },
+      { field: 'Status', op: 'Is equals', value: 'Reviewed' },
+      { field: 'Subsidiary', op: 'Is equals', value: 'Honeycomb US' },
     ]},
   ];
   const sharedFilters = [
@@ -1284,6 +1234,7 @@
   // { section: 'basic'|'advanced'|'shared', index: number }
   let defaultFilter = null;
   let editingIndex = null;
+  let originalFilter = null; // snapshot of filter state when edit modal opens
 
   // ── ADVANCED FILTER CONDITION ROW LOGIC ───────────────────────
 
@@ -1335,7 +1286,7 @@
       return `<input type="text" class="modal-input" placeholder="${ph}" disabled />`;
     }
     if (mode === 'multiselect') {
-      const selected = value ? value.split(',').map(v => v.trim()).filter(Boolean) : [];
+      const selected = value ? value.split('|').map(v => v.trim()).filter(Boolean) : [];
       const opts = (fieldEnumValues[field] || []).map(v => {
         const chk = selected.includes(v) ? 'checked' : '';
         return `<label class="cond-ms-option"><input type="checkbox" ${chk} value="${v}" onchange="updateCondMsLabel(this)" />${v}</label>`;
@@ -1488,10 +1439,10 @@
       } else if (mode === 'multiselect') {
         const checked = [...row.querySelectorAll('.cond-ms-option input:checked')].map(cb => cb.value);
         if (!checked.length) return null;
-        value = checked.join(', ');
+        value = checked.join('|');
       } else if (mode === 'between') {
         const inputs = row.querySelectorAll('.cond-between input');
-        if (!inputs[0] || (!inputs[0].value && !inputs[1].value)) return null;
+        if (!inputs[0] || !inputs[0].value || !inputs[1].value) return null;
         value = `${inputs[0].value}|${inputs[1].value}`;
       } else if (mode !== 'empty') {
         const inp = row.querySelector('.cond-value-cell input');
@@ -1523,6 +1474,7 @@
 
   function openChipFilter(chipId, event) {
     event.stopPropagation();
+    document.getElementById('savedFiltersDropdown').classList.remove('open');
     const panel = document.getElementById('chipFilterPanel');
     // Toggle off if same chip clicked again
     if (panel.classList.contains('open') && currentChipId === chipId) {
@@ -1598,9 +1550,13 @@
       delete activeChipFilters[chipId];
       resetChip(chipId);
     });
-    document.getElementById('clearAllBtn').style.display = 'none';
-    filterTable();
-    clearActiveFilter();
+    filterTable(); // hides Clear All, resets table
+    // Reset the saved filters chip without triggering another filterTable call
+    const chip = document.getElementById('savedFiltersChip');
+    chip.innerHTML = `<i class="ti ti-bookmark" style="font-size:13px"></i> Saved filters <i class="ti ti-chevron-down" style="font-size:12px"></i>`;
+    chip.style.borderColor = '';
+    chip.style.color = '';
+    chip.style.background = '';
   }
 
   function clearCurrentChipFilter() {
@@ -1639,8 +1595,7 @@
   (function applyDefaultOnLoad() {
     if (!defaultFilter) return;
     const { section, index } = defaultFilter;
-    if (section === 'basic') { /* basic filters removed */ }
-    else if (section === 'advanced') applyFilter(index);
+    if (section === 'advanced') applyFilter(index);
     else if (section === 'shared') applySharedFilter(index);
   })();
 
@@ -1751,6 +1706,7 @@
 
   function openModal() {
     editingIndex = null;
+    originalFilter = null; // create mode — no snapshot needed
     document.getElementById('dropdown').classList.remove('open');
     document.getElementById('savedFiltersDropdown').classList.remove('open');
     document.getElementById('modalTitle').textContent = 'Create new filter';
@@ -1762,24 +1718,62 @@
     document.getElementById('modalOverlay').classList.add('open');
   }
 
-  function applyFilter(index) {
-    const f = advancedFilters[index];
-    document.getElementById('savedFiltersDropdown').classList.remove('open');
+  // Map filter field names to data attributes for table filtering
+  const fieldToAttr = {
+    'Vendor':     'data-vendor',
+    'Subsidiary': 'data-subsidiary',
+    'Department': 'data-department',
+    'Status':     'data-status',
+  };
+
+  function applyConditionsToTable(conditions) {
+    document.querySelectorAll('tbody tr').forEach(row => {
+      const visible = conditions.every(c => {
+        const attr = fieldToAttr[c.field];
+        if (!attr) return true; // non-mappable fields (Adjusted Accrual etc.) — show all
+        const rowVal = (row.getAttribute(attr) || '').toLowerCase();
+        const rowVals = rowVal.split(',').map(v => v.trim());
+        const op = c.op;
+        const filterVals = c.value.split('|').map(v => v.trim().toLowerCase());
+        if (op === 'Is empty') return rowVal === '';
+        if (op === 'Is not empty') return rowVal !== '';
+        if (op === 'Is equals') return filterVals.some(fv => rowVals.includes(fv));
+        if (op === 'Is not equals') return !filterVals.some(fv => rowVals.includes(fv));
+        if (op === 'Contains') return filterVals.some(fv => rowVal.includes(fv));
+        if (op === 'Does not contain') return !filterVals.some(fv => rowVal.includes(fv));
+        if (op === 'Starts with') return filterVals.some(fv => rowVal.startsWith(fv));
+        return true;
+      });
+      row.style.display = visible ? '' : 'none';
+    });
+  }
+
+  function activateSavedFilterChip(name) {
     const chip = document.getElementById('savedFiltersChip');
-    chip.innerHTML = `<i class="ti ti-bookmark" style="font-size:13px"></i> ${f.name} <span onclick="event.stopPropagation();clearActiveFilter()" style="margin-left:2px;opacity:0.6;font-size:11px">✕</span>`;
+    chip.innerHTML = `<i class="ti ti-bookmark" style="font-size:13px"></i> ${name} <span onclick="event.stopPropagation();clearActiveFilter()" style="margin-left:2px;opacity:0.6;font-size:11px">✕</span>`;
     chip.style.borderColor = 'var(--purple)';
     chip.style.color = 'var(--purple)';
     chip.style.background = 'var(--purple-light)';
   }
 
+  function applyFilter(index) {
+    const f = advancedFilters[index];
+    document.getElementById('savedFiltersDropdown').classList.remove('open');
+    // Clear chip filters so they don't conflict
+    Object.keys(activeChipFilters).forEach(chipId => delete activeChipFilters[chipId]);
+    resetAllChips();
+    applyConditionsToTable(f.conditions);
+    activateSavedFilterChip(f.name);
+  }
+
   function applySharedFilter(index) {
     const f = sharedFilters[index];
     document.getElementById('savedFiltersDropdown').classList.remove('open');
-    const chip = document.getElementById('savedFiltersChip');
-    chip.innerHTML = `<i class="ti ti-bookmark" style="font-size:13px"></i> ${f.name} <span onclick="event.stopPropagation();clearActiveFilter()" style="margin-left:2px;opacity:0.6;font-size:11px">✕</span>`;
-    chip.style.borderColor = 'var(--purple)';
-    chip.style.color = 'var(--purple)';
-    chip.style.background = 'var(--purple-light)';
+    Object.keys(activeChipFilters).forEach(chipId => delete activeChipFilters[chipId]);
+    resetAllChips();
+    // Shared filters have no stored conditions in this mockup — show all rows
+    document.querySelectorAll('tbody tr').forEach(row => row.style.display = '');
+    activateSavedFilterChip(f.name);
   }
 
   function clearActiveFilter() {
@@ -1797,6 +1791,12 @@
     document.getElementById('savedFiltersDropdown').classList.remove('open');
     const f = advancedFilters[index];
     editingIndex = index;
+    // Snapshot the original state for change detection
+    originalFilter = {
+      name: f.name,
+      isPublic: f.public,
+      conditions: JSON.stringify(f.conditions),
+    };
     document.getElementById('modalTitle').textContent = 'Edit filter';
     document.getElementById('filterNameInput').value = f.name;
     document.querySelector(`input[name="visibility"][value="${f.public ? 'public' : 'private'}"]`).checked = true;
@@ -1832,28 +1832,25 @@
     const name = document.getElementById('filterNameInput').value.trim();
     const conditions = getConditions();
     const hasValidCondition = conditions.length > 0;
-    const ready = name !== '' && hasValidCondition;
-    document.getElementById('btnSave').disabled = !ready;
-    document.getElementById('btnSaveCaret').disabled = !ready;
-  }
+    const isValid = name !== '' && hasValidCondition;
 
-  function toggleSaveDropdown() {
-    document.getElementById('saveDropdown').classList.toggle('open');
-  }
-
-  document.addEventListener('click', function(e) {
-    const wrap = document.querySelector('.btn-save-wrap');
-    if (wrap && !wrap.contains(e.target)) {
-      document.getElementById('saveDropdown').classList.remove('open');
+    let isDirty = true; // create mode: always dirty once valid
+    if (originalFilter) { // edit mode: only dirty if something changed
+      const isPublic = document.querySelector('input[name="visibility"][value="public"]').checked;
+      isDirty = name !== originalFilter.name
+             || isPublic !== originalFilter.isPublic
+             || JSON.stringify(conditions) !== originalFilter.conditions;
     }
-  });
 
-  function handleSave(isPublic = false) {
+    document.getElementById('btnSave').disabled = !(isValid && isDirty);
+  }
+
+  function handleSave() {
     const name = document.getElementById('filterNameInput').value.trim();
-    const isPublicVisibility = document.querySelector('input[name="visibility"][value="public"]').checked;
+    const isPublic = document.querySelector('input[name="visibility"][value="public"]').checked;
     const conditions = getConditions();
-    if (name) {
-      const entry = { name, public: isPublic || isPublicVisibility, conditions };
+    if (name && conditions.length > 0) {
+      const entry = { name, public: isPublic, conditions };
       if (editingIndex !== null) {
         advancedFilters[editingIndex] = entry;
       } else {
@@ -1861,7 +1858,6 @@
       }
       renderAdvancedFilters();
     }
-    document.getElementById('saveDropdown').classList.remove('open');
     closeModal();
     discardPreview();
   }
@@ -1878,6 +1874,7 @@
   function addCondition() {
     document.getElementById('conditionRows').insertAdjacentHTML('beforeend', buildConditionRowHtml());
     updateDeleteButtons();
+    checkSaveReady();
   }
 </script>
 </body>

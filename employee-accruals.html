@@ -129,7 +129,7 @@
     #content-employee-manager table td .ms-chips {
       justify-content: center;
     }
-    /* Journal Entries table — separator between JE groups */
+    /* Transactions table — separator between transaction groups */
     #je-tbody tr.je-group-start td {
       border-top: 2px solid #e2e8f0 !important;
     }
@@ -683,14 +683,15 @@
                   <th class="bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Employee Name</th>
                   <th class="bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap"><span class="col-info">Program<span class="col-info-icon" onmouseenter="showColTooltip(this,'Programs that employees qualify for, based on eligibility rules.')" onmouseleave="hideColTooltip()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span></span></th>
                   <th class="bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Email</th>
-                  <th class="bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Salary</th>
+                  <th class="bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Annual Salary</th>
+                  <th class="bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Currency</th>
                   <th class="bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Hire Date</th>
+                  <th class="bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Termination Date</th>
                   <th class="bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Employee Status</th>
                   <th class="bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Employee Type</th>
                   <th class="bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Department</th>
                   <th class="bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Subsidiary</th>
                   <th class="bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Location</th>
-                  <th class="bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Currency</th>
                   <th class="bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Eligible</th>
                   <th class="bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Actions</th>
                 </tr>
@@ -703,13 +704,14 @@
                   <td class="px-2 py-2.5" data-program="Annual Performance Bonus"><span class="inline-flex items-center text-[11px] font-medium px-1.5 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200 whitespace-nowrap">Annual Performance Bonus</span></td>
                   <td class="px-2 py-2.5"><input type="text" value="j.anderson@company.com" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><input type="text" value="120,000.00" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>USD</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option>SGD</option></select></td>
                   <td class="px-2 py-2.5"><input type="date" value="2022-03-14" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><input type="date" value="" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Active</option><option>Pending Start</option><option>Inactive</option><option>Terminated</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>Full Time</option><option>Part Time</option><option>Contract</option><option>Intern</option><option>Temporary</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Engineering</option><option>Finance</option><option>HR</option><option>Sales</option><option>Marketing</option><option>Operations</option><option>Legal</option><option>Product</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>US Corp</option><option>UK Ltd</option><option>Canada Inc</option><option>Australia Pty</option><option>Singapore Pte</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>New York</option><option>San Francisco</option><option>London</option><option>Toronto</option><option>Sydney</option><option>Singapore</option><option>Austin</option><option>Chicago</option></select></td>
-                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>USD</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option>SGD</option></select></td>
                   <td class="px-2 py-2.5"></td>
                   <td class="px-2 py-2.5 text-center"><div class="flex items-center justify-center gap-0.5"><button onclick="toggleEdit(this)" class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Edit"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></button><button class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Attach"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button><button onclick="openRowComments(this)" title="Add comment" class="relative row-comment-btn flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></button><button onclick="openHistoryPanelFromRow(this)" title="History" class="flex items-center p-1.5 rounded text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button></div></td>
                 </tr>
@@ -720,13 +722,14 @@
                   <td class="px-2 py-2.5" data-program="Signing Bonus"><span class="inline-flex items-center text-[11px] font-medium px-1.5 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200 whitespace-nowrap">Signing Bonus</span></td>
                   <td class="px-2 py-2.5"><input type="text" value="s.chen@company.com" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><input type="text" value="95,000.00" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>USD</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option>SGD</option></select></td>
                   <td class="px-2 py-2.5"><input type="date" value="2023-03-01" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><input type="date" value="" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Active</option><option>Pending Start</option><option>Inactive</option><option>Terminated</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>Full Time</option><option>Part Time</option><option>Contract</option><option>Intern</option><option>Temporary</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Engineering</option><option selected>Finance</option><option>HR</option><option>Sales</option><option>Marketing</option><option>Operations</option><option>Legal</option><option>Product</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>US Corp</option><option>UK Ltd</option><option>Canada Inc</option><option>Australia Pty</option><option>Singapore Pte</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>New York</option><option selected>San Francisco</option><option>London</option><option>Toronto</option><option>Sydney</option><option>Singapore</option><option>Austin</option><option>Chicago</option></select></td>
-                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>USD</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option>SGD</option></select></td>
                   <td class="px-2 py-2.5"></td>
                   <td class="px-2 py-2.5 text-center"><div class="flex items-center justify-center gap-0.5"><button onclick="toggleEdit(this)" class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Edit"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></button><button class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Attach"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button><button onclick="openRowComments(this)" title="Add comment" class="relative row-comment-btn flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></button><button onclick="openHistoryPanelFromRow(this)" title="History" class="flex items-center p-1.5 rounded text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button></div></td>
                 </tr>
@@ -737,13 +740,14 @@
                   <td class="px-2 py-2.5" data-program="Retention Bonus"><span class="inline-flex items-center text-[11px] font-medium px-1.5 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200 whitespace-nowrap">Retention Bonus</span></td>
                   <td class="px-2 py-2.5"><input type="text" value="m.torres@company.com" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><input type="text" value="85,000.00" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>USD</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option>SGD</option></select></td>
                   <td class="px-2 py-2.5"><input type="date" value="2022-06-15" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><input type="date" value="" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Active</option><option>Pending Start</option><option>Inactive</option><option>Terminated</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Full Time</option><option>Part Time</option><option selected>Contract</option><option>Intern</option><option>Temporary</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Engineering</option><option>Finance</option><option selected>HR</option><option>Sales</option><option>Marketing</option><option>Operations</option><option>Legal</option><option>Product</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>US Corp</option><option selected>UK Ltd</option><option>Canada Inc</option><option>Australia Pty</option><option>Singapore Pte</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>New York</option><option>San Francisco</option><option selected>London</option><option>Toronto</option><option>Sydney</option><option>Singapore</option><option>Austin</option><option>Chicago</option></select></td>
-                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>USD</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option>SGD</option></select></td>
                   <td class="px-2 py-2.5"></td>
                   <td class="px-2 py-2.5 text-center"><div class="flex items-center justify-center gap-0.5"><button onclick="toggleEdit(this)" class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Edit"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></button><button class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Attach"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button><button onclick="openRowComments(this)" title="Add comment" class="relative row-comment-btn flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></button><button onclick="openHistoryPanelFromRow(this)" title="History" class="flex items-center p-1.5 rounded text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button></div></td>
                 </tr>
@@ -754,13 +758,14 @@
                   <td class="px-2 py-2.5" data-program="Spot Bonus"><span class="inline-flex items-center text-[11px] font-medium px-1.5 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200 whitespace-nowrap">Spot Bonus</span></td>
                   <td class="px-2 py-2.5"><input type="text" value="e.johnson@company.com" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><input type="text" value="78,000.00" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>USD</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option>SGD</option></select></td>
                   <td class="px-2 py-2.5"><input type="date" value="2023-07-01" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><input type="date" value="" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Active</option><option>Pending Start</option><option>Inactive</option><option>Terminated</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>Full Time</option><option>Part Time</option><option>Contract</option><option>Intern</option><option>Temporary</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Engineering</option><option>Finance</option><option>HR</option><option selected>Sales</option><option>Marketing</option><option>Operations</option><option>Legal</option><option>Product</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>US Corp</option><option>UK Ltd</option><option selected>Canada Inc</option><option>Australia Pty</option><option>Singapore Pte</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>New York</option><option>San Francisco</option><option>London</option><option selected>Toronto</option><option>Sydney</option><option>Singapore</option><option>Austin</option><option>Chicago</option></select></td>
-                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>USD</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option>SGD</option></select></td>
                   <td class="px-2 py-2.5"></td>
                   <td class="px-2 py-2.5 text-center"><div class="flex items-center justify-center gap-0.5"><button onclick="toggleEdit(this)" class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Edit"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></button><button class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Attach"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button><button onclick="openRowComments(this)" title="Add comment" class="relative row-comment-btn flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></button><button onclick="openHistoryPanelFromRow(this)" title="History" class="flex items-center p-1.5 rounded text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button></div></td>
                 </tr>
@@ -771,13 +776,14 @@
                   <td class="px-2 py-2.5" data-program="Holiday Bonus"><span class="inline-flex items-center text-[11px] font-medium px-1.5 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200 whitespace-nowrap">Holiday Bonus</span></td>
                   <td class="px-2 py-2.5"><input type="text" value="d.kim@company.com" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><input type="text" value="90,000.00" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>USD</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option>SGD</option></select></td>
                   <td class="px-2 py-2.5"><input type="date" value="2021-11-01" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><input type="date" value="" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Active</option><option>Pending Start</option><option>Inactive</option><option>Terminated</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>Full Time</option><option>Part Time</option><option>Contract</option><option>Intern</option><option>Temporary</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Engineering</option><option>Finance</option><option>HR</option><option>Sales</option><option selected>Marketing</option><option>Operations</option><option>Legal</option><option>Product</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>US Corp</option><option>UK Ltd</option><option>Canada Inc</option><option>Australia Pty</option><option>Singapore Pte</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>New York</option><option>San Francisco</option><option>London</option><option>Toronto</option><option>Sydney</option><option>Singapore</option><option>Austin</option><option>Chicago</option></select></td>
-                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>USD</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option>SGD</option></select></td>
                   <td class="px-2 py-2.5"></td>
                   <td class="px-2 py-2.5 text-center"><div class="flex items-center justify-center gap-0.5"><button onclick="toggleEdit(this)" class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Edit"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></button><button class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Attach"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button><button onclick="openRowComments(this)" title="Add comment" class="relative row-comment-btn flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></button><button onclick="openHistoryPanelFromRow(this)" title="History" class="flex items-center p-1.5 rounded text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button></div></td>
                 </tr>
@@ -788,13 +794,14 @@
                   <td class="px-2 py-2.5" data-program="Annual Performance Bonus"><span class="inline-flex items-center text-[11px] font-medium px-1.5 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200 whitespace-nowrap">Annual Performance Bonus</span></td>
                   <td class="px-2 py-2.5"><input type="text" value="l.park@company.com" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><input type="text" value="105,000.00" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>USD</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option>SGD</option></select></td>
                   <td class="px-2 py-2.5"><input type="date" value="2023-09-15" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><input type="date" value="" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Active</option><option>Pending Start</option><option>Inactive</option><option>Terminated</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>Full Time</option><option>Part Time</option><option>Contract</option><option>Intern</option><option>Temporary</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Engineering</option><option>Finance</option><option>HR</option><option>Sales</option><option>Marketing</option><option selected>Operations</option><option>Legal</option><option>Product</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>US Corp</option><option>UK Ltd</option><option>Canada Inc</option><option selected>Australia Pty</option><option>Singapore Pte</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>New York</option><option>San Francisco</option><option>London</option><option>Toronto</option><option selected>Sydney</option><option>Singapore</option><option>Austin</option><option>Chicago</option></select></td>
-                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>USD</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option>SGD</option></select></td>
                   <td class="px-2 py-2.5"></td>
                   <td class="px-2 py-2.5 text-center"><div class="flex items-center justify-center gap-0.5"><button onclick="toggleEdit(this)" class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Edit"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></button><button class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Attach"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button><button onclick="openRowComments(this)" title="Add comment" class="relative row-comment-btn flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></button><button onclick="openHistoryPanelFromRow(this)" title="History" class="flex items-center p-1.5 rounded text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button></div></td>
                 </tr>
@@ -805,13 +812,14 @@
                   <td class="px-2 py-2.5" data-program="Annual Performance Bonus"><span class="inline-flex items-center text-[11px] font-medium px-1.5 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200 whitespace-nowrap">Annual Performance Bonus</span></td>
                   <td class="px-2 py-2.5"><input type="text" value="j.wilson@company.com" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><input type="text" value="110,000.00" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>USD</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option>SGD</option></select></td>
                   <td class="px-2 py-2.5"><input type="date" value="2022-08-01" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><input type="date" value="" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Active</option><option>Pending Start</option><option>Inactive</option><option>Terminated</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>Full Time</option><option>Part Time</option><option>Contract</option><option>Intern</option><option>Temporary</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>Engineering</option><option>Finance</option><option>HR</option><option>Sales</option><option>Marketing</option><option>Operations</option><option>Legal</option><option>Product</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>US Corp</option><option>UK Ltd</option><option>Canada Inc</option><option>Australia Pty</option><option>Singapore Pte</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>New York</option><option>San Francisco</option><option>London</option><option>Toronto</option><option>Sydney</option><option>Singapore</option><option>Austin</option><option>Chicago</option></select></td>
-                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>USD</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option>SGD</option></select></td>
                   <td class="px-2 py-2.5"></td>
                   <td class="px-2 py-2.5 text-center"><div class="flex items-center justify-center gap-0.5"><button onclick="toggleEdit(this)" class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Edit"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></button><button class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Attach"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button><button onclick="openRowComments(this)" title="Add comment" class="relative row-comment-btn flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></button><button onclick="openHistoryPanelFromRow(this)" title="History" class="flex items-center p-1.5 rounded text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button></div></td>
                 </tr>
@@ -822,13 +830,14 @@
                   <td class="px-2 py-2.5" data-program="Signing Bonus"><span class="inline-flex items-center text-[11px] font-medium px-1.5 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200 whitespace-nowrap">Signing Bonus</span></td>
                   <td class="px-2 py-2.5"><input type="text" value="a.patel@company.com" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><input type="text" value="82,000.00" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>USD</option><option>EUR</option><option selected>GBP</option><option>CAD</option><option>AUD</option><option>SGD</option></select></td>
                   <td class="px-2 py-2.5"><input type="date" value="2026-05-10" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><input type="date" value="" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Active</option><option>Pending Start</option><option>Inactive</option><option>Terminated</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>Full Time</option><option>Part Time</option><option>Contract</option><option>Intern</option><option>Temporary</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Engineering</option><option>Finance</option><option selected>HR</option><option>Sales</option><option>Marketing</option><option>Operations</option><option>Legal</option><option>Product</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>US Corp</option><option selected>UK Ltd</option><option>Canada Inc</option><option>Australia Pty</option><option>Singapore Pte</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>New York</option><option>San Francisco</option><option selected>London</option><option>Toronto</option><option>Sydney</option><option>Singapore</option><option>Austin</option><option>Chicago</option></select></td>
-                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>USD</option><option>EUR</option><option selected>GBP</option><option>CAD</option><option>AUD</option><option>SGD</option></select></td>
                   <td class="px-2 py-2.5"></td>
                   <td class="px-2 py-2.5 text-center"><div class="flex items-center justify-center gap-0.5"><button onclick="toggleEdit(this)" class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Edit"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></button><button class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Attach"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button><button onclick="openRowComments(this)" title="Add comment" class="relative row-comment-btn flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></button><button onclick="openHistoryPanelFromRow(this)" title="History" class="flex items-center p-1.5 rounded text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button></div></td>
                 </tr>
@@ -839,13 +848,14 @@
                   <td class="px-2 py-2.5" data-program="Spot Bonus"><span class="inline-flex items-center text-[11px] font-medium px-1.5 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200 whitespace-nowrap">Spot Bonus</span></td>
                   <td class="px-2 py-2.5"><input type="text" value="c.mendez@company.com" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><input type="text" value="74,000.00" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>USD</option><option>EUR</option><option>GBP</option><option selected>CAD</option><option>AUD</option><option>SGD</option></select></td>
                   <td class="px-2 py-2.5"><input type="date" value="2024-01-08" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><input type="date" value="" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Active</option><option>Pending Start</option><option>Inactive</option><option>Terminated</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>Full Time</option><option>Part Time</option><option>Contract</option><option>Intern</option><option>Temporary</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Engineering</option><option>Finance</option><option>HR</option><option selected>Sales</option><option>Marketing</option><option>Operations</option><option>Legal</option><option>Product</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>US Corp</option><option>UK Ltd</option><option selected>Canada Inc</option><option>Australia Pty</option><option>Singapore Pte</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>New York</option><option>San Francisco</option><option>London</option><option selected>Toronto</option><option>Sydney</option><option>Singapore</option><option>Austin</option><option>Chicago</option></select></td>
-                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>USD</option><option>EUR</option><option>GBP</option><option selected>CAD</option><option>AUD</option><option>SGD</option></select></td>
                   <td class="px-2 py-2.5"></td>
                   <td class="px-2 py-2.5 text-center"><div class="flex items-center justify-center gap-0.5"><button onclick="toggleEdit(this)" class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Edit"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></button><button class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Attach"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button><button onclick="openRowComments(this)" title="Add comment" class="relative row-comment-btn flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></button><button onclick="openHistoryPanelFromRow(this)" title="History" class="flex items-center p-1.5 rounded text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button></div></td>
                 </tr>
@@ -856,13 +866,14 @@
                   <td class="px-2 py-2.5" data-program="Retention Bonus"><span class="inline-flex items-center text-[11px] font-medium px-1.5 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200 whitespace-nowrap">Retention Bonus</span></td>
                   <td class="px-2 py-2.5"><input type="text" value="r.kim@company.com" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><input type="text" value="91,000.00" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>USD</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option selected>SGD</option></select></td>
                   <td class="px-2 py-2.5"><input type="date" value="2023-11-20" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
+                  <td class="px-2 py-2.5"><input type="date" value="" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Active</option><option>Pending Start</option><option>Inactive</option><option>Terminated</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option selected>Full Time</option><option>Part Time</option><option>Contract</option><option>Intern</option><option>Temporary</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>Engineering</option><option>Finance</option><option>HR</option><option>Sales</option><option selected>Marketing</option><option>Operations</option><option>Legal</option><option>Product</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>US Corp</option><option>UK Ltd</option><option>Canada Inc</option><option>Australia Pty</option><option selected>Singapore Pte</option></select></td>
                   <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>New York</option><option>San Francisco</option><option>London</option><option>Toronto</option><option>Sydney</option><option selected>Singapore</option><option>Austin</option><option>Chicago</option></select></td>
-                  <td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none"><option>USD</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option selected>SGD</option></select></td>
                   <td class="px-2 py-2.5"></td>
                   <td class="px-2 py-2.5 text-center"><div class="flex items-center justify-center gap-0.5"><button onclick="toggleEdit(this)" class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Edit"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></button><button class="flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150" title="Attach"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button><button onclick="openRowComments(this)" title="Add comment" class="relative row-comment-btn flex items-center p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></button><button onclick="openHistoryPanelFromRow(this)" title="History" class="flex items-center p-1.5 rounded text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button></div></td>
                 </tr>
@@ -917,14 +928,14 @@
             <div class="w-px h-5 bg-slate-200 shrink-0 mx-1"></div>
             <div class="relative">
               <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-              <input type="text" placeholder="Search by JE # or employee..." oninput="filterJournalEntries(this.value)" class="h-8 pl-7 pr-3 rounded-md border border-slate-300 text-[12px] text-slate-700 placeholder-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 transition-all w-56 bg-white" />
+              <input type="text" placeholder="Search by Txn # or employee..." oninput="filterJournalEntries(this.value)" class="h-8 pl-7 pr-3 rounded-md border border-slate-300 text-[12px] text-slate-700 placeholder-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 transition-all w-56 bg-white" />
             </div>
           </div>
           <!-- Right: View toggle + Create Transactions + Export -->
           <div class="flex items-center gap-3">
             <div class="flex items-center bg-white p-0.5 rounded-lg border border-slate-200 shadow-sm gap-0.5" id="tx-view-toggle">
               <button id="tx-analysis-btn" onclick="setTxView('analysis')" class="px-3 py-1 text-[11px] font-semibold rounded-md transition-all duration-150 outline-none text-slate-500 hover:text-slate-700 border border-transparent">Analysis View</button>
-              <button id="tx-je-btn" onclick="setTxView('je')" class="px-3 py-1 text-[11px] font-semibold rounded-md transition-all duration-150 outline-none bg-slate-100 text-emerald-600 shadow-sm border border-slate-200">JE View</button>
+              <button id="tx-je-btn" onclick="setTxView('je')" class="px-3 py-1 text-[11px] font-semibold rounded-md transition-all duration-150 outline-none bg-slate-100 text-emerald-600 shadow-sm border border-slate-200">Txn View</button>
             </div>
             <button onclick="createJournalEntries()" class="inline-flex items-center gap-1.5 h-8 px-3.5 rounded-md text-[12px] font-semibold text-white transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 bg-indigo-600 hover:bg-indigo-700 hover:shadow hover:-translate-y-px">
               Create Transactions
@@ -950,8 +961,8 @@
           <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mb-4 text-slate-400">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
           </div>
-          <p class="text-[13px] font-medium text-slate-500">No journal entries yet</p>
-          <p class="text-[12px] text-slate-400 mt-1">Go to Employee Manager and click the journal entry icon on an employee row to create one.</p>
+          <p class="text-[13px] font-medium text-slate-500">No transactions yet</p>
+          <p class="text-[12px] text-slate-400 mt-1">Go to Accrual Manager and click "Create Transactions" to generate transactions for eligible employees.</p>
         </div>
 
         <!-- Past period placeholder -->
@@ -959,7 +970,7 @@
           <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-auto w-full flex-1 flex flex-col">
             <table class="min-w-max w-full border-separate border-spacing-0 text-[12px]">
               <thead><tr>
-                <th class="sticky top-0 z-10 bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">JE #</th>
+                <th class="sticky top-0 z-10 bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Txn #</th>
                 <th class="sticky top-0 z-10 bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Date</th>
                 <th class="sticky top-0 z-10 bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Employee</th>
                 <th class="sticky top-0 z-10 bg-slate-50 border-b-2 border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">GL Account</th>
@@ -986,7 +997,7 @@
           </div>
         </div>
 
-        <!-- Employee Transactions Table (JE View) -->
+        <!-- Employee Transactions Table (Txn View) -->
         <div id="emp-tx-table-card" class="px-6 pb-5">
           <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-auto w-full">
             <table class="min-w-max w-full border-separate border-spacing-0 text-[12px]">
@@ -1001,13 +1012,13 @@
               </tr></thead>
               <tbody id="emp-tx-tbody">
 
-                <!-- EMP-001 John Anderson — Annual Perf Bonus + Signing Bonus -->
+                <!-- EMP-001 John Anderson — Annual Performance Bonus -->
                 <tr class="group [&>td]:border-b [&>td]:border-b-slate-200 bg-white hover:bg-indigo-50 cursor-pointer" data-emp-tx-id="EMP-001">
                   <td class="w-8 align-middle relative"><span class="absolute left-0 top-0 bottom-0 w-[3px] rounded-r-sm transition-colors duration-150 bg-transparent group-hover:bg-indigo-500"></span><div class="flex items-center justify-center pl-[3px]"><input class="w-3.5 h-3.5 accent-indigo-600 cursor-pointer" type="checkbox"></div></td>
                   <td class="px-2 py-1 text-slate-400 relative"><button onclick="toggleEmpTxRow('EMP-001')" class="transition-colors flex items-center text-slate-400 hover:text-indigo-500"><svg id="emp-tx-arrow-EMP-001" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200"><path d="M9 18l6-6-6-6"></path></svg></button></td>
                   <td class="px-3 py-2 whitespace-nowrap"><div class="text-[12px] font-medium text-slate-900">John Anderson</div><div class="text-[10px] text-slate-400 mt-0.5">EMP-001</div></td>
-                  <td class="px-3 py-2"><div class="flex items-center gap-1 flex-wrap"><span class="inline-flex items-center px-1.5 py-0.5 rounded-md border border-slate-200 text-[10px] font-medium bg-white text-slate-900 whitespace-nowrap">Annual Performance Bonus</span><span class="inline-flex items-center px-1.5 py-0.5 rounded-md border border-slate-200 text-[10px] font-medium bg-white text-slate-900 whitespace-nowrap">Signing Bonus</span></div></td>
-                  <td class="px-3 py-2 text-right tabular-nums font-medium text-slate-900 whitespace-nowrap">28,000<span class="text-slate-500 font-normal ml-1 text-[10px]">USD</span></td>
+                  <td class="px-3 py-2"><div class="flex items-center gap-1 flex-wrap"><span class="inline-flex items-center px-1.5 py-0.5 rounded-md border border-slate-200 text-[10px] font-medium bg-white text-slate-900 whitespace-nowrap">Annual Performance Bonus</span></div></td>
+                  <td class="px-3 py-2 text-right tabular-nums font-medium text-slate-900 whitespace-nowrap">18,000<span class="text-slate-500 font-normal ml-1 text-[10px]">USD</span></td>
                   <td class="px-3 py-1 text-center border-l border-slate-200 bg-white group-hover:bg-indigo-50" style="position:sticky;right:195px;z-index:10;"><div class="inline-flex items-center gap-1"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border whitespace-nowrap bg-slate-200 text-slate-700 border-slate-200"><span class="w-1.5 h-1.5 rounded-full shrink-0 bg-slate-400"></span>Pending</span></div></td>
                   <td class="px-3 py-1 bg-white group-hover:bg-indigo-50" style="position:sticky;right:0;z-index:10;"><div class="flex items-center justify-center gap-1"><button class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow hover:-translate-y-px transition-all duration-150 whitespace-nowrap"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>Review</button><button title="Attach file" class="relative flex items-center gap-1 p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button><button title="Add comment" class="relative flex items-center gap-1 p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></button><button onclick="openHistoryPanelFromRow(this)" title="History" class="flex items-center p-1.5 rounded text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button><div class="relative"><button class="p-1.5 text-slate-500 hover:text-indigo-500 hover:bg-indigo-50 rounded-md transition-all duration-150"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg></button></div></div></td>
                 </tr>
@@ -1020,7 +1031,7 @@
                         <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Department</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">Engineering</span>
                         <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Status</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">Active</span>
                         <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Type</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">Full Time</span>
-                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Hire Date</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">May 15, 2026</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Hire Date</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">March 14, 2022</span>
                         <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Salary</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">120,000 USD</span>
                         <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Subsidiary</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">US Corp</span>
                         <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Location</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">New York</span>
@@ -1031,17 +1042,16 @@
                         <div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Program Breakdown</p></div>
                         <div class="px-3 py-2 flex flex-col gap-1.5">
                           <div class="flex items-center justify-between gap-2"><span class="text-[10px] text-slate-500 uppercase tracking-wide shrink-0">Annual Performance Bonus</span><span class="text-[11px] font-medium tabular-nums whitespace-nowrap text-slate-900">18,000<span class="text-slate-500 font-normal ml-1 text-[10px]">USD</span></span></div>
-                          <div class="flex items-center justify-between gap-2"><span class="text-[10px] text-slate-500 uppercase tracking-wide shrink-0">Signing Bonus</span><span class="text-[11px] font-medium tabular-nums whitespace-nowrap text-slate-900">10,000<span class="text-slate-500 font-normal ml-1 text-[10px]">USD</span></span></div>
-                          <div class="border-t border-slate-100 pt-1 flex items-center justify-between gap-2"><span class="text-[10px] text-slate-600 uppercase tracking-wide font-semibold shrink-0">Total</span><span class="text-[11px] font-semibold tabular-nums whitespace-nowrap text-slate-900">28,000<span class="text-slate-500 font-normal ml-1 text-[10px]">USD</span></span></div>
+                          <div class="border-t border-slate-100 pt-1 flex items-center justify-between gap-2"><span class="text-[10px] text-slate-600 uppercase tracking-wide font-semibold shrink-0">Total</span><span class="text-[11px] font-semibold tabular-nums whitespace-nowrap text-slate-900">18,000<span class="text-slate-500 font-normal ml-1 text-[10px]">USD</span></span></div>
                         </div>
                       </div>
                       <div class="min-w-0 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
-                        <div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">JE Details</p></div>
+                        <div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Txn Details</p></div>
                         <div class="px-3 py-2 flex flex-col gap-1">
-                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">JE Date</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Txn Date</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
                           <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Reversal Date</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
-                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">JE Memo</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
-                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">JE Link</span><span class="text-[11px] font-medium text-slate-400">—</span></div>
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Txn Memo</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Txn Link</span><span class="text-[11px] font-medium text-slate-400">—</span></div>
                         </div>
                       </div>
                       <div class="min-w-0 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
@@ -1055,13 +1065,66 @@
                   </div></div></td>
                 </tr>
 
-                <!-- EMP-006 Lisa Park — Annual Perf Bonus + Signing Bonus -->
+                <!-- EMP-002 Sarah Chen — Annual Performance Bonus -->
+                <tr class="group [&>td]:border-b [&>td]:border-b-slate-200 bg-white hover:bg-indigo-50 cursor-pointer" data-emp-tx-id="EMP-002">
+                  <td class="w-8 align-middle relative"><span class="absolute left-0 top-0 bottom-0 w-[3px] rounded-r-sm transition-colors duration-150 bg-transparent group-hover:bg-indigo-500"></span><div class="flex items-center justify-center pl-[3px]"><input class="w-3.5 h-3.5 accent-indigo-600 cursor-pointer" type="checkbox"></div></td>
+                  <td class="px-2 py-1 text-slate-400 relative"><button onclick="toggleEmpTxRow('EMP-002')" class="transition-colors flex items-center text-slate-400 hover:text-indigo-500"><svg id="emp-tx-arrow-EMP-002" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200"><path d="M9 18l6-6-6-6"></path></svg></button></td>
+                  <td class="px-3 py-2 whitespace-nowrap"><div class="text-[12px] font-medium text-slate-900">Sarah Chen</div><div class="text-[10px] text-slate-400 mt-0.5">EMP-002</div></td>
+                  <td class="px-3 py-2"><div class="flex items-center gap-1 flex-wrap"><span class="inline-flex items-center px-1.5 py-0.5 rounded-md border border-slate-200 text-[10px] font-medium bg-white text-slate-900 whitespace-nowrap">Annual Performance Bonus</span></div></td>
+                  <td class="px-3 py-2 text-right tabular-nums font-medium text-slate-900 whitespace-nowrap">14,250<span class="text-slate-500 font-normal ml-1 text-[10px]">USD</span></td>
+                  <td class="px-3 py-1 text-center border-l border-slate-200 bg-white group-hover:bg-indigo-50" style="position:sticky;right:195px;z-index:10;"><div class="inline-flex items-center gap-1"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border whitespace-nowrap bg-slate-200 text-slate-700 border-slate-200"><span class="w-1.5 h-1.5 rounded-full shrink-0 bg-slate-400"></span>Pending</span></div></td>
+                  <td class="px-3 py-1 bg-white group-hover:bg-indigo-50" style="position:sticky;right:0;z-index:10;"><div class="flex items-center justify-center gap-1"><button class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow hover:-translate-y-px transition-all duration-150 whitespace-nowrap"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>Review</button><button title="Attach file" class="relative flex items-center gap-1 p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button><button title="Add comment" class="relative flex items-center gap-1 p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></button><button onclick="openHistoryPanelFromRow(this)" title="History" class="flex items-center p-1.5 rounded text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button><div class="relative"><button class="p-1.5 text-slate-500 hover:text-indigo-500 hover:bg-indigo-50 rounded-md transition-all duration-150"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg></button></div></div></td>
+                </tr>
+                <tr id="emp-tx-detail-EMP-002" class="border-b border-slate-200 hidden">
+                  <td colspan="7" class="p-0"><div class="px-4 py-3 border-t border-slate-200 border-l-4 bg-white border-l-indigo-400"><div class="flex gap-2" style="margin-right:280px;">
+                    <div class="shrink-0 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                      <div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Employee Details</p></div>
+                      <div class="px-3 py-2"><div class="inline-grid gap-x-4 gap-y-1" style="grid-template-columns:auto minmax(130px,1fr);">
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">ID</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">EMP-002</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Department</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">Finance</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Status</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">Active</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Type</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">Full Time</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Hire Date</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">March 1, 2023</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Salary</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">95,000 USD</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Subsidiary</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">US Corp</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Location</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">San Francisco</span>
+                      </div></div>
+                    </div>
+                    <div class="flex-1 min-w-0 grid grid-cols-2 gap-2">
+                      <div class="min-w-0 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                        <div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Program Breakdown</p></div>
+                        <div class="px-3 py-2 flex flex-col gap-1.5">
+                          <div class="flex items-center justify-between gap-2"><span class="text-[10px] text-slate-500 uppercase tracking-wide shrink-0">Annual Performance Bonus</span><span class="text-[11px] font-medium tabular-nums whitespace-nowrap text-slate-900">14,250<span class="text-slate-500 font-normal ml-1 text-[10px]">USD</span></span></div>
+                          <div class="border-t border-slate-100 pt-1 flex items-center justify-between gap-2"><span class="text-[10px] text-slate-600 uppercase tracking-wide font-semibold shrink-0">Total</span><span class="text-[11px] font-semibold tabular-nums whitespace-nowrap text-slate-900">14,250<span class="text-slate-500 font-normal ml-1 text-[10px]">USD</span></span></div>
+                        </div>
+                      </div>
+                      <div class="min-w-0 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                        <div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Txn Details</p></div>
+                        <div class="px-3 py-2 flex flex-col gap-1">
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Txn Date</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Reversal Date</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Txn Memo</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Txn Link</span><span class="text-[11px] font-medium text-slate-400">—</span></div>
+                        </div>
+                      </div>
+                      <div class="min-w-0 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                        <div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Audit</p></div>
+                        <div class="px-3 py-2 flex flex-col gap-1">
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Reviewed By</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Posted By</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div></div></td>
+                </tr>
+
+                <!-- EMP-006 Lisa Park — Retention Bonus -->
                 <tr class="group [&>td]:border-b [&>td]:border-b-slate-200 bg-white hover:bg-indigo-50 cursor-pointer" data-emp-tx-id="EMP-006">
                   <td class="w-8 align-middle relative"><span class="absolute left-0 top-0 bottom-0 w-[3px] rounded-r-sm transition-colors duration-150 bg-transparent group-hover:bg-indigo-500"></span><div class="flex items-center justify-center pl-[3px]"><input class="w-3.5 h-3.5 accent-indigo-600 cursor-pointer" type="checkbox"></div></td>
                   <td class="px-2 py-1 text-slate-400 relative"><button onclick="toggleEmpTxRow('EMP-006')" class="transition-colors flex items-center text-slate-400 hover:text-indigo-500"><svg id="emp-tx-arrow-EMP-006" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200"><path d="M9 18l6-6-6-6"></path></svg></button></td>
                   <td class="px-3 py-2 whitespace-nowrap"><div class="text-[12px] font-medium text-slate-900">Lisa Park</div><div class="text-[10px] text-slate-400 mt-0.5">EMP-006</div></td>
-                  <td class="px-3 py-2"><div class="flex items-center gap-1 flex-wrap"><span class="inline-flex items-center px-1.5 py-0.5 rounded-md border border-slate-200 text-[10px] font-medium bg-white text-slate-900 whitespace-nowrap">Annual Performance Bonus</span><span class="inline-flex items-center px-1.5 py-0.5 rounded-md border border-slate-200 text-[10px] font-medium bg-white text-slate-900 whitespace-nowrap">Signing Bonus</span></div></td>
-                  <td class="px-3 py-2 text-right tabular-nums font-medium text-slate-900 whitespace-nowrap">25,750<span class="text-slate-500 font-normal ml-1 text-[10px]">USD</span></td>
+                  <td class="px-3 py-2"><div class="flex items-center gap-1 flex-wrap"><span class="inline-flex items-center px-1.5 py-0.5 rounded-md border border-slate-200 text-[10px] font-medium bg-white text-slate-900 whitespace-nowrap">Retention Bonus</span></div></td>
+                  <td class="px-3 py-2 text-right tabular-nums font-medium text-slate-900 whitespace-nowrap">10,500<span class="text-slate-500 font-normal ml-1 text-[10px]">USD</span></td>
                   <td class="px-3 py-1 text-center border-l border-slate-200 bg-white group-hover:bg-indigo-50" style="position:sticky;right:195px;z-index:10;"><div class="inline-flex items-center gap-1"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border whitespace-nowrap bg-slate-200 text-slate-700 border-slate-200"><span class="w-1.5 h-1.5 rounded-full shrink-0 bg-slate-400"></span>Pending</span></div></td>
                   <td class="px-3 py-1 bg-white group-hover:bg-indigo-50" style="position:sticky;right:0;z-index:10;"><div class="flex items-center justify-center gap-1"><button class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow hover:-translate-y-px transition-all duration-150 whitespace-nowrap"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>Review</button><button title="Attach file" class="relative flex items-center gap-1 p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button><button title="Add comment" class="relative flex items-center gap-1 p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></button><button onclick="openHistoryPanelFromRow(this)" title="History" class="flex items-center p-1.5 rounded text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button><div class="relative"><button class="p-1.5 text-slate-500 hover:text-indigo-500 hover:bg-indigo-50 rounded-md transition-all duration-150"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg></button></div></div></td>
                 </tr>
@@ -1074,7 +1137,7 @@
                         <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Department</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">Operations</span>
                         <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Status</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">Active</span>
                         <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Type</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">Full Time</span>
-                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Hire Date</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">May 22, 2026</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Hire Date</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">September 15, 2023</span>
                         <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Salary</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">105,000 USD</span>
                         <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Subsidiary</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">Australia Pty</span>
                         <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Location</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">Sydney</span>
@@ -1084,18 +1147,17 @@
                       <div class="min-w-0 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
                         <div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Program Breakdown</p></div>
                         <div class="px-3 py-2 flex flex-col gap-1.5">
-                          <div class="flex items-center justify-between gap-2"><span class="text-[10px] text-slate-500 uppercase tracking-wide shrink-0">Annual Performance Bonus</span><span class="text-[11px] font-medium tabular-nums whitespace-nowrap text-slate-900">15,750<span class="text-slate-500 font-normal ml-1 text-[10px]">USD</span></span></div>
-                          <div class="flex items-center justify-between gap-2"><span class="text-[10px] text-slate-500 uppercase tracking-wide shrink-0">Signing Bonus</span><span class="text-[11px] font-medium tabular-nums whitespace-nowrap text-slate-900">10,000<span class="text-slate-500 font-normal ml-1 text-[10px]">USD</span></span></div>
-                          <div class="border-t border-slate-100 pt-1 flex items-center justify-between gap-2"><span class="text-[10px] text-slate-600 uppercase tracking-wide font-semibold shrink-0">Total</span><span class="text-[11px] font-semibold tabular-nums whitespace-nowrap text-slate-900">25,750<span class="text-slate-500 font-normal ml-1 text-[10px]">USD</span></span></div>
+                          <div class="flex items-center justify-between gap-2"><span class="text-[10px] text-slate-500 uppercase tracking-wide shrink-0">Retention Bonus</span><span class="text-[11px] font-medium tabular-nums whitespace-nowrap text-slate-900">10,500<span class="text-slate-500 font-normal ml-1 text-[10px]">USD</span></span></div>
+                          <div class="border-t border-slate-100 pt-1 flex items-center justify-between gap-2"><span class="text-[10px] text-slate-600 uppercase tracking-wide font-semibold shrink-0">Total</span><span class="text-[11px] font-semibold tabular-nums whitespace-nowrap text-slate-900">10,500<span class="text-slate-500 font-normal ml-1 text-[10px]">USD</span></span></div>
                         </div>
                       </div>
                       <div class="min-w-0 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
-                        <div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">JE Details</p></div>
+                        <div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Txn Details</p></div>
                         <div class="px-3 py-2 flex flex-col gap-1">
-                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">JE Date</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Txn Date</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
                           <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Reversal Date</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
-                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">JE Memo</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
-                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">JE Link</span><span class="text-[11px] font-medium text-slate-400">—</span></div>
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Txn Memo</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Txn Link</span><span class="text-[11px] font-medium text-slate-400">—</span></div>
                         </div>
                       </div>
                       <div class="min-w-0 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
@@ -1109,11 +1171,116 @@
                   </div></div></td>
                 </tr>
 
+                <!-- EMP-008 Aisha Patel — Signing Bonus -->
+                <tr class="group [&>td]:border-b [&>td]:border-b-slate-200 bg-white hover:bg-indigo-50 cursor-pointer" data-emp-tx-id="EMP-008">
+                  <td class="w-8 align-middle relative"><span class="absolute left-0 top-0 bottom-0 w-[3px] rounded-r-sm transition-colors duration-150 bg-transparent group-hover:bg-indigo-500"></span><div class="flex items-center justify-center pl-[3px]"><input class="w-3.5 h-3.5 accent-indigo-600 cursor-pointer" type="checkbox"></div></td>
+                  <td class="px-2 py-1 text-slate-400 relative"><button onclick="toggleEmpTxRow('EMP-008')" class="transition-colors flex items-center text-slate-400 hover:text-indigo-500"><svg id="emp-tx-arrow-EMP-008" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200"><path d="M9 18l6-6-6-6"></path></svg></button></td>
+                  <td class="px-3 py-2 whitespace-nowrap"><div class="text-[12px] font-medium text-slate-900">Aisha Patel</div><div class="text-[10px] text-slate-400 mt-0.5">EMP-008</div></td>
+                  <td class="px-3 py-2"><div class="flex items-center gap-1 flex-wrap"><span class="inline-flex items-center px-1.5 py-0.5 rounded-md border border-slate-200 text-[10px] font-medium bg-white text-slate-900 whitespace-nowrap">Signing Bonus</span></div></td>
+                  <td class="px-3 py-2 text-right tabular-nums font-medium text-slate-900 whitespace-nowrap">10,000<span class="text-slate-500 font-normal ml-1 text-[10px]">GBP</span></td>
+                  <td class="px-3 py-1 text-center border-l border-slate-200 bg-white group-hover:bg-indigo-50" style="position:sticky;right:195px;z-index:10;"><div class="inline-flex items-center gap-1"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border whitespace-nowrap bg-slate-200 text-slate-700 border-slate-200"><span class="w-1.5 h-1.5 rounded-full shrink-0 bg-slate-400"></span>Pending</span></div></td>
+                  <td class="px-3 py-1 bg-white group-hover:bg-indigo-50" style="position:sticky;right:0;z-index:10;"><div class="flex items-center justify-center gap-1"><button class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow hover:-translate-y-px transition-all duration-150 whitespace-nowrap"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>Review</button><button title="Attach file" class="relative flex items-center gap-1 p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button><button title="Add comment" class="relative flex items-center gap-1 p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></button><button onclick="openHistoryPanelFromRow(this)" title="History" class="flex items-center p-1.5 rounded text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button><div class="relative"><button class="p-1.5 text-slate-500 hover:text-indigo-500 hover:bg-indigo-50 rounded-md transition-all duration-150"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg></button></div></div></td>
+                </tr>
+                <tr id="emp-tx-detail-EMP-008" class="border-b border-slate-200 hidden">
+                  <td colspan="7" class="p-0"><div class="px-4 py-3 border-t border-slate-200 border-l-4 bg-white border-l-indigo-400"><div class="flex gap-2" style="margin-right:280px;">
+                    <div class="shrink-0 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                      <div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Employee Details</p></div>
+                      <div class="px-3 py-2"><div class="inline-grid gap-x-4 gap-y-1" style="grid-template-columns:auto minmax(130px,1fr);">
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">ID</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">EMP-008</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Department</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">HR</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Status</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">Active</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Type</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">Full Time</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Hire Date</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">May 10, 2026</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Salary</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">82,000 GBP</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Subsidiary</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">UK Ltd</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Location</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">London</span>
+                      </div></div>
+                    </div>
+                    <div class="flex-1 min-w-0 grid grid-cols-2 gap-2">
+                      <div class="min-w-0 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                        <div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Program Breakdown</p></div>
+                        <div class="px-3 py-2 flex flex-col gap-1.5">
+                          <div class="flex items-center justify-between gap-2"><span class="text-[10px] text-slate-500 uppercase tracking-wide shrink-0">Signing Bonus</span><span class="text-[11px] font-medium tabular-nums whitespace-nowrap text-slate-900">10,000<span class="text-slate-500 font-normal ml-1 text-[10px]">GBP</span></span></div>
+                          <div class="border-t border-slate-100 pt-1 flex items-center justify-between gap-2"><span class="text-[10px] text-slate-600 uppercase tracking-wide font-semibold shrink-0">Total</span><span class="text-[11px] font-semibold tabular-nums whitespace-nowrap text-slate-900">10,000<span class="text-slate-500 font-normal ml-1 text-[10px]">GBP</span></span></div>
+                        </div>
+                      </div>
+                      <div class="min-w-0 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                        <div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Txn Details</p></div>
+                        <div class="px-3 py-2 flex flex-col gap-1">
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Txn Date</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Reversal Date</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Txn Memo</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Txn Link</span><span class="text-[11px] font-medium text-slate-400">—</span></div>
+                        </div>
+                      </div>
+                      <div class="min-w-0 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                        <div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Audit</p></div>
+                        <div class="px-3 py-2 flex flex-col gap-1">
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Reviewed By</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Posted By</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div></div></td>
+                </tr>
+
+                <!-- EMP-010 Rachel Kim — Holiday Bonus -->
+                <tr class="group [&>td]:border-b [&>td]:border-b-slate-200 bg-white hover:bg-indigo-50 cursor-pointer" data-emp-tx-id="EMP-010">
+                  <td class="w-8 align-middle relative"><span class="absolute left-0 top-0 bottom-0 w-[3px] rounded-r-sm transition-colors duration-150 bg-transparent group-hover:bg-indigo-500"></span><div class="flex items-center justify-center pl-[3px]"><input class="w-3.5 h-3.5 accent-indigo-600 cursor-pointer" type="checkbox"></div></td>
+                  <td class="px-2 py-1 text-slate-400 relative"><button onclick="toggleEmpTxRow('EMP-010')" class="transition-colors flex items-center text-slate-400 hover:text-indigo-500"><svg id="emp-tx-arrow-EMP-010" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200"><path d="M9 18l6-6-6-6"></path></svg></button></td>
+                  <td class="px-3 py-2 whitespace-nowrap"><div class="text-[12px] font-medium text-slate-900">Rachel Kim</div><div class="text-[10px] text-slate-400 mt-0.5">EMP-010</div></td>
+                  <td class="px-3 py-2"><div class="flex items-center gap-1 flex-wrap"><span class="inline-flex items-center px-1.5 py-0.5 rounded-md border border-slate-200 text-[10px] font-medium bg-white text-slate-900 whitespace-nowrap">Holiday Bonus</span></div></td>
+                  <td class="px-3 py-2 text-right tabular-nums font-medium text-slate-900 whitespace-nowrap">1,500<span class="text-slate-500 font-normal ml-1 text-[10px]">SGD</span></td>
+                  <td class="px-3 py-1 text-center border-l border-slate-200 bg-white group-hover:bg-indigo-50" style="position:sticky;right:195px;z-index:10;"><div class="inline-flex items-center gap-1"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border whitespace-nowrap bg-slate-200 text-slate-700 border-slate-200"><span class="w-1.5 h-1.5 rounded-full shrink-0 bg-slate-400"></span>Pending</span></div></td>
+                  <td class="px-3 py-1 bg-white group-hover:bg-indigo-50" style="position:sticky;right:0;z-index:10;"><div class="flex items-center justify-center gap-1"><button class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow hover:-translate-y-px transition-all duration-150 whitespace-nowrap"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>Review</button><button title="Attach file" class="relative flex items-center gap-1 p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button><button title="Add comment" class="relative flex items-center gap-1 p-1.5 rounded text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></button><button onclick="openHistoryPanelFromRow(this)" title="History" class="flex items-center p-1.5 rounded text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all duration-150"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button><div class="relative"><button class="p-1.5 text-slate-500 hover:text-indigo-500 hover:bg-indigo-50 rounded-md transition-all duration-150"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg></button></div></div></td>
+                </tr>
+                <tr id="emp-tx-detail-EMP-010" class="border-b border-slate-200 hidden">
+                  <td colspan="7" class="p-0"><div class="px-4 py-3 border-t border-slate-200 border-l-4 bg-white border-l-indigo-400"><div class="flex gap-2" style="margin-right:280px;">
+                    <div class="shrink-0 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                      <div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Employee Details</p></div>
+                      <div class="px-3 py-2"><div class="inline-grid gap-x-4 gap-y-1" style="grid-template-columns:auto minmax(130px,1fr);">
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">ID</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">EMP-010</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Department</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">Marketing</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Status</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">Active</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Type</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">Full Time</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Hire Date</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">November 20, 2023</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Salary</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">91,000 SGD</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Subsidiary</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">Singapore Pte</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Location</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">Singapore</span>
+                      </div></div>
+                    </div>
+                    <div class="flex-1 min-w-0 grid grid-cols-2 gap-2">
+                      <div class="min-w-0 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                        <div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Program Breakdown</p></div>
+                        <div class="px-3 py-2 flex flex-col gap-1.5">
+                          <div class="flex items-center justify-between gap-2"><span class="text-[10px] text-slate-500 uppercase tracking-wide shrink-0">Holiday Bonus</span><span class="text-[11px] font-medium tabular-nums whitespace-nowrap text-slate-900">1,500<span class="text-slate-500 font-normal ml-1 text-[10px]">SGD</span></span></div>
+                          <div class="border-t border-slate-100 pt-1 flex items-center justify-between gap-2"><span class="text-[10px] text-slate-600 uppercase tracking-wide font-semibold shrink-0">Total</span><span class="text-[11px] font-semibold tabular-nums whitespace-nowrap text-slate-900">1,500<span class="text-slate-500 font-normal ml-1 text-[10px]">SGD</span></span></div>
+                        </div>
+                      </div>
+                      <div class="min-w-0 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                        <div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Txn Details</p></div>
+                        <div class="px-3 py-2 flex flex-col gap-1">
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Txn Date</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Reversal Date</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Txn Memo</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Txn Link</span><span class="text-[11px] font-medium text-slate-400">—</span></div>
+                        </div>
+                      </div>
+                      <div class="min-w-0 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                        <div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Audit</p></div>
+                        <div class="px-3 py-2 flex flex-col gap-1">
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Reviewed By</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                          <div class="flex items-start justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Posted By</span><span class="text-[11px] font-medium text-right shrink-0 text-slate-400">—</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div></div></td>
+                </tr>
 
               </tbody>
             </table>
             <div class="flex items-center px-4 py-2.5 border-t-2 border-slate-200 bg-slate-50 gap-3">
-              <p class="text-[11px] text-slate-500 tabular-nums">Showing <span class="font-semibold text-slate-700">1–2</span> of <span class="font-semibold text-slate-700">2</span> employees</p>
+              <p class="text-[11px] text-slate-500 tabular-nums">Showing <span class="font-semibold text-slate-700">1–5</span> of <span class="font-semibold text-slate-700">5</span> employees</p>
             </div>
           </div>
         </div>
@@ -1418,7 +1585,7 @@
                   <th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Employee ID</th>
                   <th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Name</th>
                   <th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Department</th>
-                  <th class="px-3 py-2 text-right font-semibold text-slate-500 uppercase tracking-wider">Salary</th>
+                  <th class="px-3 py-2 text-right font-semibold text-slate-500 uppercase tracking-wider">Annual Salary</th>
                 </tr></thead>
                 <tbody id="emp-import-preview-add-body" class="divide-y divide-slate-100"></tbody>
               </table>
@@ -1485,7 +1652,7 @@
                 <thead><tr class="bg-slate-50 border-b border-slate-200">
                   <th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Employee ID</th>
                   <th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Employee Name</th>
-                  <th class="px-3 py-2 text-right font-semibold text-slate-500 uppercase tracking-wider">Salary</th>
+                  <th class="px-3 py-2 text-right font-semibold text-slate-500 uppercase tracking-wider">Annual Salary</th>
                   <th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Changes</th>
                 </tr></thead>
                 <tbody id="emp-import-preview-update-body" class="divide-y divide-slate-100"></tbody>
@@ -1740,7 +1907,7 @@
     </div>
   </div>
 
-  <!-- Review JE Modal -->
+  <!-- Review Transaction Modal -->
   <div id="review-je-overlay" class="hidden fixed inset-0 z-40 bg-black/30 flex items-center justify-center" onclick="if(event.target===this)closeReviewModal()">
     <div class="relative z-50 bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-md mx-4">
       <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-200">
@@ -1759,7 +1926,7 @@
     </div>
   </div>
 
-  <!-- Reject JE Modal -->
+  <!-- Reject Transaction Modal -->
   <div id="reject-je-overlay" class="hidden fixed inset-0 z-40 bg-black/30 flex items-center justify-center" onclick="if(event.target===this)closeRejectModal()">
     <div class="relative z-50 bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-md mx-4">
       <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-200">
@@ -1779,17 +1946,17 @@
     </div>
   </div>
 
-  <!-- Submit JE Modal -->
+  <!-- Submit Transaction Modal -->
   <div id="submit-je-overlay" class="hidden fixed inset-0 z-40 bg-black/30 flex items-center justify-center" onclick="if(event.target===this)closeSubmitModal()">
     <div class="relative z-50 bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-md mx-4">
       <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-200">
-        <h3 class="text-[13px] font-semibold text-slate-900">Submit Journal Entry</h3>
+        <h3 class="text-[13px] font-semibold text-slate-900">Submit Transaction</h3>
         <button onclick="closeSubmitModal()" class="text-slate-400 hover:text-indigo-500 transition-colors p-0.5 rounded">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
       </div>
       <div class="px-5 py-4">
-        <p class="text-[12px] text-slate-500 leading-relaxed mb-4">You are about to submit this journal entry to the ERP. This action cannot be undone.</p>
+        <p class="text-[12px] text-slate-500 leading-relaxed mb-4">You are about to submit this transaction to the ERP as a journal entry. This action cannot be undone.</p>
         <div class="flex flex-col gap-3 mb-5">
           <div class="flex flex-col gap-1">
             <label class="text-[11px] font-semibold uppercase tracking-wider text-slate-500">JE Date</label>
@@ -1801,7 +1968,7 @@
           </div>
           <div class="flex flex-col gap-1">
             <label class="text-[11px] font-semibold uppercase tracking-wider text-slate-500">JE Memo</label>
-            <input id="submit-je-memo" type="text" placeholder="Enter JE memo..." class="px-3 py-1.5 rounded-md border border-slate-200 text-[12px] text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition-colors">
+            <input id="submit-je-memo" type="text" placeholder="Enter memo..." class="px-3 py-1.5 rounded-md border border-slate-200 text-[12px] text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition-colors">
           </div>
         </div>
         <div class="flex justify-end gap-2">
@@ -1930,13 +2097,13 @@
   // ─── Program Eligibility ─────────────────────────────────────────────────────
 
   var eligFields = {
-    'Employee Status': { type: 'categorical', col: 7,  options: ['Active', 'Pending Start', 'Inactive', 'Terminated'] },
-    'Employee Type':   { type: 'categorical', col: 8,  options: ['Full Time', 'Part Time', 'Contract', 'Intern', 'Temporary'] },
-    'Department':      { type: 'categorical', col: 9,  options: ['Engineering', 'Finance', 'HR', 'Sales', 'Marketing', 'Operations', 'Legal', 'Product'] },
-    'Subsidiary':      { type: 'categorical', col: 10, options: ['US Corp', 'UK Ltd', 'Canada Inc', 'Australia Pty', 'Singapore Pte'] },
-    'Location':        { type: 'categorical', col: 11, options: ['New York', 'San Francisco', 'London', 'Toronto', 'Sydney', 'Singapore', 'Austin', 'Chicago'] },
-    'Hire Date':       { type: 'date',        col: 6  },
-    'Salary':          { type: 'number',      col: 5  }
+    'Employee Status': { type: 'categorical', col: 9,  options: ['Active', 'Pending Start', 'Inactive', 'Terminated'] },
+    'Employee Type':   { type: 'categorical', col: 10, options: ['Full Time', 'Part Time', 'Contract', 'Intern', 'Temporary'] },
+    'Department':      { type: 'categorical', col: 11, options: ['Engineering', 'Finance', 'HR', 'Sales', 'Marketing', 'Operations', 'Legal', 'Product'] },
+    'Subsidiary':      { type: 'categorical', col: 12, options: ['US Corp', 'UK Ltd', 'Canada Inc', 'Australia Pty', 'Singapore Pte'] },
+    'Location':        { type: 'categorical', col: 13, options: ['New York', 'San Francisco', 'London', 'Toronto', 'Sydney', 'Singapore', 'Austin', 'Chicago'] },
+    'Hire Date':       { type: 'date',        col: 7  },
+    'Annual Salary':   { type: 'number',      col: 5  }
   };
 
   var progEligibility = {
@@ -2165,7 +2332,7 @@
     if (!td) return '';
     var el = td.querySelector('input, select');
     if (!el) return '';
-    if (field === 'Salary') return parseFloat((el.value || '').replace(/,/g, '')) || 0;
+    if (field === 'Annual Salary') return parseFloat((el.value || '').replace(/,/g, '')) || 0;
     return el.value || '';
   }
 
@@ -3319,6 +3486,29 @@
   var _jeShownCount = _jePageSize;
 
   initAutoAssignAllPrograms();
+  // Default EMP-005 and EMP-007 to ineligible
+  ['EMP-005','EMP-007'].forEach(function(empId) {
+    document.querySelectorAll('#employees-tbody tr').forEach(function(row) {
+      var idInput = row.querySelector('td:first-child input');
+      if (idInput && idInput.value.trim() === empId) {
+        var eligTd = row.querySelector('td:nth-last-child(2)');
+        if (eligTd && eligTd.querySelector('.bg-emerald-500')) {
+          eligTd.innerHTML = _empEligOffHtml();
+        }
+      }
+    });
+  });
+  // Default EMP-008 Spot Bonus row to ineligible (she is eligible for Signing Bonus only)
+  document.querySelectorAll('#employees-tbody tr').forEach(function(row) {
+    var idInput = row.querySelector('td:first-child input');
+    var progTd  = row.querySelector('td:nth-child(3)');
+    if (idInput && idInput.value.trim() === 'EMP-008' && progTd && progTd.dataset.program === 'Spot Bonus') {
+      var eligTd = row.querySelector('td:nth-last-child(2)');
+      if (eligTd && eligTd.querySelector('.bg-emerald-500')) {
+        eligTd.innerHTML = _empEligOffHtml();
+      }
+    }
+  });
   initProgramMultiSelects();
   progRenderPagination();
   empRenderPagination();
@@ -3330,16 +3520,18 @@
   // ── Journal Entries ────────────────────────────────────────────────────────
   // Pre-populated so Review/Submit/Reject actions work on the hardcoded rows
   var journalEntries = [
-    { id: 'JE-001', date: 'May 16, 2026', employeeId: 'EMP-001', employeeName: 'John Anderson',   status: 'Pending',
-      lines: [{ account: '5100 — Bonus Expense', debit: 15000, credit: 0 }, { account: '2100 — Bonus Accrual Payable', debit: 0, credit: 15000 }] },
-    { id: 'JE-002', date: 'May 16, 2026', employeeId: 'EMP-002', employeeName: 'Sarah Chen',       status: 'Pending',
+    { id: 'TXN-001', date: 'May 16, 2026', employeeId: 'EMP-001', employeeName: 'John Anderson',   status: 'Pending',
+      lines: [{ account: '5100 — Bonus Expense', debit: 18000, credit: 0 }, { account: '2100 — Bonus Accrual Payable', debit: 0, credit: 18000 }] },
+    { id: 'TXN-002', date: 'May 16, 2026', employeeId: 'EMP-002', employeeName: 'Sarah Chen',       status: 'Pending',
+      lines: [{ account: '5100 — Bonus Expense', debit: 14250, credit: 0 }, { account: '2100 — Bonus Accrual Payable', debit: 0, credit: 14250 }] },
+    { id: 'TXN-003', date: 'May 16, 2026', employeeId: 'EMP-006', employeeName: 'Lisa Park',        status: 'Pending',
+      lines: [{ account: '5130 — Retention Bonus Expense', debit: 10500, credit: 0 }, { account: '2120 — Deferred Compensation Payable', debit: 0, credit: 10500 }] },
+    { id: 'TXN-004', date: 'May 16, 2026', employeeId: 'EMP-008', employeeName: 'Aisha Patel',      status: 'Pending',
       lines: [{ account: '5110 — Signing Bonus Expense', debit: 10000, credit: 0 }, { account: '2110 — Bonus Payable', debit: 0, credit: 10000 }] },
-    { id: 'JE-003', date: 'May 16, 2026', employeeId: 'EMP-003', employeeName: 'Michael Torres',   status: 'Pending',
-      lines: [{ account: '5130 — Retention Bonus Expense', debit: 8000, credit: 0 }, { account: '2130 — Accrued Compensation', debit: 0, credit: 8000 }] },
-    { id: 'JE-004', date: 'May 16, 2026', employeeId: 'EMP-004', employeeName: 'Emily Johnson',    status: 'Pending',
-      lines: [{ account: '5120 — Spot Bonus Expense', debit: 2500, credit: 0 }, { account: '2120 — Deferred Compensation Payable', debit: 0, credit: 2500 }] }
+    { id: 'TXN-005', date: 'May 16, 2026', employeeId: 'EMP-010', employeeName: 'Rachel Kim',       status: 'Pending',
+      lines: [{ account: '5140 — Holiday Bonus Expense', debit: 1500, credit: 0 }, { account: '2100 — Bonus Accrual Payable', debit: 0, credit: 1500 }] }
   ];
-  var jeCounter = 5;
+  var jeCounter = 6;
 
   function getProgramData() {
     var map = {};
@@ -3496,8 +3688,8 @@
     var infoEl = document.getElementById('je-pagination-info');
     if (infoEl) {
       infoEl.innerHTML = total === 0
-        ? 'No journal entries found'
-        : 'Showing <span class="font-semibold text-slate-700">' + shown + '</span> of <span class="font-semibold text-slate-700">' + total + '</span> journal entr' + (total !== 1 ? 'ies' : 'y');
+        ? 'No transactions found'
+        : 'Showing <span class="font-semibold text-slate-700">' + shown + '</span> of <span class="font-semibold text-slate-700">' + total + '</span> transaction' + (total !== 1 ? 's' : '');
     }
     var btn = document.getElementById('je-load-more-btn');
     if (btn) { btn.style.display = ''; btn.disabled = shown >= total; }
@@ -3535,7 +3727,7 @@
   }
 
   function exportJournalEntries() {
-    var lines = ['JE #,Date,Employee,Employee ID,Account,Debit,Credit,Status'];
+    var lines = ['Txn #,Date,Employee,Employee ID,Account,Debit,Credit,Status'];
     journalEntries.forEach(function(je) {
       je.lines.forEach(function(line) {
         lines.push([je.id, je.date, je.employeeName, je.employeeId, line.account,
@@ -3562,7 +3754,7 @@
 
   function exportEmployees() {
     var rows = document.querySelectorAll('#employees-tbody tr');
-    var headers = ['Employee ID','Employee Name','Program','Email','Salary','Hire Date','Employee Status','Employee Type','Department','Subsidiary','Location','Currency'];
+    var headers = ['Employee ID','Employee Name','Program','Email','Annual Salary','Currency','Hire Date','Termination Date','Employee Status','Employee Type','Department','Subsidiary','Location'];
     var lines = [headers.join(',')];
     rows.forEach(function(row) {
       var tds = row.querySelectorAll('td');
@@ -3589,26 +3781,27 @@
       { csv: 'full_name',       suggested: 'Employee Name',   confidence: 'high'   },
       { csv: 'program_name',    suggested: 'Program',         confidence: 'high'   },
       { csv: 'email_address',   suggested: 'Email',           confidence: 'high'   },
+      { csv: 'annual_salary',   suggested: 'Salary',          confidence: 'medium' },
+      { csv: 'currency',        suggested: 'Currency',        confidence: 'high'   },
+      { csv: 'hire_date',       suggested: 'Hire Date',       confidence: 'high'   },
+      { csv: 'term_date',       suggested: 'Termination Date',confidence: 'medium' },
+      { csv: 'emp_status',      suggested: 'Employee Status', confidence: 'medium' },
+      { csv: 'emp_type',        suggested: 'Employee Type',   confidence: 'medium' },
       { csv: 'department',      suggested: 'Department',      confidence: 'high'   },
       { csv: 'entity',          suggested: 'Subsidiary',      confidence: 'low'    },
-      { csv: 'office_location', suggested: 'Location',        confidence: 'medium' },
-      { csv: 'currency',        suggested: 'Currency',        confidence: 'high'   },
-      { csv: 'annual_salary',   suggested: 'Salary',          confidence: 'medium' },
-      { csv: 'hire_date',       suggested: 'Hire Date',       confidence: 'high'   },
-      { csv: 'emp_status',      suggested: 'Employee Status', confidence: 'medium' },
-      { csv: 'emp_type',        suggested: 'Employee Type',   confidence: 'medium' }
+      { csv: 'office_location', suggested: 'Location',        confidence: 'medium' }
     ],
     update: [
       { csv: 'employee_id',     suggested: 'Employee ID',     confidence: 'high'   },
       { csv: 'dept',            suggested: 'Department',      confidence: 'medium' },
-      { csv: 'new_salary',      suggested: 'Salary',          confidence: 'low'    },
+      { csv: 'new_salary',      suggested: 'Annual Salary',   confidence: 'low'    },
       { csv: 'emp_status',      suggested: 'Employee Status', confidence: 'medium' },
       { csv: 'emp_type',        suggested: 'Employee Type',   confidence: 'medium' },
       { csv: 'program',         suggested: 'Program',         confidence: 'high'   }
     ]
   };
 
-  var _empFieldOptions = ['— Skip this field —','Employee ID','Employee Name','Email','Department','Subsidiary','Location','Currency','Program','Salary','Hire Date','Employee Status','Employee Type'];
+  var _empFieldOptions = ['— Skip this field —','Employee ID','Employee Name','Email','Department','Subsidiary','Location','Currency','Program','Annual Salary','Hire Date','Termination Date','Employee Status','Employee Type'];
 
   function openEmpImportModal() {
     setEmpImportMode('add');
@@ -3695,8 +3888,8 @@
       document.getElementById('emp-import-preview-add-count').textContent = sampleRows.length;
     } else {
       var sampleUpdates = [
-        { id: 'EMP-001', name: 'John Anderson',  salary: '125,000.00', changes: 'Salary: 120,000.00 → 125,000.00' },
-        { id: 'EMP-003', name: 'Michael Torres', salary: '90,000.00',  changes: 'Salary: 85,000.00 → 90,000.00'  }
+        { id: 'EMP-001', name: 'John Anderson',  salary: '125,000.00', changes: 'Annual Salary: 120,000.00 → 125,000.00' },
+        { id: 'EMP-003', name: 'Michael Torres', salary: '90,000.00',  changes: 'Annual Salary: 85,000.00 → 90,000.00'  }
       ];
       document.getElementById('emp-import-preview-update-body').innerHTML = sampleUpdates.map(function(r) {
         return '<tr class="hover:bg-slate-50">' +
@@ -3755,13 +3948,14 @@
           '<td class="px-2 py-2.5" data-program="' + (e.prog || '') + '">' + renderProgBadge(e.prog || '') + '</td>' +
           '<td class="px-2 py-2.5"><input type="text" value="' + e.email + '" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>' +
           '<td class="px-2 py-2.5"><input type="text" value="' + e.salary + '" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>' +
+          '<td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none">' + makeSelect(currOpts, e.curr) + '</select></td>' +
           '<td class="px-2 py-2.5"><input type="date" value="' + e.hire + '" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>' +
+          '<td class="px-2 py-2.5"><input type="date" value="" disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded px-2 py-1 focus:border-indigo-400 focus:bg-white focus:outline-none transition-all disabled:cursor-default" /></td>' +
           '<td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none">' + makeSelect(statOpts, e.status) + '</select></td>' +
           '<td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none">' + makeSelect(typeOpts, e.type) + '</select></td>' +
           '<td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none">' + makeSelect(deptOpts, e.dept) + '</select></td>' +
           '<td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none">' + makeSelect(subOpts, e.sub) + '</select></td>' +
           '<td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none">' + makeSelect(locOpts, e.loc) + '</select></td>' +
-          '<td class="px-2 py-2.5"><select disabled class="w-full text-[12px] text-slate-700 bg-transparent border border-transparent rounded-md px-2 py-1.5 focus:border-indigo-400 focus:outline-none transition-all disabled:cursor-default disabled:appearance-none">' + makeSelect(currOpts, e.curr) + '</select></td>' +
           '<td class="px-2 py-2.5">' + renderEligToggle(!!(e.prog)) + '</td>' +
           '<td class="px-2 py-2.5 text-center">' + actionBtns + '</td>';
         document.getElementById('employees-tbody').appendChild(tr);
@@ -3787,8 +3981,8 @@
   }
 
   function downloadEmpTemplate() {
-    var lines = ['Employee ID,Employee Name,Program,Email,Salary,Hire Date,Employee Status,Employee Type,Department,Subsidiary,Location,Currency',
-                 '"EMP-XXX","Full Name","Annual Performance Bonus","email@company.com","95000.00","2024-01-01","Active","Full Time","Engineering","US Corp","New York","USD"'];
+    var lines = ['Employee ID,Employee Name,Program,Email,Annual Salary,Currency,Hire Date,Termination Date,Employee Status,Employee Type,Department,Subsidiary,Location',
+                 '"EMP-XXX","Full Name","Annual Performance Bonus","email@company.com","95000.00","USD","2024-01-01","Active","Full Time","Engineering","US Corp","New York"'];
     var blob = new Blob([lines.join('\n')], { type: 'text/csv' });
     var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
     a.download = 'employees-template.csv'; a.click();
@@ -3834,7 +4028,7 @@
       if (!lines.length) return;
 
       jeCounter++;
-      var jeId = 'JE-' + String(jeCounter).padStart(3, '0');
+      var jeId = 'TXN-' + String(jeCounter).padStart(3, '0');
       var je = { id: jeId, date: dateStr, employeeId: empId, employeeName: empName, status: 'Pending', lines: lines };
       journalEntries.push(je);
       renderJE(je);
@@ -3852,12 +4046,12 @@
     var empId   = row.querySelector('td:nth-child(1) input').value.trim();
     var empName = row.querySelector('td:nth-child(2) input').value.trim();
     if (!eligTd || !eligTd.querySelector('.bg-emerald-500')) {
-      showToast(empName + ' is not eligible for a JE');
+      showToast(empName + ' is not eligible');
       return;
     }
     var alreadyExists = journalEntries.some(function(je) { return je.employeeId === empId; });
     if (alreadyExists) {
-      showToast('A JE already exists for ' + empName);
+      showToast('A transaction already exists for ' + empName);
       return;
     }
     var _empId = row.querySelector('td:nth-child(1) input') ? row.querySelector('td:nth-child(1) input').value.trim() : '';
@@ -3884,12 +4078,12 @@
     var today = new Date();
     var dateStr = today.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     jeCounter++;
-    var jeId = 'JE-' + String(jeCounter).padStart(3, '0');
+    var jeId = 'TXN-' + String(jeCounter).padStart(3, '0');
     var je = { id: jeId, date: dateStr, employeeId: empId, employeeName: empName, status: 'Pending', lines: lines };
     journalEntries.push(je);
     renderJE(je);
     updateEmployeeJEStatus(empId, 'Pending');
-    showToast('JE created for ' + empName);
+    showToast('Transaction created for ' + empName);
     switchTab('transactions');
   }
 
@@ -4092,7 +4286,7 @@
     _commentsJeId = entityId;
 
     // Fallback: look up from journalEntries for JE calls that don't pass display data
-    if (!displayName && entityId.startsWith('JE-')) {
+    if (!displayName && entityId.startsWith('TXN-')) {
       var je = journalEntries.find(function(j) { return j.id === entityId; });
       if (je) { displayName = je.employeeName; sub1 = je.id; sub2 = je.date; }
     }
@@ -4119,7 +4313,7 @@
     if (!entityId) return;
     var nameInput = row.querySelector('td:nth-child(2) input');
     var name = nameInput ? nameInput.value.trim() : entityId;
-    var section = entityId.startsWith('EMP-') ? 'Employee Manager' : 'Programs';
+    var section = entityId.startsWith('EMP-') ? 'Accrual Manager' : 'Programs';
     openComments(entityId, name, entityId, section);
   }
 
@@ -4261,7 +4455,7 @@
   }
 
   function _refreshCommentCell(entityId) {
-    if (entityId.startsWith('JE-')) refreshJEActionCell(entityId);
+    if (entityId.startsWith('TXN-')) refreshJEActionCell(entityId);
     else refreshRowCommentBtn(entityId);
   }
 
@@ -4672,7 +4866,7 @@
       entries: [
         { ts: 'May 15, 2026 · 3:44 PM', user: 'IV', userName: 'Irish Vinluan', action: 'updated', tag: 'update', changes: [{ field: 'Eligible', from: 'No', to: 'Yes' }] },
         { ts: 'May 15, 2026 · 3:40 PM', user: 'IV', userName: 'Irish Vinluan', action: 'updated', tag: 'update', changes: [{ field: 'Programs', from: 'Signing Bonus', to: 'Annual Performance Bonus, Signing Bonus' }] },
-        { ts: 'May 2, 2026 · 11:00 AM', user: 'IV', userName: 'Irish Vinluan', action: 'updated', tag: 'update', changes: [{ field: 'Salary', from: '115,000.00 USD', to: '120,000.00 USD' }] },
+        { ts: 'May 2, 2026 · 11:00 AM', user: 'IV', userName: 'Irish Vinluan', action: 'updated', tag: 'update', changes: [{ field: 'Annual Salary', from: '115,000.00 USD', to: '120,000.00 USD' }] },
         { ts: 'Mar 1, 2026 · 9:00 AM', user: 'System', userName: 'System Import', action: 'created record', tag: 'create', changes: [] }
       ]
     },

@@ -1505,7 +1505,7 @@
 
   <!-- Import Programs Modal -->
   <div id="import-overlay" class="hidden fixed inset-0 z-40 bg-black/30 flex items-center justify-center" onclick="if(event.target===this)closeImportModal()">
-    <div class="relative z-50 bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-xl mx-4 flex flex-col" style="max-height:85vh;">
+    <div class="relative z-50 bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-4xl mx-4 flex flex-col" style="max-height:85vh;">
       <!-- Header -->
       <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-200 shrink-0">
         <div class="flex items-center gap-2.5">
@@ -1549,14 +1549,51 @@
 
         <!-- Step 2: Column Mapping -->
         <div id="prog-mapping-section" class="border-t border-slate-100 pt-4">
-          <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-3">Map columns</p>
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Map columns</p>
+            <!-- Scenario picker (demo only) -->
+            <div class="flex items-center gap-1.5">
+              <span class="text-[9px] font-semibold text-slate-300 uppercase tracking-wider">Demo:</span>
+              <button id="prog-s-first"   onclick="setProgScenario('first')"   class="px-2 py-0.5 rounded text-[10px] font-medium border transition-colors bg-indigo-600 text-white border-indigo-600">First import</button>
+              <button id="prog-s-clean"   onclick="setProgScenario('clean')"   class="px-2 py-0.5 rounded text-[10px] font-medium border transition-colors bg-white text-slate-500 border-slate-300 hover:border-indigo-400 hover:text-indigo-600">Re-import (clean)</button>
+              <button id="prog-s-changes" onclick="setProgScenario('changes')" class="px-2 py-0.5 rounded text-[10px] font-medium border transition-colors bg-white text-slate-500 border-slate-300 hover:border-indigo-400 hover:text-indigo-600">Re-import (new col + hint)</button>
+            </div>
+          </div>
+
+          <!-- Placeholder (no file yet) -->
           <div id="prog-mapping-placeholder" class="flex items-center justify-center py-5 rounded-lg border border-dashed border-slate-200">
             <p class="text-[12px] text-slate-400">Upload a file above to map columns</p>
           </div>
+
+          <!-- State B: collapsed saved-mapping summary -->
+          <div id="prog-mapping-saved-summary" class="hidden">
+            <div class="flex items-center justify-between px-3.5 py-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+              <div class="flex items-center gap-2">
+                <svg class="text-emerald-500 shrink-0" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <span class="text-[12px] font-medium text-emerald-800">Using saved mapping</span>
+                <span id="prog-mapping-saved-count" class="text-[11px] text-emerald-600"></span>
+              </div>
+              <button onclick="expandMapping('prog')" class="flex items-center gap-1 text-[11px] text-slate-500 hover:text-indigo-600 transition-colors">
+                Review mapping
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- State A / C: full mapping table -->
           <div id="prog-mapping-content" class="hidden">
-            <p class="text-[11px] text-slate-500 mb-3">We've suggested matches based on your column names. Adjust any that look off.</p>
+            <!-- State C: attention banner -->
+            <div id="prog-mapping-attention-banner" class="hidden mb-3 px-3.5 py-3 bg-amber-50 border border-amber-200 rounded-lg">
+              <div class="flex items-center gap-2 mb-1.5">
+                <svg class="text-amber-500 shrink-0" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <span class="text-[12px] font-semibold text-amber-800">Saved mapping applied — a few things need your review</span>
+              </div>
+              <ul id="prog-attention-list" class="text-[11px] text-amber-700 ml-5 list-disc space-y-0.5"></ul>
+            </div>
+            <!-- State A: subtitle -->
+            <p id="prog-mapping-subtitle" class="text-[11px] text-slate-500 mb-3">We've suggested matches based on your column names. Adjust any that look off.</p>
             <div class="rounded-lg border border-slate-200 overflow-hidden">
-              <table class="w-full text-[11px]">
+              <table id="prog-mapping-table" class="w-full text-[11px]">
                 <thead><tr class="bg-slate-50 border-b border-slate-200">
                   <th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Your CSV column</th>
                   <th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Maps to field</th>
@@ -1565,7 +1602,7 @@
                 <tbody id="prog-mapping-body" class="divide-y divide-slate-100"></tbody>
               </table>
             </div>
-            <div class="flex justify-end mt-3">
+            <div id="prog-mapping-footer" class="flex justify-end mt-3">
               <button onclick="confirmProgMapping()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-[12px] font-semibold bg-indigo-600 hover:bg-indigo-700 text-white transition-colors">
                 Confirm Mapping
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
@@ -1580,14 +1617,9 @@
           <div id="prog-preview-placeholder" class="flex items-center justify-center py-5 rounded-lg border border-dashed border-slate-200">
             <p class="text-[12px] text-slate-400">Confirm column mapping above to preview your import</p>
           </div>
-          <div id="prog-preview-content" class="hidden flex flex-col gap-3">
-            <div id="prog-preview-summary" class="flex flex-wrap gap-1.5"></div>
-            <div id="prog-preview-partial" class="hidden"></div>
-            <div id="prog-preview-error-card" class="hidden"></div>
-            <div id="prog-preview-warnings-card" class="hidden"></div>
-            <div id="prog-preview-adding-card" class="hidden"></div>
-            <div id="prog-preview-updating-card" class="hidden"></div>
-            <div id="prog-preview-skipped-card" class="hidden"></div>
+          <div id="prog-preview-content" class="hidden flex flex-col gap-2">
+            <p class="text-[11px] text-slate-500">Sample rows from your file based on the confirmed mapping.</p>
+            <div id="prog-preview-table" class="rounded-lg border border-slate-200 overflow-x-auto"></div>
           </div>
         </div>
 
@@ -1602,7 +1634,7 @@
 
   <!-- Import Employees Modal -->
   <div id="emp-import-overlay" class="hidden fixed inset-0 z-40 bg-black/30 flex items-center justify-center" onclick="if(event.target===this)closeEmpImportModal()">
-    <div class="relative z-50 bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-xl mx-4 flex flex-col" style="max-height:85vh;">
+    <div class="relative z-50 bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-4xl mx-4 flex flex-col" style="max-height:85vh;">
       <!-- Header -->
       <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-200 shrink-0">
         <div class="flex items-center gap-2.5">
@@ -1646,14 +1678,51 @@
 
         <!-- Step 2: Column Mapping -->
         <div id="emp-mapping-section" class="border-t border-slate-100 pt-4">
-          <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-3">Map columns</p>
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Map columns</p>
+            <!-- Scenario picker (demo only) -->
+            <div class="flex items-center gap-1.5">
+              <span class="text-[9px] font-semibold text-slate-300 uppercase tracking-wider">Demo:</span>
+              <button id="emp-s-first"   onclick="setEmpScenario('first')"   class="px-2 py-0.5 rounded text-[10px] font-medium border transition-colors bg-indigo-600 text-white border-indigo-600">First import</button>
+              <button id="emp-s-clean"   onclick="setEmpScenario('clean')"   class="px-2 py-0.5 rounded text-[10px] font-medium border transition-colors bg-white text-slate-500 border-slate-300 hover:border-indigo-400 hover:text-indigo-600">Re-import (clean)</button>
+              <button id="emp-s-changes" onclick="setEmpScenario('changes')" class="px-2 py-0.5 rounded text-[10px] font-medium border transition-colors bg-white text-slate-500 border-slate-300 hover:border-indigo-400 hover:text-indigo-600">Re-import (new col + hint)</button>
+            </div>
+          </div>
+
+          <!-- Placeholder (no file yet) -->
           <div id="emp-mapping-placeholder" class="flex items-center justify-center py-5 rounded-lg border border-dashed border-slate-200">
             <p class="text-[12px] text-slate-400">Upload a file above to map columns</p>
           </div>
+
+          <!-- State B: collapsed saved-mapping summary -->
+          <div id="emp-mapping-saved-summary" class="hidden">
+            <div class="flex items-center justify-between px-3.5 py-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+              <div class="flex items-center gap-2">
+                <svg class="text-emerald-500 shrink-0" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <span class="text-[12px] font-medium text-emerald-800">Using saved mapping</span>
+                <span id="emp-mapping-saved-count" class="text-[11px] text-emerald-600"></span>
+              </div>
+              <button onclick="expandMapping('emp')" class="flex items-center gap-1 text-[11px] text-slate-500 hover:text-indigo-600 transition-colors">
+                Review mapping
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- State A / C: full mapping table -->
           <div id="emp-mapping-content" class="hidden">
-            <p class="text-[11px] text-slate-500 mb-3">We've suggested matches based on your column names. Adjust any that look off.</p>
+            <!-- State C: attention banner -->
+            <div id="emp-mapping-attention-banner" class="hidden mb-3 px-3.5 py-3 bg-amber-50 border border-amber-200 rounded-lg">
+              <div class="flex items-center gap-2 mb-1.5">
+                <svg class="text-amber-500 shrink-0" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <span class="text-[12px] font-semibold text-amber-800">Saved mapping applied — a few things need your review</span>
+              </div>
+              <ul id="emp-attention-list" class="text-[11px] text-amber-700 ml-5 list-disc space-y-0.5"></ul>
+            </div>
+            <!-- State A: subtitle -->
+            <p id="emp-mapping-subtitle" class="text-[11px] text-slate-500 mb-3">We've suggested matches based on your column names. Adjust any that look off.</p>
             <div class="rounded-lg border border-slate-200 overflow-hidden">
-              <table class="w-full text-[11px]">
+              <table id="emp-mapping-table" class="w-full text-[11px]">
                 <thead><tr class="bg-slate-50 border-b border-slate-200">
                   <th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Your CSV column</th>
                   <th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Maps to field</th>
@@ -1662,7 +1731,7 @@
                 <tbody id="emp-mapping-body" class="divide-y divide-slate-100"></tbody>
               </table>
             </div>
-            <div class="flex justify-end mt-3">
+            <div id="emp-mapping-footer" class="flex justify-end mt-3">
               <button onclick="confirmEmpMapping()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-[12px] font-semibold bg-indigo-600 hover:bg-indigo-700 text-white transition-colors">
                 Confirm Mapping
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
@@ -1677,14 +1746,9 @@
           <div id="emp-preview-placeholder" class="flex items-center justify-center py-5 rounded-lg border border-dashed border-slate-200">
             <p class="text-[12px] text-slate-400">Confirm column mapping above to preview your import</p>
           </div>
-          <div id="emp-preview-content" class="hidden flex flex-col gap-3">
-            <div id="emp-preview-summary" class="flex flex-wrap gap-1.5"></div>
-            <div id="emp-preview-partial" class="hidden"></div>
-            <div id="emp-preview-error-card" class="hidden"></div>
-            <div id="emp-preview-warnings-card" class="hidden"></div>
-            <div id="emp-preview-adding-card" class="hidden"></div>
-            <div id="emp-preview-updating-card" class="hidden"></div>
-            <div id="emp-preview-skipped-card" class="hidden"></div>
+          <div id="emp-preview-content" class="hidden flex flex-col gap-2">
+            <p class="text-[11px] text-slate-500">Sample rows from your file based on the confirmed mapping.</p>
+            <div id="emp-preview-table" class="rounded-lg border border-slate-200 overflow-x-auto"></div>
           </div>
         </div>
 
@@ -2934,7 +2998,7 @@
   var _progCsvCols = [
     { csv: 'prog_id',       suggested: 'Program ID',   confidence: 'high'   },
     { csv: 'program_name',  suggested: 'Program Name', confidence: 'high'   },
-    { csv: 'description',   suggested: 'Description',  confidence: 'high'   },
+    { csv: 'description',   suggested: 'Description',  confidence: 'high',   hint: { type: 'char-limit', count: 3 } },
     { csv: 'debit_gl',      suggested: 'Debit GL',     confidence: 'high'   },
     { csv: 'credit_acct',   suggested: 'Credit GL',    confidence: 'low'    },
     { csv: 'total_amount',  suggested: 'Amount',       confidence: 'medium' }
@@ -2959,9 +3023,15 @@
     document.getElementById('prog-file-selected').classList.add('hidden');
     document.getElementById('prog-mapping-placeholder').classList.remove('hidden');
     document.getElementById('prog-mapping-content').classList.add('hidden');
+    document.getElementById('prog-mapping-saved-summary').classList.add('hidden');
+    document.getElementById('prog-mapping-attention-banner').classList.add('hidden');
+    document.getElementById('prog-mapping-subtitle').classList.remove('hidden');
     document.getElementById('prog-preview-placeholder').classList.remove('hidden');
     document.getElementById('prog-preview-content').classList.add('hidden');
     document.getElementById('import-confirm-btn').disabled = true;
+    ['prog-saved-toggle-row-container','prog-mapping-saved-body'].forEach(function(id) {
+      var el = document.getElementById(id); if (el) el.remove();
+    });
   }
 
   function downloadTemplate() {
@@ -3002,14 +3072,13 @@
     if (!col.hint) return '';
     var h = col.hint;
     var warnI = '<svg class="shrink-0 text-amber-500" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
-    var infoI = '<svg class="shrink-0 text-slate-400" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
-    var okI   = '<svg class="shrink-0 text-emerald-500" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 
+    // ── Date format hint ──────────────────────────────────────────────────────
     if (h.type === 'date-format') {
       var fmts = ['MM-DD-YYYY','DD-MM-YYYY','YYYY-MM-DD','MM/DD/YYYY','DD/MM/YYYY','DD-Mon-YYYY'];
       var fOpts = fmts.map(function(f){ return '<option'+(f===h.detected?' selected':'')+'>'+f+'</option>'; }).join('');
       if (h.mixed) {
-        // Mixed formats — show breakdown + picker, explain conversion to YYYY-MM-DD
+        // Mixed formats — show breakdown + picker
         var breakdown = (h.formats||[]).map(function(f){
           return '<span class="inline-flex items-center gap-1 text-[11px]">' +
             '<code class="bg-white border border-amber-200 px-1.5 py-0.5 rounded text-[10px] font-mono text-amber-900">'+f.format+'</code>' +
@@ -3036,306 +3105,433 @@
         '<p class="text-[11px] text-amber-600 leading-relaxed">We\'ll convert this to <strong>YYYY-MM-DD</strong> before saving to the database.</p>' +
         '</div>';
     }
-    if (h.type === 'number-format') {
-      var symNote = h.hasSymbol
-        ? ' &nbsp;·&nbsp; <span class="text-slate-500">symbol stripped</span> <span class="font-mono text-[10px] text-slate-500 bg-slate-100 px-1 rounded">'+h.sample+'</span>'
-        : '';
-      return '<div class="mt-1.5 flex items-center gap-1.5 flex-wrap py-1 px-1.5 bg-slate-50 rounded border border-slate-100">' +
-        infoI + '<span class="text-[11px] text-slate-600">Style: <strong>'+h.detected+'</strong>'+symNote+'</span></div>';
+
+    // ── Character limit hint ──────────────────────────────────────────────────
+    if (h.type === 'char-limit') {
+      var rowWord = h.count === 1 ? 'row exceeds' : 'rows exceed';
+      return '<div class="mt-1.5 py-2 px-2.5 bg-amber-50 rounded border border-amber-200">' +
+        '<div class="flex items-center gap-1.5 mb-1">' + warnI +
+        '<span class="text-[11px] font-semibold text-amber-800">' + h.count + ' ' + rowWord + ' 255 characters</span>' +
+        '</div>' +
+        '<p class="text-[11px] text-amber-700 leading-relaxed">Gappify stores up to <strong>255 characters</strong> per text field. Values longer than this will be truncated on import.</p>' +
+        '</div>';
     }
-    if (h.type === 'enum-map') {
-      if (!h.needsReview) {
-        var pills = h.values.map(function(v,i){
-          return '<span class="inline-flex items-center gap-0.5 text-[10px] bg-white border border-slate-200 rounded px-1.5 py-0.5"><span class="font-mono text-slate-600">'+v+'</span><span class="text-slate-300 mx-0.5">→</span><span class="font-medium text-emerald-700">'+h.mapped[i]+'</span></span>';
+
+    return '';
+  }
+
+  // ─── Import state & scenario data ────────────────────────────────────────────
+  var _importState = {
+    prog: { savedMapping: null },
+    emp:  { savedMapping: null }
+  };
+  var _currentProgCsvCols = _progCsvCols;
+  var _currentEmpCsvCols  = _empCsvCols;
+
+  // Programs: "clean re-import" columns — same fields, no hints (nothing triggers attention)
+  var _progCsvCols_clean = [
+    { csv: 'prog_id',       suggested: 'Program ID',   confidence: 'high'   },
+    { csv: 'program_name',  suggested: 'Program Name', confidence: 'high'   },
+    { csv: 'description',   suggested: 'Description',  confidence: 'high'   },
+    { csv: 'debit_gl',      suggested: 'Debit GL',     confidence: 'high'   },
+    { csv: 'credit_acct',   suggested: 'Credit GL',    confidence: 'low'    },
+    { csv: 'total_amount',  suggested: 'Amount',       confidence: 'medium' }
+  ];
+  // Programs: "re-import with changes" — new column + char-limit hint
+  var _progCsvCols_changes = [
+    { csv: 'prog_id',        suggested: 'Program ID',          confidence: 'high'   },
+    { csv: 'program_name',   suggested: 'Program Name',        confidence: 'high'   },
+    { csv: 'description',    suggested: 'Description',         confidence: 'high',   hint: { type: 'char-limit', count: 3 } },
+    { csv: 'debit_gl',       suggested: 'Debit GL',            confidence: 'high'   },
+    { csv: 'credit_acct',    suggested: 'Credit GL',           confidence: 'low'    },
+    { csv: 'total_amount',   suggested: 'Amount',              confidence: 'medium' },
+    { csv: 'effective_date', suggested: '— Skip this field —', confidence: 'low',    isNew: true }
+  ];
+  // Programs: saved mapping (covers the 6 base cols; effective_date is unknown → new)
+  var _progSavedMapping = {
+    'prog_id': 'Program ID', 'program_name': 'Program Name',
+    'description': 'Description', 'debit_gl': 'Debit GL',
+    'credit_acct': 'Credit GL',   'total_amount': 'Amount'
+  };
+
+  // Employees: "clean re-import" columns — no hints
+  var _empCsvCols_clean = [
+    { csv: 'emp_id',          suggested: 'Employee ID',      confidence: 'high'   },
+    { csv: 'full_name',       suggested: 'Employee Name',    confidence: 'high'   },
+    { csv: 'program_name',    suggested: 'Program',          confidence: 'high'   },
+    { csv: 'email_address',   suggested: 'Email',            confidence: 'high'   },
+    { csv: 'annual_salary',   suggested: 'Annual Salary',    confidence: 'medium' },
+    { csv: 'currency',        suggested: 'Currency',         confidence: 'high'   },
+    { csv: 'hire_date',       suggested: 'Hire Date',        confidence: 'high'   },
+    { csv: 'term_date',       suggested: 'Termination Date', confidence: 'medium' },
+    { csv: 'emp_status',      suggested: 'Employee Status',  confidence: 'medium' },
+    { csv: 'emp_type',        suggested: 'Employee Type',    confidence: 'medium' },
+    { csv: 'department',      suggested: 'Department',       confidence: 'high'   },
+    { csv: 'entity',          suggested: 'Subsidiary',       confidence: 'low'    },
+    { csv: 'office_location', suggested: 'Location',         confidence: 'medium' }
+  ];
+  // Employees: "re-import with changes" — new cost_center col + hire_date date hint + office_location char-limit hint
+  var _empCsvCols_changes = [
+    { csv: 'emp_id',          suggested: 'Employee ID',      confidence: 'high'   },
+    { csv: 'full_name',       suggested: 'Employee Name',    confidence: 'high'   },
+    { csv: 'program_name',    suggested: 'Program',          confidence: 'high'   },
+    { csv: 'email_address',   suggested: 'Email',            confidence: 'high'   },
+    { csv: 'annual_salary',   suggested: 'Annual Salary',    confidence: 'medium' },
+    { csv: 'currency',        suggested: 'Currency',         confidence: 'high'   },
+    { csv: 'hire_date',       suggested: 'Hire Date',        confidence: 'high',   hint: { type: 'date-format', mixed: true, detected: 'MM-DD-YYYY', formats: [{format:'MM-DD-YYYY',count:8},{format:'YYYY-MM-DD',count:2}] } },
+    { csv: 'term_date',       suggested: 'Termination Date', confidence: 'medium' },
+    { csv: 'emp_status',      suggested: 'Employee Status',  confidence: 'medium' },
+    { csv: 'emp_type',        suggested: 'Employee Type',    confidence: 'medium' },
+    { csv: 'department',      suggested: 'Department',       confidence: 'high'   },
+    { csv: 'entity',          suggested: 'Subsidiary',       confidence: 'low'    },
+    { csv: 'office_location', suggested: 'Location',         confidence: 'medium', hint: { type: 'char-limit', count: 1 } },
+    { csv: 'cost_center',     suggested: '— Skip this field —', confidence: 'low', isNew: true }
+  ];
+  // Employees: saved mapping (covers the 13 base cols; cost_center is new)
+  var _empSavedMapping = {
+    'emp_id': 'Employee ID',      'full_name': 'Employee Name',
+    'program_name': 'Program',    'email_address': 'Email',
+    'annual_salary': 'Annual Salary', 'currency': 'Currency',
+    'hire_date': 'Hire Date',     'term_date': 'Termination Date',
+    'emp_status': 'Employee Status', 'emp_type': 'Employee Type',
+    'department': 'Department',   'entity': 'Subsidiary',
+    'office_location': 'Location'
+  };
+
+  // ─── Scenario pickers ─────────────────────────────────────────────────────────
+  function _setScenarioBtn(prefix, active) {
+    var base     = 'px-2 py-0.5 rounded text-[10px] font-medium border transition-colors ';
+    var on       = base + 'bg-indigo-600 text-white border-indigo-600';
+    var off      = base + 'bg-white text-slate-500 border-slate-300 hover:border-indigo-400 hover:text-indigo-600';
+    ['first','clean','changes'].forEach(function(s) {
+      var btn = document.getElementById(prefix + '-s-' + s);
+      if (btn) btn.className = (s === active) ? on : off;
+    });
+  }
+
+  function setProgScenario(scenario) {
+    _setScenarioBtn('prog', scenario);
+    if (scenario === 'first') {
+      _importState.prog.savedMapping = null;
+      _currentProgCsvCols = _progCsvCols;
+    } else if (scenario === 'clean') {
+      _importState.prog.savedMapping = _progSavedMapping;
+      _currentProgCsvCols = _progCsvCols_clean;
+    } else {
+      _importState.prog.savedMapping = _progSavedMapping;
+      _currentProgCsvCols = _progCsvCols_changes;
+    }
+    _runImportSim('prog', _currentProgCsvCols, _progFieldOptions, 'programs_q4_2026.csv');
+  }
+
+  function setEmpScenario(scenario) {
+    _setScenarioBtn('emp', scenario);
+    if (scenario === 'first') {
+      _importState.emp.savedMapping = null;
+      _currentEmpCsvCols = _empCsvCols;
+    } else if (scenario === 'clean') {
+      _importState.emp.savedMapping = _empSavedMapping;
+      _currentEmpCsvCols = _empCsvCols_clean;
+    } else {
+      _importState.emp.savedMapping = _empSavedMapping;
+      _currentEmpCsvCols = _empCsvCols_changes;
+    }
+    _runImportSim('emp', _currentEmpCsvCols, _empFieldOptions, 'employees_q4_2026.csv');
+  }
+
+  // ─── Core import state resolver ───────────────────────────────────────────────
+  function _resolveImportState(prefix, csvCols) {
+    var saved = _importState[prefix].savedMapping;
+    if (!saved) return { state: 'A', newCols: [], hintCols: [] };
+    var newCols  = csvCols.filter(function(c) { return !(c.csv in saved); });
+    var hintCols = csvCols.filter(function(c) { return c.hint && (c.csv in saved); });
+    if (newCols.length === 0 && hintCols.length === 0) return { state: 'B', newCols: [], hintCols: [] };
+    return { state: 'C', newCols: newCols, hintCols: hintCols };
+  }
+
+  // ─── Build a single mapping row ───────────────────────────────────────────────
+  function _buildMappingRow(col, fieldOptions, isAttention) {
+    var opts = fieldOptions.map(function(f) {
+      return '<option' + (f === col.suggested ? ' selected' : '') + '>' + f + '</option>';
+    }).join('');
+    var hint = _buildMappingHint(col);
+    var badge;
+    if (col.isNew) {
+      badge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-300">new</span>';
+    } else if (col.confidence === 'high') {
+      badge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">auto</span>';
+    } else {
+      badge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-200">review</span>';
+    }
+    var hasHintOrAttention = hint || isAttention;
+    var rowBg  = isAttention ? 'hover:bg-amber-50/40' : 'hover:bg-slate-50';
+    var leftBd = isAttention ? ' style="border-left:3px solid #fbbf24;"' : '';
+    return '<tr class="' + rowBg + (hasHintOrAttention ? ' align-top' : '') + '"' + leftBd + '>' +
+      '<td class="px-3 py-2.5 whitespace-nowrap"><code class="bg-slate-100 px-1.5 py-0.5 rounded text-[11px] text-slate-700 font-mono">' + col.csv + '</code></td>' +
+      '<td class="px-3 py-2.5"><select class="w-full text-[11px] text-slate-700 rounded-md border border-slate-200 px-2 py-1.5 focus:outline-none focus:border-indigo-400 bg-white">' + opts + '</select>' + hint + '</td>' +
+      '<td class="px-3 py-2.5 w-16">' + badge + '</td>' +
+      '</tr>';
+  }
+
+  // ─── Render the mapping section based on resolved state ───────────────────────
+  function _renderMappingSection(prefix, csvCols, stateInfo, fieldOptions) {
+    var state    = stateInfo.state;
+    var newCols  = stateInfo.newCols;
+    var hintCols = stateInfo.hintCols;
+    var saved    = _importState[prefix].savedMapping || {};
+
+    var placeholder   = document.getElementById(prefix + '-mapping-placeholder');
+    var savedSummary  = document.getElementById(prefix + '-mapping-saved-summary');
+    var content       = document.getElementById(prefix + '-mapping-content');
+    var banner        = document.getElementById(prefix + '-mapping-attention-banner');
+    var attList       = document.getElementById(prefix + '-attention-list');
+    var subtitle      = document.getElementById(prefix + '-mapping-subtitle');
+    var footer        = document.getElementById(prefix + '-mapping-footer');
+    var confirmBtnId  = (prefix === 'emp') ? 'emp-import-confirm-btn' : 'import-confirm-btn';
+
+    // Always hide placeholder
+    placeholder.classList.add('hidden');
+
+    // ── State B: collapsed summary, auto-preview ──────────────────────────────
+    if (state === 'B') {
+      content.classList.add('hidden');
+      savedSummary.classList.remove('hidden');
+      var countEl = document.getElementById(prefix + '-mapping-saved-count');
+      if (countEl) countEl.textContent = '· ' + csvCols.length + ' column' + (csvCols.length !== 1 ? 's' : '') + ' matched';
+
+      // Auto-show preview immediately
+      var sample = (prefix === 'prog') ? _progPreviewSample : _empPreviewSample;
+      document.getElementById(prefix + '-preview-placeholder').classList.add('hidden');
+      document.getElementById(prefix + '-preview-content').classList.remove('hidden');
+      _buildMappingPreview(prefix, sample.headers, sample.rows);
+      return;
+    }
+
+    // ── States A & C: full mapping table ──────────────────────────────────────
+    savedSummary.classList.add('hidden');
+    content.classList.remove('hidden');
+
+    // Clean up any dynamic tbodies from a previous render
+    ['saved-toggle-row-container', 'mapping-saved-body'].forEach(function(id) {
+      var el = document.getElementById(prefix + '-' + id);
+      if (el) el.remove();
+    });
+
+    if (state === 'A') {
+      // No saved mapping — show all rows interactive, hide banner
+      if (banner) banner.classList.add('hidden');
+      if (subtitle) subtitle.classList.remove('hidden');
+      if (footer) footer.classList.remove('hidden');
+      var tbody = document.getElementById(prefix + '-mapping-body');
+      tbody.innerHTML = csvCols.map(function(col) {
+        return _buildMappingRow(col, fieldOptions, false);
+      }).join('');
+    } else {
+      // State C: attention rows up top, saved rows collapsed below
+      if (banner) {
+        banner.classList.remove('hidden');
+        var items = [];
+        if (newCols.length > 0)
+          items.push(newCols.length + ' new column' + (newCols.length !== 1 ? 's' : '') + ' not seen in your previous import');
+        if (hintCols.length > 0)
+          items.push(hintCols.length + ' column' + (hintCols.length !== 1 ? 's' : '') + ' with a format hint to confirm');
+        if (attList) attList.innerHTML = items.map(function(i) { return '<li>' + i + '</li>'; }).join('');
+      }
+      if (subtitle) subtitle.classList.add('hidden');
+      if (footer) footer.classList.remove('hidden');
+
+      // Determine which cols need attention vs are silently saved
+      var attentionKeys = {};
+      newCols.concat(hintCols).forEach(function(c) { attentionKeys[c.csv] = true; });
+      var attentionRows = csvCols.filter(function(c) { return attentionKeys[c.csv]; });
+      var savedRows     = csvCols.filter(function(c) { return !attentionKeys[c.csv]; });
+
+      var tbody = document.getElementById(prefix + '-mapping-body');
+      tbody.innerHTML = attentionRows.map(function(col) {
+        return _buildMappingRow(col, fieldOptions, true);
+      }).join('');
+
+      // Append a toggle row + a collapsed saved-rows tbody to the table
+      if (savedRows.length > 0) {
+        var table = document.getElementById(prefix + '-mapping-table');
+        var toggleTbody = document.createElement('tbody');
+        toggleTbody.id = prefix + '-saved-toggle-row-container';
+        toggleTbody.innerHTML =
+          '<tr><td colspan="3" class="px-3 py-2 bg-slate-50 border-t border-slate-100">' +
+          '<button onclick="toggleSavedRows(\'' + prefix + '\')" class="flex items-center gap-1.5 text-[11px] text-slate-400 hover:text-slate-600 transition-colors">' +
+          '<svg id="' + prefix + '-saved-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.15s"><polyline points="9 18 15 12 9 6"/></svg>' +
+          savedRows.length + ' saved column' + (savedRows.length !== 1 ? 's' : '') + ' from previous import' +
+          '</button></td></tr>';
+        table.appendChild(toggleTbody);
+
+        var savedTbody = document.createElement('tbody');
+        savedTbody.id = prefix + '-mapping-saved-body';
+        savedTbody.className = 'hidden divide-y divide-slate-100';
+        savedTbody.innerHTML = savedRows.map(function(col) {
+          var mappedTo = saved[col.csv] || '—';
+          return '<tr class="bg-slate-50/60">' +
+            '<td class="px-3 py-2 whitespace-nowrap"><code class="bg-slate-100 px-1.5 py-0.5 rounded text-[11px] text-slate-400 font-mono">' + col.csv + '</code></td>' +
+            '<td class="px-3 py-2 text-[11px] text-slate-500">' + mappedTo + '</td>' +
+            '<td class="px-3 py-2 w-16"><span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-400 border border-slate-200">saved</span></td>' +
+            '</tr>';
         }).join('');
-        return '<div class="mt-1.5 flex items-center gap-1.5 flex-wrap py-1 px-1.5 bg-emerald-50 rounded border border-emerald-100">' +
-          okI + '<span class="text-[11px] text-slate-600">Auto-normalized:</span>'+pills+'</div>';
-      } else {
-        var mapRows = h.values.map(function(v,i){
-          var dOpts = (h.availableOptions||[]).map(function(o){ return '<option'+(o===h.mapped[i]?' selected':'')+'>'+o+'</option>'; }).join('');
-          return '<span class="inline-flex items-center gap-1 text-[11px]">' +
-            '<code class="bg-white border border-slate-200 px-1.5 py-0.5 rounded text-[10px] font-mono text-slate-700">'+v+'</code>' +
-            '<span class="text-slate-300">→</span>' +
-            '<select class="text-[11px] border border-amber-200 rounded px-1.5 py-0.5 bg-amber-50 text-amber-800 focus:outline-none">'+dOpts+'</select></span>';
-        }).join('');
-        return '<div class="mt-1.5 py-1.5 px-1.5 bg-amber-50 rounded border border-amber-100">' +
-          '<div class="flex items-center gap-1.5 mb-1.5">'+warnI+'<span class="text-[11px] text-amber-700 font-medium">Map values to system options:</span></div>' +
-          '<div class="flex flex-wrap gap-2">'+mapRows+'</div></div>';
+        table.appendChild(savedTbody);
       }
     }
-    if (h.type === 'id-format') {
-      return '<div class="mt-1.5 flex items-center gap-1.5 flex-wrap py-1 px-1.5 bg-amber-50 rounded border border-amber-100">' +
-        warnI + '<span class="text-[11px] text-amber-700 font-medium">Format mismatch —</span>' +
-        '<span class="font-mono text-[10px] bg-white border border-slate-200 px-1.5 py-0.5 rounded text-slate-700">'+h.detected+'</span>' +
-        '<span class="text-[11px] text-slate-400">→ expected</span>' +
-        '<span class="font-mono text-[10px] bg-white border border-slate-200 px-1.5 py-0.5 rounded text-slate-700">'+h.expected+'</span>' +
-        '<label class="flex items-center gap-1 ml-0.5 cursor-pointer"><input type="checkbox" checked class="w-3 h-3 accent-indigo-600"><span class="text-[11px] text-slate-600">Auto-normalize</span></label></div>';
+
+    // Reset preview and confirm button
+    document.getElementById(prefix + '-preview-placeholder').classList.remove('hidden');
+    document.getElementById(prefix + '-preview-content').classList.add('hidden');
+    document.getElementById(confirmBtnId).disabled = true;
+  }
+
+  // Toggle the saved-rows section in State C
+  function toggleSavedRows(prefix) {
+    var tbody   = document.getElementById(prefix + '-mapping-saved-body');
+    var chevron = document.getElementById(prefix + '-saved-chevron');
+    if (!tbody) return;
+    var hidden = tbody.classList.toggle('hidden');
+    if (chevron) chevron.style.transform = hidden ? '' : 'rotate(90deg)';
+  }
+
+  // "Review mapping" expand from State B collapsed summary
+  function expandMapping(prefix) {
+    var savedSummary = document.getElementById(prefix + '-mapping-saved-summary');
+    var content      = document.getElementById(prefix + '-mapping-content');
+    var banner       = document.getElementById(prefix + '-mapping-attention-banner');
+    var subtitle     = document.getElementById(prefix + '-mapping-subtitle');
+    var footer       = document.getElementById(prefix + '-mapping-footer');
+    var saved        = _importState[prefix].savedMapping || {};
+    var csvCols      = (prefix === 'prog') ? _currentProgCsvCols : _currentEmpCsvCols;
+
+    savedSummary.classList.add('hidden');
+    content.classList.remove('hidden');
+    if (banner) banner.classList.add('hidden');
+    if (subtitle) subtitle.classList.add('hidden');
+    if (footer) footer.classList.add('hidden'); // no confirm needed — already previewed
+
+    // Clean up any leftover dynamic tbodies
+    ['saved-toggle-row-container', 'mapping-saved-body'].forEach(function(id) {
+      var el = document.getElementById(prefix + '-' + id);
+      if (el) el.remove();
+    });
+
+    var tbody = document.getElementById(prefix + '-mapping-body');
+    tbody.innerHTML = csvCols.map(function(col) {
+      var mappedTo = saved[col.csv] || col.suggested;
+      return '<tr class="hover:bg-slate-50/60 bg-slate-50/40">' +
+        '<td class="px-3 py-2.5 whitespace-nowrap"><code class="bg-slate-100 px-1.5 py-0.5 rounded text-[11px] text-slate-500 font-mono">' + col.csv + '</code></td>' +
+        '<td class="px-3 py-2.5 text-[11px] text-slate-600">' + mappedTo + '</td>' +
+        '<td class="px-3 py-2.5 w-16"><span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-400 border border-slate-200">saved</span></td>' +
+        '</tr>';
+    }).join('');
+
+    // Add a "← Collapse" link in the footer area
+    var footerEl = document.getElementById(prefix + '-mapping-footer');
+    if (footerEl) {
+      footerEl.classList.remove('hidden');
+      footerEl.innerHTML =
+        '<button onclick="collapseMapping(\'' + prefix + '\')" class="flex items-center gap-1 text-[11px] text-slate-500 hover:text-indigo-600 transition-colors">' +
+        '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>' +
+        'Collapse' +
+        '</button>';
     }
-    if (h.type === 'currency-symbol') {
-      var cPills = h.conversions.map(function(c){
-        return '<span class="inline-flex items-center gap-0.5 text-[10px] bg-white border border-slate-200 rounded px-1.5 py-0.5"><span class="font-mono text-slate-600">'+c.from+'</span><span class="text-slate-300 mx-0.5">→</span><span class="font-medium text-emerald-700">'+c.to+'</span></span>';
-      }).join('');
-      return '<div class="mt-1.5 flex items-center gap-1.5 flex-wrap py-1 px-1.5 bg-emerald-50 rounded border border-emerald-100">' +
-        okI + '<span class="text-[11px] text-slate-600">Symbols auto-converting:</span>'+cPills+'</div>';
+  }
+
+  function collapseMapping(prefix) {
+    document.getElementById(prefix + '-mapping-content').classList.add('hidden');
+    document.getElementById(prefix + '-mapping-saved-summary').classList.remove('hidden');
+    // Restore confirm button for next time State C/A uses the footer
+    var footerEl = document.getElementById(prefix + '-mapping-footer');
+    if (footerEl) {
+      footerEl.innerHTML =
+        '<button onclick="confirm' + (prefix === 'prog' ? 'Prog' : 'Emp') + 'Mapping()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-[12px] font-semibold bg-indigo-600 hover:bg-indigo-700 text-white transition-colors">' +
+        'Confirm Mapping' +
+        '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' +
+        '</button>';
     }
-    if (h.type === 'gl-format') {
-      return '<div class="mt-1.5 flex items-center gap-1.5 flex-wrap py-1 px-1.5 bg-slate-50 rounded border border-slate-100">' +
-        infoI + '<span class="text-[11px] text-slate-600">Includes description</span>' +
-        '<span class="font-mono text-[10px] bg-white border border-slate-200 px-1.5 py-0.5 rounded text-slate-600">'+h.sample+'</span>' +
-        '<span class="text-[11px] text-slate-500">— code extracted automatically</span></div>';
-    }
-    return '';
+  }
+
+  // ─── Shared simulate entry-point ──────────────────────────────────────────────
+  function _runImportSim(prefix, csvCols, fieldOptions, filename) {
+    var fileSelectedEl  = document.getElementById(prefix === 'prog' ? 'prog-file-selected' : 'emp-file-selected');
+    var fileNameEl      = document.getElementById(prefix === 'prog' ? 'prog-file-selected-name' : 'emp-file-selected-name');
+    var placeholder     = document.getElementById(prefix + '-mapping-placeholder');
+
+    fileSelectedEl.classList.remove('hidden');
+    fileNameEl.textContent = filename;
+    placeholder.classList.add('hidden');
+
+    var stateInfo = _resolveImportState(prefix, csvCols);
+    _renderMappingSection(prefix, csvCols, stateInfo, fieldOptions);
   }
 
   function simulateImport(input) {
     if (!input.files || !input.files[0]) return;
-    var filename = input.files[0].name;
+    _runImportSim('prog', _currentProgCsvCols, _progFieldOptions, input.files[0].name);
+  }
 
-    // Show file selected badge, reveal mapping content
-    document.getElementById('prog-file-selected').classList.remove('hidden');
-    document.getElementById('prog-file-selected-name').textContent = filename;
-    document.getElementById('prog-mapping-placeholder').classList.add('hidden');
-    document.getElementById('prog-mapping-content').classList.remove('hidden');
+  // ─── Sample preview table (shared by programs + employees) ─────────────────
+  // headers: string[]   — column labels (from confirmed mapping)
+  // rows:    string[][] — each row is an array of cell values matching headers
+  function _buildMappingPreview(prefix, headers, rows) {
+    var container = document.getElementById(prefix + '-preview-table');
+    if (!container) return;
 
-    // Build mapping rows with confidence badges + format hints
-    var tbody = document.getElementById('prog-mapping-body');
-    tbody.innerHTML = _progCsvCols.map(function(col) {
-      var opts = _progFieldOptions.map(function(f) {
-        return '<option' + (f === col.suggested ? ' selected' : '') + '>' + f + '</option>';
-      }).join('');
-      var badge = col.confidence === 'high'
-        ? '<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">auto</span>'
-        : '<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-200">review</span>';
-      var hint = _buildMappingHint(col);
-      return '<tr class="hover:bg-slate-50' + (hint ? ' align-top' : '') + '">' +
-        '<td class="px-3 py-2.5 whitespace-nowrap"><code class="bg-slate-100 px-1.5 py-0.5 rounded text-[11px] text-slate-700 font-mono">' + col.csv + '</code></td>' +
-        '<td class="px-3 py-2.5"><select class="w-full text-[11px] text-slate-700 rounded-md border border-slate-200 px-2 py-1.5 focus:outline-none focus:border-indigo-400 bg-white">' + opts + '</select>' + hint + '</td>' +
-        '<td class="px-3 py-2.5 w-16">' + badge + '</td>' +
-        '</tr>';
+    var ths = headers.map(function(h) {
+      return '<th class="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap bg-slate-50">' + h + '</th>';
     }).join('');
 
-    document.getElementById('import-confirm-btn').disabled = true;
+    var trs = rows.map(function(row) {
+      var tds = row.map(function(cell) {
+        var empty = !cell || cell === '—';
+        return '<td class="px-3 py-2.5 whitespace-nowrap ' + (empty ? 'text-slate-300 italic' : 'text-slate-700') + '">' + (cell || '—') + '</td>';
+      }).join('');
+      return '<tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0">' + tds + '</tr>';
+    }).join('');
+
+    container.innerHTML =
+      '<table class="w-full text-[11px]">' +
+        '<thead><tr class="border-b border-slate-200">' + ths + '</tr></thead>' +
+        '<tbody>' + trs + '</tbody>' +
+      '</table>';
+
+    // Preview is informational only — always enable Confirm Import
+    var confirmBtn = document.getElementById((prefix === 'emp') ? 'emp-import-confirm-btn' : 'import-confirm-btn');
+    if (confirmBtn) { confirmBtn.disabled = false; confirmBtn.title = ''; }
   }
 
-  function _buildSmartPreviewCards(prefix, data) {
-    var errors   = data.errors;
-    var adding   = data.adding;
-    var updating = data.updating;
-    var skipped  = data.skipped;
-    var partial  = data.partial;
-    var isEmp    = (prefix === 'emp');
-
-    var warnings = data.warnings || [];
-
-    // Summary chips
-    var chips = '';
-    chips += '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-medium bg-emerald-50 text-emerald-700 border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>' + adding.length + ' adding</span>';
-    chips += '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-medium bg-indigo-50 text-indigo-700 border-indigo-200"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0"></span>' + updating.length + ' updating</span>';
-    chips += '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-medium bg-slate-100 text-slate-600 border-slate-200"><span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>' + skipped.length + ' unchanged</span>';
-    if (warnings.length > 0) {
-      chips += '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-medium bg-amber-50 text-amber-700 border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>' + warnings.length + ' warning' + (warnings.length !== 1 ? 's' : '') + '</span>';
-    }
-    if (errors.length > 0) {
-      chips += '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-medium bg-red-50 text-red-700 border-red-200"><span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>' + errors.length + ' error' + (errors.length !== 1 ? 's' : '') + '</span>';
-    }
-    document.getElementById(prefix + '-preview-summary').innerHTML = chips;
-
-    // Partial file warning
-    var partialEl = document.getElementById(prefix + '-preview-partial');
-    if (partial) {
-      partialEl.innerHTML = '<div class="flex items-start gap-2.5 p-3 rounded-lg bg-amber-50 border border-amber-200">' +
-        '<svg class="shrink-0 text-amber-500 mt-0.5" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>' +
-        '<p class="text-[11px] text-amber-800 leading-relaxed">' + partial.message + '</p>' +
-        '</div>';
-      partialEl.classList.remove('hidden');
-    } else {
-      partialEl.classList.add('hidden');
-    }
-
-    // Error card
-    var errorEl = document.getElementById(prefix + '-preview-error-card');
-    if (errors.length > 0) {
-      var errRows = errors.map(function(e) {
-        return '<tr class="hover:bg-red-50/50">' +
-          '<td class="px-3 py-2 text-slate-500">Row ' + e.row + '</td>' +
-          '<td class="px-3 py-2 text-slate-700 font-medium">' + e.value + '</td>' +
-          '<td class="px-3 py-2 text-red-700">' + e.issue + '</td>' +
-          '</tr>';
-      }).join('');
-      errorEl.innerHTML = '<div class="rounded-lg border border-red-200 overflow-hidden">' +
-        '<div class="flex items-center gap-2 px-3 py-2 bg-red-50 border-b border-red-200">' +
-        '<svg class="text-red-500" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>' +
-        '<p class="text-[11px] font-semibold text-red-700">' + errors.length + ' error' + (errors.length !== 1 ? 's' : '') + ' found — fix in your file and re-upload to proceed</p></div>' +
-        '<table class="w-full text-[11px]"><thead><tr class="bg-slate-50 border-b border-slate-200">' +
-        '<th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Row</th>' +
-        '<th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Value</th>' +
-        '<th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Issue</th>' +
-        '</tr></thead><tbody class="divide-y divide-slate-100">' + errRows + '</tbody></table></div>';
-      errorEl.classList.remove('hidden');
-    } else {
-      errorEl.classList.add('hidden');
-    }
-
-    // Adding card
-    var addEl = document.getElementById(prefix + '-preview-adding-card');
-    if (adding.length > 0) {
-      var addRows, addHead;
-      if (isEmp) {
-        addHead = '<th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">ID</th>' +
-          '<th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Name</th>' +
-          '<th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Dept</th>' +
-          '<th class="px-3 py-2 text-right font-semibold text-slate-500 uppercase tracking-wider">Salary</th>' +
-          '<th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Currency</th>';
-        addRows = adding.map(function(r) {
-          return '<tr class="hover:bg-slate-50">' +
-            '<td class="px-3 py-2 text-slate-600 font-mono text-[10px]">' + r.id + '</td>' +
-            '<td class="px-3 py-2 text-slate-800 font-medium">' + r.name + '</td>' +
-            '<td class="px-3 py-2 text-slate-600">' + r.dept + '</td>' +
-            '<td class="px-3 py-2 text-slate-700 text-right">' + r.salary + '</td>' +
-            '<td class="px-3 py-2 text-slate-600">' + r.currency + '</td>' +
-            '</tr>';
-        }).join('');
-      } else {
-        addHead = '<th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">ID</th>' +
-          '<th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Program Name</th>' +
-          '<th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Debit GL</th>' +
-          '<th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Credit GL</th>' +
-          '<th class="px-3 py-2 text-right font-semibold text-slate-500 uppercase tracking-wider">Amount</th>';
-        addRows = adding.map(function(r) {
-          return '<tr class="hover:bg-slate-50">' +
-            '<td class="px-3 py-2 text-slate-400 text-[10px] italic">Auto</td>' +
-            '<td class="px-3 py-2 text-slate-800 font-medium">' + r.name + '</td>' +
-            '<td class="px-3 py-2 text-slate-600">' + r.debit + '</td>' +
-            '<td class="px-3 py-2 text-slate-600">' + r.credit + '</td>' +
-            '<td class="px-3 py-2 text-slate-700 text-right">' + r.amount + '</td>' +
-            '</tr>';
-        }).join('');
-      }
-      addEl.innerHTML = '<div class="rounded-lg border border-emerald-200 overflow-hidden">' +
-        '<div class="flex items-center gap-2 px-3 py-2 bg-emerald-50 border-b border-emerald-200">' +
-        '<span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>' +
-        '<p class="text-[11px] font-semibold text-emerald-800">' + adding.length + ' new record' + (adding.length !== 1 ? 's' : '') + ' to add</p></div>' +
-        '<table class="w-full text-[11px]"><thead><tr class="bg-slate-50 border-b border-slate-200">' + addHead + '</tr></thead>' +
-        '<tbody class="divide-y divide-slate-100">' + addRows + '</tbody></table></div>';
-      addEl.classList.remove('hidden');
-    } else {
-      addEl.classList.add('hidden');
-    }
-
-    // Updating card
-    var updEl = document.getElementById(prefix + '-preview-updating-card');
-    if (updating.length > 0) {
-      var updRows = updating.map(function(r) {
-        var changeHtml = r.changes.map(function(c) {
-          return '<span class="inline-flex items-center gap-1 text-[10px]">' +
-            '<span class="text-slate-500">' + c.field + ':</span> ' +
-            '<span class="line-through text-slate-400">' + c.from + '</span>' +
-            '<span class="text-slate-400 mx-0.5">→</span>' +
-            '<span class="font-semibold text-indigo-700">' + c.to + '</span>' +
-            '</span>';
-        }).join('<span class="text-slate-300 mx-1">·</span>');
-        return '<tr class="hover:bg-slate-50">' +
-          '<td class="px-3 py-2 text-slate-500 font-mono text-[10px]">' + r.id + '</td>' +
-          '<td class="px-3 py-2 text-slate-800 font-medium">' + r.name + '</td>' +
-          '<td class="px-3 py-2">' + changeHtml + '</td>' +
-          '</tr>';
-      }).join('');
-      updEl.innerHTML = '<div class="rounded-lg border border-indigo-200 overflow-hidden">' +
-        '<div class="flex items-center gap-2 px-3 py-2 bg-indigo-50 border-b border-indigo-200">' +
-        '<span class="w-2 h-2 rounded-full bg-indigo-500 shrink-0"></span>' +
-        '<p class="text-[11px] font-semibold text-indigo-800">' + updating.length + ' existing record' + (updating.length !== 1 ? 's' : '') + ' to update</p></div>' +
-        '<table class="w-full text-[11px]"><thead><tr class="bg-slate-50 border-b border-slate-200">' +
-        '<th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">ID</th>' +
-        '<th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Name</th>' +
-        '<th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Changes</th>' +
-        '</tr></thead><tbody class="divide-y divide-slate-100">' + updRows + '</tbody></table></div>';
-      updEl.classList.remove('hidden');
-    } else {
-      updEl.classList.add('hidden');
-    }
-
-    // Skipped card (collapsible)
-    var skipEl = document.getElementById(prefix + '-preview-skipped-card');
-    if (skipped.length > 0) {
-      var skipRows = skipped.map(function(r) {
-        return '<li class="py-1 text-slate-600"><span class="font-mono text-[10px] text-slate-400 mr-1.5">' + r.id + '</span>' + r.name + '</li>';
-      }).join('');
-      var collapseId = prefix + '-skipped-body';
-      skipEl.innerHTML = '<div class="rounded-lg border border-slate-200 overflow-hidden">' +
-        '<button onclick="(function(btn){var b=document.getElementById(\'' + collapseId + '\');var open=b.classList.toggle(\'hidden\');btn.querySelector(\'svg\').style.transform=open?\'rotate(0deg)\':\'rotate(90deg)\'})(this)" class="w-full flex items-center justify-between gap-2 px-3 py-2 bg-slate-50 border-b border-slate-200 text-left">' +
-        '<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-400 shrink-0"></span>' +
-        '<p class="text-[11px] font-semibold text-slate-600">' + skipped.length + ' record' + (skipped.length !== 1 ? 's' : '') + ' unchanged (already up to date)</p></div>' +
-        '<svg style="transform:rotate(90deg);transition:transform 0.15s" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>' +
-        '</button>' +
-        '<ul id="' + collapseId + '" class="hidden px-3 py-2 divide-y divide-slate-100 text-[11px]">' + skipRows + '</ul>' +
-        '</div>';
-      skipEl.classList.remove('hidden');
-    } else {
-      skipEl.classList.add('hidden');
-    }
-
-    // Warnings card (non-blocking — amber)
-    var warnCardEl = document.getElementById(prefix + '-preview-warnings-card');
-    if (warnCardEl) {
-      if (warnings.length > 0) {
-        var warnRows = warnings.map(function(w) {
-          return '<tr class="hover:bg-amber-50/40">' +
-            '<td class="px-3 py-2 text-slate-500 whitespace-nowrap">Row ' + w.row + '</td>' +
-            '<td class="px-3 py-2 text-slate-700 font-medium">' + w.value + '</td>' +
-            '<td class="px-3 py-2 text-amber-800">' + w.issue + '</td>' +
-            '</tr>';
-        }).join('');
-        warnCardEl.innerHTML = '<div class="rounded-lg border border-amber-200 overflow-hidden">' +
-          '<div class="flex items-center gap-2 px-3 py-2 bg-amber-50 border-b border-amber-200">' +
-          '<svg class="text-amber-500 shrink-0" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>' +
-          '<p class="text-[11px] font-semibold text-amber-800">' + warnings.length + ' warning' + (warnings.length !== 1 ? 's' : '') + ' — review before confirming</p>' +
-          '<span class="ml-auto text-[10px] text-amber-600 font-medium">Import can still proceed</span>' +
-          '</div>' +
-          '<table class="w-full text-[11px]"><thead><tr class="bg-slate-50 border-b border-slate-200">' +
-          '<th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Row</th>' +
-          '<th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Value</th>' +
-          '<th class="px-3 py-2 text-left font-semibold text-slate-500 uppercase tracking-wider">Notice</th>' +
-          '</tr></thead><tbody class="divide-y divide-slate-100">' + warnRows + '</tbody></table></div>';
-        warnCardEl.classList.remove('hidden');
-      } else {
-        warnCardEl.classList.add('hidden');
-      }
-    }
-
-    // Enable / disable the Confirm Import button based on blockers
-    var confirmBtnId = (prefix === 'emp') ? 'emp-import-confirm-btn' : 'import-confirm-btn';
-    var confirmBtn = document.getElementById(confirmBtnId);
-    if (confirmBtn) {
-      confirmBtn.disabled = (errors.length > 0);
-      confirmBtn.title = errors.length > 0
-        ? 'Fix ' + errors.length + ' error' + (errors.length !== 1 ? 's' : '') + ' in the file and re-upload to enable import'
-        : '';
-    }
-  }
+  // ─── Preview sample data (shared across states) ──────────────────────────────
+  var _progPreviewSample = {
+    headers: ['Program ID', 'Program Name', 'Description', 'Debit GL', 'Credit GL', 'Amount'],
+    rows: [
+      ['PROG-001', 'Annual Performance Bonus', 'Year-end reward for eligible contributors', '5100', '2100', '18,000.00'],
+      ['—',        'Q4 Performance Bonus',     'Discretionary Q4 bonus for top performers', '5100', '2100', '50,000.00'],
+      ['—',        'Referral Bonus',            'One-time reward for successful referrals',  '5150', '2110',  '1,000.00']
+    ]
+  };
+  var _empPreviewSample = {
+    headers: ['Employee ID', 'Employee Name', 'Email', 'Department', 'Annual Salary', 'Currency', 'Hire Date', 'Employee Status'],
+    rows: [
+      ['EMP-011', 'Marcus Johnson', 'marcus.johnson@acme.com', 'Engineering', '95,000', 'USD', '03-15-2022', 'Active'],
+      ['EMP-001', 'John Anderson',  'john.anderson@acme.com',  'Sales',       '125,000','USD', '01-10-2018', 'Active'],
+      ['EMP-012', 'Priya Sharma',   'priya.sharma@acme.com',   'Product',     '88,000', 'USD', '06-02-2023', 'Active']
+    ]
+  };
 
   function confirmProgMapping() {
+    // Snapshot current selects into savedMapping
+    var mapping = {};
+    var rows = document.querySelectorAll('#prog-mapping-body tr');
+    _currentProgCsvCols.forEach(function(col, i) {
+      var select = rows[i] && rows[i].querySelector('select');
+      mapping[col.csv] = select ? select.value : col.suggested;
+    });
+    _importState.prog.savedMapping = mapping;
+
     document.getElementById('prog-preview-placeholder').classList.add('hidden');
     document.getElementById('prog-preview-content').classList.remove('hidden');
-
-    _buildSmartPreviewCards('prog', {
-      errors: [
-        { row: 7, value: 'New Wellness Bonus', issue: 'Missing required field: Credit GL' }
-      ],
-      warnings: [],
-      adding: [
-        { name: 'Q4 Performance Bonus', debit: '5100', credit: '2100', amount: '50,000.00' },
-        { name: 'Referral Bonus',        debit: '5150', credit: '2110', amount: '1,000.00'  }
-      ],
-      updating: [
-        { id: 'PROG-001', name: 'Annual Performance Bonus', changes: [{ field: 'Amount', from: '15,000.00', to: '18,000.00' }] },
-        { id: 'PROG-003', name: 'Spot Bonus',               changes: [{ field: 'Amount', from: '2,500.00',  to: '3,000.00'  }] }
-      ],
-      skipped: [
-        { id: 'PROG-002', name: 'Signing Bonus' }
-      ],
-      partial: { message: 'File covers 3 of 5 existing programs. 2 existing programs not in this file will not be affected.' }
-    });
-    // Button state is now managed by _buildSmartPreviewCards (disabled when errors exist)
+    _buildMappingPreview('prog', _progPreviewSample.headers, _progPreviewSample.rows);
   }
 
   function backToProgMapping() {
@@ -4199,7 +4395,7 @@
     { csv: 'emp_type',        suggested: 'Employee Type',    confidence: 'medium' },
     { csv: 'department',      suggested: 'Department',       confidence: 'high'   },
     { csv: 'entity',          suggested: 'Subsidiary',       confidence: 'low'    },
-    { csv: 'office_location', suggested: 'Location',         confidence: 'medium' }
+    { csv: 'office_location', suggested: 'Location',         confidence: 'medium', hint: { type: 'char-limit', count: 1 } }
   ];
 
   var _empFieldOptions = ['— Skip this field —','Employee ID','Employee Name','Email','Department','Subsidiary','Location','Currency','Program','Annual Salary','Hire Date','Termination Date','Employee Status','Employee Type'];
@@ -4243,66 +4439,35 @@
     document.getElementById('emp-file-selected').classList.add('hidden');
     document.getElementById('emp-mapping-placeholder').classList.remove('hidden');
     document.getElementById('emp-mapping-content').classList.add('hidden');
+    document.getElementById('emp-mapping-saved-summary').classList.add('hidden');
+    document.getElementById('emp-mapping-attention-banner').classList.add('hidden');
+    document.getElementById('emp-mapping-subtitle').classList.remove('hidden');
     document.getElementById('emp-preview-placeholder').classList.remove('hidden');
     document.getElementById('emp-preview-content').classList.add('hidden');
     document.getElementById('emp-import-confirm-btn').disabled = true;
+    ['emp-saved-toggle-row-container','emp-mapping-saved-body'].forEach(function(id) {
+      var el = document.getElementById(id); if (el) el.remove();
+    });
   }
 
   function simulateEmpImport(input) {
     if (!input.files || !input.files[0]) return;
-    var filename = input.files[0].name;
-
-    // Show file selected badge, reveal mapping content
-    document.getElementById('emp-file-selected').classList.remove('hidden');
-    document.getElementById('emp-file-selected-name').textContent = filename;
-    document.getElementById('emp-mapping-placeholder').classList.add('hidden');
-    document.getElementById('emp-mapping-content').classList.remove('hidden');
-
-    // Build mapping rows with confidence badges + format hints
-    var tbody = document.getElementById('emp-mapping-body');
-    tbody.innerHTML = _empCsvCols.map(function(col) {
-      var opts = _empFieldOptions.map(function(f) {
-        return '<option' + (f === col.suggested ? ' selected' : '') + '>' + f + '</option>';
-      }).join('');
-      var badge = col.confidence === 'high'
-        ? '<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">auto</span>'
-        : '<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-200">review</span>';
-      var hint = _buildMappingHint(col);
-      return '<tr class="hover:bg-slate-50' + (hint ? ' align-top' : '') + '">' +
-        '<td class="px-3 py-2.5 whitespace-nowrap"><code class="bg-slate-100 px-1.5 py-0.5 rounded text-[11px] text-slate-700 font-mono">' + col.csv + '</code></td>' +
-        '<td class="px-3 py-2.5"><select class="w-full text-[11px] text-slate-700 rounded-md border border-slate-200 px-2 py-1.5 focus:outline-none focus:border-indigo-400 bg-white">' + opts + '</select>' + hint + '</td>' +
-        '<td class="px-3 py-2.5 w-16">' + badge + '</td>' +
-        '</tr>';
-    }).join('');
-
-    document.getElementById('emp-import-confirm-btn').disabled = true;
+    _runImportSim('emp', _currentEmpCsvCols, _empFieldOptions, input.files[0].name);
   }
 
   function confirmEmpMapping() {
+    // Snapshot current selects into savedMapping
+    var mapping = {};
+    var rows = document.querySelectorAll('#emp-mapping-body tr');
+    _currentEmpCsvCols.forEach(function(col, i) {
+      var select = rows[i] && rows[i].querySelector('select');
+      mapping[col.csv] = select ? select.value : col.suggested;
+    });
+    _importState.emp.savedMapping = mapping;
+
     document.getElementById('emp-preview-placeholder').classList.add('hidden');
     document.getElementById('emp-preview-content').classList.remove('hidden');
-
-    _buildSmartPreviewCards('emp', {
-      errors: [
-        { row: 5,  value: '2024-03-01', issue: 'hire_date: value looks like YYYY-MM-DD but MM-DD-YYYY was selected — fix this date in your file' },
-        { row: 9,  value: '2023-11-15', issue: 'hire_date: value looks like YYYY-MM-DD but MM-DD-YYYY was selected — fix this date in your file' }
-      ],
-      warnings: [],
-      adding: [
-        { id: 'EMP-011', name: 'Marcus Johnson', dept: 'Engineering', salary: '95,000', currency: 'USD' },
-        { id: 'EMP-012', name: 'Priya Sharma',   dept: 'Product',     salary: '88,000', currency: 'USD' },
-        { id: 'EMP-013', name: 'Daniel Lee',     dept: 'Finance',     salary: '78,000', currency: 'CAD' }
-      ],
-      updating: [
-        { id: 'EMP-001', name: 'John Anderson',  changes: [{ field: 'Annual Salary', from: '120,000', to: '125,000' }, { field: 'Type', from: 'FT', to: 'Full Time' }] },
-        { id: 'EMP-003', name: 'Michael Torres', changes: [{ field: 'Annual Salary', from: '85,000',  to: '90,000'  }] }
-      ],
-      skipped: [
-        { id: 'EMP-002', name: 'Sarah Chen' }
-      ],
-      partial: { message: 'File covers 5 of 10 existing employees. 5 existing records not in this file will not be affected.' }
-    });
-    // Button state is now managed by _buildSmartPreviewCards (enabled when no errors)
+    _buildMappingPreview('emp', _empPreviewSample.headers, _empPreviewSample.rows);
   }
 
   function backToEmpMapping() {

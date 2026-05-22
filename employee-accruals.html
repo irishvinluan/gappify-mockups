@@ -385,7 +385,7 @@
           </div>
           <!-- Right: actions -->
           <div class="flex items-center gap-2">
-            <button onclick="addProgramRow()" class="inline-flex items-center gap-1.5 h-8 px-3 rounded-md border border-indigo-300 text-[12px] font-medium text-indigo-600 hover:bg-indigo-50 transition-all duration-150 whitespace-nowrap bg-white">
+            <button onclick="addProgramRow()" class="inline-flex items-center gap-1.5 h-8 px-3 rounded-md text-[12px] font-semibold text-white transition-all duration-150 whitespace-nowrap bg-indigo-600 hover:bg-indigo-700 hover:shadow hover:-translate-y-px">
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
               Add Program
             </button>
@@ -1090,6 +1090,7 @@
               <button id="tx-je-btn" onclick="setTxView('je')" class="px-3 py-1 text-[11px] font-semibold rounded-md transition-all duration-150 outline-none bg-slate-100 text-emerald-600 shadow-sm border border-slate-200">JE View</button>
             </div>
             <button id="create-txn-btn" onclick="createJournalEntries()" class="inline-flex items-center gap-1.5 h-8 px-3.5 rounded-md text-[12px] font-semibold text-white transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 bg-indigo-600 hover:bg-indigo-700 hover:shadow hover:-translate-y-px">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
               Create Transactions
             </button>
             <button onclick="exportJournalEntries()" class="inline-flex items-center gap-1.5 h-8 px-3 rounded-md border border-slate-300 text-[12px] font-medium text-slate-600 hover:bg-slate-50 transition-all duration-150 whitespace-nowrap bg-white">
@@ -4684,6 +4685,27 @@
         var p = progData[progName];
         if (!p || !p.debitGL) return;
 
+        // Read employee fields from the row
+        // Column layout: [0]id [1]name [2]program [3]amount-display [4]email [5]salary [6]currency
+        //                [7]hireDate [8]termDate [9]status [10]type [11]dept [12]sub [13]loc [14]elig [15]actions
+        var selVal = function(td) {
+          var s = td ? td.querySelector('select') : null;
+          return s ? (s.options[s.selectedIndex] ? s.options[s.selectedIndex].text : '') : '';
+        };
+        var inpVal = function(td) {
+          var i = td ? td.querySelector('input') : null;
+          return i ? i.value.trim() : '';
+        };
+        var tds = row.querySelectorAll('td');
+        var dept      = selVal(tds[11]);
+        var sub       = selVal(tds[12]);
+        var loc       = selVal(tds[13]);
+        var empStatus = selVal(tds[9]);
+        var empType   = selVal(tds[10]);
+        var hireDateRaw = inpVal(tds[7]);   // "YYYY-MM-DD"
+        var salaryRaw   = inpVal(tds[5]);   // "120,000.00"
+        var currency    = selVal(tds[6]) || 'USD';
+
         // ── Calculate Program Amount ──────────────────────────────
         // % type → program base amount × rate / 100  (e.g. 120,000 × 15% = 18,000)
         // Fixed  → program base amount directly       (e.g. 1,500)
@@ -4697,6 +4719,14 @@
           date:         dateStr,
           employeeId:   empId,
           employeeName: empName,
+          department:   dept,
+          subsidiary:   sub,
+          location:     loc,
+          empStatus:    empStatus,
+          empType:      empType,
+          hireDate:     hireDateRaw,
+          salary:       salaryRaw,
+          currency:     currency,
           program:      progName,
           amount:       amount,
           debitGL:      p.debitGL,
@@ -4720,7 +4750,7 @@
       setTimeout(function() {
         if (btn) {
           btn.disabled = false;
-          btn.innerHTML = 'Create Transactions';
+          btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Create Transactions';
           btn.classList.remove('bg-indigo-400', 'cursor-not-allowed');
           btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700', 'hover:shadow', 'hover:-translate-y-px');
         }
@@ -4755,7 +4785,7 @@
     // 1 accrual manager line = 1 transaction line = 1 table row
     var tr = document.createElement('tr');
     tr.className = 'group [&>td]:border-b [&>td]:border-b-slate-200 bg-white hover:bg-indigo-50 cursor-pointer' + (animate ? ' txn-row-new' : '');
-    tr.dataset.empTxId = je.employeeId;
+    tr.dataset.empTxId = je.id;   // must match what empTxRowClick passes (je.id = TXN key)
     tr.dataset.jeId = je.id;
     tr.onclick = function(e) { empTxRowClick(e, je.id); };
 
@@ -4778,6 +4808,17 @@
     tr.innerHTML = html;
     tbody.appendChild(tr);
 
+    // Format hire date "YYYY-MM-DD" → "Month DD, YYYY"
+    var fmtHireDate = (function(raw) {
+      if (!raw) return '—';
+      var d = new Date(raw + 'T00:00:00');
+      if (isNaN(d)) return raw;
+      return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    })(je.hireDate);
+
+    var fmtSalary = (je.salary ? je.salary : '—') + (je.currency ? ' ' + je.currency : '');
+    var fmtAmount = fmt(je.amount) + ' ' + (je.currency || 'USD');
+
     // Detail expand row
     var detailTr = document.createElement('tr');
     detailTr.id = detailId;
@@ -4785,11 +4826,28 @@
     detailTr.innerHTML =
       '<td colspan="12" class="p-0"><div class="px-4 py-3 border-t border-slate-200 border-l-4 bg-white border-l-indigo-400">' +
       '<div class="flex gap-2" style="margin-right:280px;">' +
+
+      // ── Employee Details ──
+      '<div class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">' +
+        '<div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Employee Details</p></div>' +
+        '<div class="px-3 py-2"><div class="inline-grid gap-x-4 gap-y-1" style="grid-template-columns:auto minmax(130px,1fr);">' +
+          '<span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">ID</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">' + je.employeeId + '</span>' +
+          '<span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Department</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">' + (je.department || '—') + '</span>' +
+          '<span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Status</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">' + (je.empStatus || '—') + '</span>' +
+          '<span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Type</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">' + (je.empType || '—') + '</span>' +
+          '<span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Hire Date</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">' + fmtHireDate + '</span>' +
+          '<span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Salary</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">' + fmtSalary + '</span>' +
+          '<span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Subsidiary</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">' + (je.subsidiary || '—') + '</span>' +
+          '<span class="text-[10px] text-slate-500 uppercase tracking-wide self-center">Location</span><span class="text-[11px] font-medium py-0.5 self-center text-slate-900">' + (je.location || '—') + '</span>' +
+        '</div></div>' +
+      '</div>' +
+
+      // ── Accrual Details ──
       '<div class="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm flex-1 min-w-0">' +
         '<div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Accrual Details</p></div>' +
         '<div class="px-3 py-2 flex flex-col gap-y-1.5">' +
-          '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Accrual Amount</span><span class="text-[11px] font-medium text-slate-900">' + je.amount.toLocaleString() + ' USD</span></div>' +
-          '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Original Accrual Amount</span><span class="text-[11px] font-medium text-slate-900">' + je.amount.toLocaleString() + ' USD</span></div>' +
+          '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Accrual Amount</span><span class="text-[11px] font-medium text-slate-900">' + fmtAmount + '</span></div>' +
+          '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Original Accrual Amount</span><span class="text-[11px] font-medium text-slate-900">' + fmtAmount + '</span></div>' +
           '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">GL Account Debit</span><span class="text-[11px] font-medium text-slate-900">' + (je.debitGL || '—') + '</span></div>' +
           '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">GL Account Credit</span><span class="text-[11px] font-medium text-slate-900">' + (je.creditGL || '—') + '</span></div>' +
           '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Created By</span><span data-je-field="created-by" class="text-[11px] font-medium text-slate-400">—</span></div>' +
@@ -4798,25 +4856,30 @@
           '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Updated Date</span><span data-je-field="updated-date" class="text-[11px] font-medium text-slate-400">—</span></div>' +
         '</div>' +
       '</div>' +
-        '<div class="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm flex-1 min-w-0">' +
-          '<div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">JE</p></div>' +
-          '<div class="px-3 py-2 flex flex-col gap-y-1.5">' +
-            '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">JE Date</span><span data-je-field="je-date" class="text-[11px] font-medium text-slate-400">—</span></div>' +
-            '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Reversal Date</span><span data-je-field="reversal-date" class="text-[11px] font-medium text-slate-400">—</span></div>' +
-            '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">JE Memo</span><span data-je-field="je-memo" class="text-[11px] font-medium text-slate-400">—</span></div>' +
-            '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">JE Link</span><span class="text-[11px] font-medium text-slate-400">—</span></div>' + +
-          '</div>' +
+
+      // ── JE ──
+      '<div class="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm flex-1 min-w-0">' +
+        '<div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">JE</p></div>' +
+        '<div class="px-3 py-2 flex flex-col gap-y-1.5">' +
+          '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">JE Date</span><span data-je-field="je-date" class="text-[11px] font-medium text-slate-400">—</span></div>' +
+          '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Reversal Date</span><span data-je-field="reversal-date" class="text-[11px] font-medium text-slate-400">—</span></div>' +
+          '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">JE Memo</span><span data-je-field="je-memo" class="text-[11px] font-medium text-slate-400">—</span></div>' +
+          '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">JE Link</span><span class="text-[11px] font-medium text-slate-400">—</span></div>' +
         '</div>' +
-        '<div class="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm flex-1 min-w-0">' +
-          '<div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Audit</p></div>' +
-          '<div class="px-3 py-2 flex flex-col gap-y-1.5">' +
-            '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Reviewed By</span><span data-je-field="reviewed-by" class="text-[11px] font-medium text-slate-400">—</span></div>' +
-            '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Posted By</span><span class="text-[11px] font-medium text-slate-400">—</span></div>' +
-            '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Last Updated By</span><span data-je-field="last-updated-by" class="text-[11px] font-medium text-slate-400">—</span></div>' +
-            '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Override Flag</span><span class="text-[11px] font-medium text-slate-400">—</span></div>' +
-            '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Override Reason</span><span class="text-[11px] font-medium text-slate-400">—</span></div>' +
-          '</div>' +
+      '</div>' +
+
+      // ── Audit ──
+      '<div class="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm flex-1 min-w-0">' +
+        '<div class="px-4 py-2 border-b border-slate-200 bg-slate-50"><p class="text-[11px] font-semibold uppercase tracking-wider text-indigo-500">Audit</p></div>' +
+        '<div class="px-3 py-2 flex flex-col gap-y-1.5">' +
+          '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Reviewed By</span><span data-je-field="reviewed-by" class="text-[11px] font-medium text-slate-400">—</span></div>' +
+          '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Posted By</span><span class="text-[11px] font-medium text-slate-400">—</span></div>' +
+          '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Last Updated By</span><span data-je-field="last-updated-by" class="text-[11px] font-medium text-slate-400">—</span></div>' +
+          '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Override Flag</span><span class="text-[11px] font-medium text-slate-400">—</span></div>' +
+          '<div class="flex items-center justify-between gap-1"><span class="text-[10px] text-slate-500 uppercase tracking-wide">Override Reason</span><span class="text-[11px] font-medium text-slate-400">—</span></div>' +
         '</div>' +
+      '</div>' +
+
       '</div></div></td>';
     tbody.appendChild(detailTr);
 

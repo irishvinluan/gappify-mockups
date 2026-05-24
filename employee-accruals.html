@@ -4404,6 +4404,11 @@
 
   var _empFieldOptions = ['— Skip this field —','Employee ID','Employee Name','Email','Department','Subsidiary','Location','Currency','Program','Annual Salary','Hire Date','Termination Date','Employee Status','Employee Type'];
 
+  // Re-bind _currentEmpCsvCols now that _empCsvCols is actually defined.
+  // (The earlier var-hoisting init at the top of the script captured `undefined`
+  // because `_empCsvCols` is declared further down in source order.)
+  _currentEmpCsvCols = _empCsvCols;
+
   // ── Profile menu ──────────────────────────────────────────────
   function toggleProfileMenu() {
     var menu = document.getElementById('profile-menu');

@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gappify — Email Templates</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 14px;
+            color: #1e1e2e;
+            background: #f4f5f7;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── TOP NAV ── */
+        .topnav {
+            background: #111827;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            flex-shrink: 0;
+            gap: 0;
+        }
+        .topnav-logo {
+            color: white;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-right: 40px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .topnav-logo svg { width: 28px; height: 28px; }
+        .topnav-items { display: flex; gap: 2px; flex: 1; }
+        .topnav-item {
+            color: #9ca3af;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            white-space: nowrap;
+            transition: color 0.15s;
+        }
+        .topnav-item:hover { color: white; }
+        .topnav-item.ai { color: #a78bfa; display: flex; align-items: center; gap: 4px; }
+        .topnav-right { display: flex; align-items: center; gap: 12px; }
+        .topnav-chat {
+            width: 32px; height: 32px;
+            background: #374151;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: #9ca3af; font-size: 16px;
+        }
+        .topnav-username { color: #9ca3af; font-size: 13px; }
+        .topnav-avatar {
+            width: 32px; height: 32px;
+            background: #6d28d9;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 12px; font-weight: 700;
+        }
+
+        /* ── APP BODY ── */
+        .app-body { display: flex; flex: 1; overflow: hidden; }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: 230px;
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            flex-shrink: 0;
+            overflow-y: auto;
+            padding: 20px 0 20px;
+        }
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px 16px;
+        }
+        .sidebar-header h2 { font-size: 20px; font-weight: 700; color: #111827; }
+        .sidebar-collapse {
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            border: 2px solid #7c3aed;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: #7c3aed; font-size: 10px;
+        }
+        .sidebar-item {
+            padding: 9px 16px;
+            cursor: pointer;
+            color: #374151;
+            font-size: 13.5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.1s;
+            line-height: 1.3;
+        }
+        .sidebar-item:hover { background: #f9fafb; }
+        .sidebar-item.active {
+            background: #ede9fe;
+            color: #6d28d9;
+            font-weight: 600;
+            border-left: 3px solid #7c3aed;
+            padding-left: 13px;
+        }
+        .sidebar-item.sub {
+            padding-left: 30px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+        .sidebar-item.sub:hover { background: #f9fafb; }
+        .sidebar-chevron { color: #9ca3af; font-size: 10px; transition: transform 0.2s; }
+        .sidebar-chevron.open { transform: rotate(180deg); }
+
+        /* ── MAIN CONTENT ── */
+        .content { flex: 1; overflow-y: auto; padding: 32px 40px; }
+
+        /* ── SCREENS ── */
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        /* ── LANDING ── */
+        .page-title { font-size: 24px; font-weight: 700; color: #111827; margin-bottom: 6px; }
+        .page-subtitle { font-size: 14px; color: #6b7280; margin-bottom: 32px; }
+
+        .template-group { margin-bottom: 32px; }
+        .template-group-header {
+            font-size: 11px;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .template-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .template-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: box-shadow 0.15s, border-color 0.15s;
+        }
+        .template-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.08); border-color: #c4b5fd; }
+
+        .card-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 10px;
+        }
+        .card-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+        .card-badge.first { color: #059669; }
+        .card-badge.reminder { color: #d97706; }
+
+        .card-title { font-size: 15px; font-weight: 600; color: #111827; margin-bottom: 5px; }
+        .card-subject {
+            font-size: 13px; color: #6b7280; margin-bottom: 12px;
+            font-style: italic;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .card-meta { font-size: 11.5px; color: #9ca3af; margin-bottom: 18px; }
+        .card-footer { display: flex; align-items: center; justify-content: space-between; }
+
+        /* Toggle */
+        .toggle { display: flex; align-items: center; gap: 7px; cursor: pointer; }
+        .toggle-track {
+            width: 36px; height: 20px;
+            background: #10b981;
+            border-radius: 10px;
+            position: relative;
+            transition: background 0.2s; flex-shrink: 0;
+        }
+        .toggle-track.off { background: #d1d5db; }
+        .toggle-thumb {
+            position: absolute; top: 2px; left: 18px;
+            width: 16px; height: 16px;
+            background: white; border-radius: 50%;
+            transition: left 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .toggle-track.off .toggle-thumb { left: 2px; }
+        .toggle-label { font-size: 12px; color: #6b7280; }
+
+        .btn-edit {
+            background: #7c3aed; color: white;
+            border: none; border-radius: 6px;
+            padding: 7px 18px; font-size: 13px; font-weight: 500;
+            cursor: pointer; transition: background 0.15s;
+        }
+        .btn-edit:hover { background: #6d28d9; }
+
+        /* ── EDITOR ── */
+        .editor-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .editor-breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+        .breadcrumb-back {
+            color: #7c3aed; cursor: pointer;
+            display: flex; align-items: center; gap: 4px; font-weight: 500;
+        }
+        .breadcrumb-back:hover { text-decoration: underline; }
+        .breadcrumb-sep { color: #d1d5db; }
+        .breadcrumb-current { color: #374151; font-weight: 600; }
+
+        .editor-actions { display: flex; gap: 10px; }
+        .btn-secondary {
+            background: white; color: #374151;
+            border: 1px solid #d1d5db; border-radius: 6px;
+            padding: 7px 16px; font-size: 13px; font-weight: 500;
+            cursor: pointer; transition: background 0.15s;
+        }
+        .btn-secondary:hover { background: #f9fafb; }
+        .btn-primary {
+            background: #7c3aed; color: white;
+            border: none; border-radius: 6px;
+            padding: 7px 16px; font-size: 13px; font-weight: 500;
+            cursor: pointer; transition: background 0.15s;
+        }
+        .btn-primary:hover { background: #6d28d9; }
+
+        .editor-subject-row {
+            display: flex; align-items: center; gap: 12px;
+            background: white; border: 1px solid #e5e7eb; border-radius: 8px;
+            padding: 10px 16px; margin-bottom: 20px;
+        }
+        .editor-subject-label { font-size: 13px; color: #6b7280; font-weight: 500; white-space: nowrap; }
+        .editor-subject-input {
+            flex: 1; border: none; outline: none;
+            font-size: 14px; color: #111827; font-family: inherit;
+        }
+
+        .editor-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+
+        .editor-panel {
+            background: white; border: 1px solid #e5e7eb;
+            border-radius: 10px; overflow: hidden;
+        }
+        .editor-panel-header {
+            padding: 11px 16px; border-bottom: 1px solid #f3f4f6;
+            font-size: 11px; font-weight: 700; color: #9ca3af;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        /* Logo block */
+        .logo-block {
+            border: 2px dashed #e5e7eb; border-radius: 8px;
+            margin: 16px; padding: 14px; text-align: center;
+            cursor: pointer; transition: border-color 0.15s, background 0.15s;
+        }
+        .logo-block:hover { border-color: #7c3aed; background: #faf5ff; }
+        .logo-block img { max-height: 44px; max-width: 100%; }
+        .logo-block-placeholder {
+            color: #9ca3af; font-size: 13px;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+        }
+        .logo-block-placeholder .icon { font-size: 22px; }
+        .logo-hint { font-size: 11px; color: #c4b5fd; }
+
+        /* Toolbar */
+        .editor-toolbar {
+            border-bottom: 1px solid #f3f4f6;
+            padding: 7px 14px;
+            display: flex; align-items: center; gap: 2px; flex-wrap: wrap;
+        }
+        .toolbar-btn {
+            width: 28px; height: 28px;
+            border: none; background: none; border-radius: 4px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-size: 13px; color: #374151; transition: background 0.1s;
+        }
+        .toolbar-btn:hover { background: #f3f4f6; }
+        .toolbar-sep { width: 1px; height: 18px; background: #e5e7eb; margin: 0 4px; }
+
+        /* Insert button */
+        .insert-btn-wrap { position: relative; margin-left: 6px; }
+        .btn-insert {
+            background: #ede9fe; color: #7c3aed;
+            border: 1px solid #c4b5fd; border-radius: 6px;
+            padding: 5px 10px; font-size: 12px; font-weight: 600;
+            cursor: pointer; display: flex; align-items: center; gap: 4px;
+            transition: background 0.15s; white-space: nowrap;
+        }
+        .btn-insert:hover { background: #ddd6fe; }
+
+        .insert-dropdown {
+            position: absolute; top: calc(100% + 4px); left: 0;
+            background: white; border: 1px solid #e5e7eb;
+            border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            z-index: 100; min-width: 220px; overflow: hidden;
+            display: none;
+        }
+        .insert-dropdown.open { display: block; }
+
+        .insert-section-label {
+            padding: 9px 14px 4px;
+            font-size: 10px; font-weight: 700; color: #9ca3af;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .insert-option {
+            padding: 9px 14px; cursor: pointer;
+            display: flex; align-items: center; gap: 10px;
+            font-size: 13px; color: #374151;
+            transition: background 0.1s; position: relative;
+        }
+        .insert-option:hover { background: #f9fafb; }
+        .insert-option-icon {
+            width: 30px; height: 30px; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; flex-shrink: 0;
+        }
+        .i-btn { background: #ede9fe; }
+        .i-link { background: #e0f2fe; }
+        .i-var { background: #fef3c7; }
+        .insert-option-name { font-weight: 500; font-size: 13px; }
+        .insert-option-desc { font-size: 11px; color: #9ca3af; margin-top: 1px; }
+        .insert-divider { height: 1px; background: #f3f4f6; margin: 3px 0; }
+
+        /* Variable submenu */
+        .var-submenu {
+            position: absolute; left: 100%; top: -4px;
+            background: white; border: 1px solid #e5e7eb;
+            border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            z-index: 101; min-width: 220px; overflow: hidden;
+            display: none;
+        }
+        .var-submenu.open { display: block; }
+        .var-option {
+            padding: 9px 14px; cursor: pointer;
+            font-size: 13px; color: #374151;
+            transition: background 0.1s;
+        }
+        .var-option:hover { background: #fef9ee; }
+        .var-option-name { font-weight: 500; }
+        .var-option-example { font-size: 11px; color: #9ca3af; margin-top: 1px; }
+
+        /* Body editor */
+        .body-editor {
+            min-height: 220px; padding: 16px;
+            outline: none; font-size: 14px; line-height: 1.65; color: #374151;
+        }
+        .body-editor p { margin-bottom: 8px; }
+        .body-editor:focus { background: #fafafa; }
+
+        /* Var chip */
+        .var-chip {
+            display: inline-flex; align-items: center;
+            background: #fef3c7; border: 1px solid #fcd34d;
+            border-radius: 4px; padding: 1px 7px;
+            font-size: 12px; font-weight: 600; color: #92400e;
+            cursor: default; user-select: none; white-space: nowrap;
+            vertical-align: baseline;
+        }
+
+        /* Smart blocks */
+        .smart-block {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: #f0fdf4; border: 1px solid #bbf7d0;
+            border-left: 3px solid #10b981;
+            border-radius: 6px; padding: 8px 12px; margin: 4px 0;
+            font-size: 13px; color: #374151;
+            cursor: default; user-select: none;
+        }
+        .smart-block-name { font-size: 11px; font-weight: 700; color: #059669; text-transform: uppercase; letter-spacing: 0.3px; }
+        .smart-block-label { font-size: 13px; color: #374151; }
+        .smart-block-lock {
+            font-size: 10px; color: #6b7280;
+            background: #f3f4f6; padding: 2px 6px; border-radius: 4px;
+            margin-left: 4px;
+        }
+
+        /* Inserted button */
+        .email-btn-block {
+            display: inline-block;
+            background: #7c3aed; color: white;
+            border: none; border-radius: 20px;
+            padding: 10px 24px; font-size: 14px; font-weight: 500;
+            margin: 4px 0; cursor: default; user-select: none;
+        }
+
+        /* Locked footer note */
+        .editor-footer-lock {
+            margin: 0 16px 16px;
+            padding: 9px 14px;
+            background: #f9fafb; border: 1px dashed #e5e7eb;
+            border-radius: 6px; font-size: 12px; color: #9ca3af;
+            display: flex; align-items: center; gap: 6px;
+        }
+
+        /* ── PREVIEW PANEL ── */
+        .preview-panel {
+            background: white; border: 1px solid #e5e7eb;
+            border-radius: 10px; overflow: hidden;
+            position: sticky; top: 0;
+        }
+        .preview-controls {
+            padding: 10px 16px; border-bottom: 1px solid #f3f4f6;
+            display: flex; align-items: center; justify-content: space-between; gap: 8px;
+        }
+        .preview-label { font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; }
+        .preview-toggle-group {
+            display: flex; background: #f3f4f6; border-radius: 6px; padding: 2px; gap: 2px;
+        }
+        .preview-toggle-btn {
+            padding: 4px 10px; border: none; background: none; border-radius: 4px;
+            font-size: 11px; cursor: pointer; color: #6b7280; transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .preview-toggle-btn.active {
+            background: white; color: #374151; font-weight: 500;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .preview-email { padding: 16px; }
+        .preview-email-frame { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+        .preview-email-inner {
+            padding: 20px; font-family: Arial, sans-serif;
+            font-size: 13px; line-height: 1.65; color: #374151;
+        }
+        .preview-form-btn {
+            display: inline-block; background: #7c3aed; color: white;
+            border: none; border-radius: 20px;
+            padding: 10px 24px; font-size: 14px; font-weight: 500;
+            text-decoration: none; margin: 8px 0; cursor: pointer;
+        }
+        .preview-chip {
+            display: inline-flex; align-items: center;
+            background: #fef3c7; border: 1px solid #fcd34d;
+            border-radius: 3px; padding: 0 5px;
+            font-size: 12px; font-weight: 500; color: #92400e;
+        }
+        .preview-txn-table {
+            width: 100%; border-collapse: collapse; font-size: 12px; margin: 8px 0;
+        }
+        .preview-txn-table th {
+            background: #f9fafb; padding: 7px 10px; text-align: left;
+            font-weight: 600; color: #6b7280; border-bottom: 2px solid #e5e7eb;
+        }
+        .preview-txn-table td { padding: 7px 10px; border-bottom: 1px solid #f3f4f6; }
+        .preview-no-txn { color: #9ca3af; font-style: italic; font-size: 13px; }
+        .preview-footer {
+            margin-top: 20px; padding-top: 14px; border-top: 1px solid #f3f4f6;
+            text-align: center;
+        }
+        .preview-gappify-logo { font-size: 10px; font-weight: 800; letter-spacing: 3px; color: #d1d5db; }
+
+        /* ── MODALS ── */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+            z-index: 200; display: none; align-items: center; justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: white; border-radius: 12px; padding: 24px;
+            width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        .modal-title { font-size: 16px; font-weight: 700; color: #111827; margin-bottom: 5px; }
+        .modal-subtitle { font-size: 13px; color: #6b7280; margin-bottom: 20px; }
+        .modal-field { margin-bottom: 16px; }
+        .modal-label { font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 6px; display: block; }
+        .modal-input {
+            width: 100%; padding: 8px 12px;
+            border: 1px solid #d1d5db; border-radius: 6px;
+            font-size: 14px; font-family: inherit; color: #111827;
+            outline: none; transition: border-color 0.15s;
+        }
+        .modal-input:focus { border-color: #7c3aed; box-shadow: 0 0 0 3px #ede9fe; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+
+        /* Upload zone */
+        .upload-zone {
+            border: 2px dashed #d1d5db; border-radius: 8px;
+            padding: 24px; text-align: center; cursor: pointer;
+            transition: border-color 0.15s, background 0.15s; margin-bottom: 16px;
+        }
+        .upload-zone:hover { border-color: #7c3aed; background: #faf5ff; }
+        .upload-zone-icon { font-size: 28px; margin-bottom: 8px; }
+        .upload-zone-text { font-size: 13px; color: #374151; font-weight: 500; }
+        .upload-zone-hint { font-size: 12px; color: #9ca3af; margin-top: 4px; }
+        .upload-preview { text-align: center; margin-bottom: 12px; }
+        .upload-preview img { max-height: 48px; border: 1px solid #e5e7eb; border-radius: 6px; padding: 4px 8px; }
+
+        /* Radio group */
+        .radio-group { display: flex; gap: 16px; margin-top: 6px; }
+        .radio-label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; color: #374151; }
+
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            background: #111827; color: white;
+            padding: 12px 20px; border-radius: 8px;
+            font-size: 14px; font-weight: 500;
+            display: none; align-items: center; gap: 8px;
+            z-index: 300; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            animation: slideUp 0.2s ease;
+        }
+        .toast.show { display: flex; }
+        @keyframes slideUp {
+            from { transform: translateY(10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+    <div class="topnav-logo">
+        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="28" height="28" rx="6" fill="#7c3aed"/>
+            <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="14" font-weight="800" font-family="sans-serif">G</text>
+        </svg>
+        GAPPIFY
+    </div>
+    <div class="topnav-items">
+        <span class="topnav-item">Review Center</span>
+        <span class="topnav-item">Transactions</span>
+        <span class="topnav-item">QJE's</span>
+        <span class="topnav-item">Accrual Manager</span>
+        <span class="topnav-item ai">✦ AI Accruals</span>
+        <span class="topnav-item">Insights</span>
+    </div>
+    <div class="topnav-right">
+        <div class="topnav-chat">💬</div>
+        <span class="topnav-username">honeycombAAAAdmin</span>
+        <div class="topnav-avatar">H</div>
+    </div>
+</nav>
+
+<!-- APP BODY -->
+<div class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Settings</h2>
+            <div class="sidebar-collapse">◀</div>
+        </div>
+
+        <div class="sidebar-item" onclick="goToLanding()">Period Management</div>
+
+        <div class="sidebar-item" onclick="toggleGroup('user-mgmt', this)">
+            User Management
+            <span class="sidebar-chevron" id="chevron-user-mgmt">▼</span>
+        </div>
+        <div id="user-mgmt">
+            <div class="sidebar-item sub">Users</div>
+            <div class="sidebar-item sub">SSO</div>
+            <div class="sidebar-item sub">Login Audit Trail</div>
+        </div>
+
+        <div class="sidebar-item">Schedule Manager</div>
+
+        <!-- NEW -->
+        <div class="sidebar-item active" id="sidebar-email-templates" onclick="goToLanding()">Email Templates</div>
+
+        <div class="sidebar-item" onclick="toggleGroup('accrual-mgr', this)">
+            Accrual Manager
+            <span class="sidebar-chevron" id="chevron-accrual-mgr">▼</span>
+        </div>
+        <div id="accrual-mgr">
+            <div class="sidebar-item sub">Accrual Rules</div>
+        </div>
+
+        <div class="sidebar-item">Enable Features</div>
+        <div class="sidebar-item">Company Settings</div>
+
+        <div class="sidebar-item" onclick="toggleGroup('integrations', this)">
+            Integrations
+            <span class="sidebar-chevron" id="chevron-integrations">▼</span>
+        </div>
+        <div id="integrations">
+            <div class="sidebar-item sub">API Keys</div>
+            <div class="sidebar-item sub">Logs</div>
+            <div class="sidebar-item sub">API Error Notification</div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+        <!-- SCREEN 1: LANDING -->
+        <div class="screen active" id="screen-landing">
+            <h1 class="page-title">Email Templates</h1>
+            <p class="page-subtitle">Customize the emails sent during your monthly accrual outreach.</p>
+
+            <!-- Vendors -->
+            <div class="template-group">
+                <div class="template-group-header">Vendors</div>
+                <div class="template-cards">
+                    <div class="template-card" onclick="openEditor('ext-first')">
+                        <div class="card-badge first"><span class="dot"></span>Confirmation Email</div>
+                        <div class="card-title">Initial Accrual Request</div>
+                        <div class="card-subject">"Honeycomb Accounting: Monthly Expense Confirmation"</div>
+                        <div class="card-meta">Edited Jun 2, 2026 · irishv@gappify.com</div>
+                        <div class="card-footer">
+                            <div class="toggle" onclick="event.stopPropagation(); toggleSwitch(this)">
+                                <div class="toggle-track"><div class="toggle-thumb"></div></div>
+                                <span class="toggle-label">Active</span>
+                            </div>
+                            <button class="btn-edit" onclick="event.stopPropagation(); openEditor('ext-first')">Edit</button>
+                        </div>
+                    </div>
+                    <div class="template-card" onclick="openEditor('ext-reminder')">
+                        <div class="card-badge reminder"><span class="dot"></span>Reminder</div>
+                        <div class="card-title">Accrual Reminder</div>
+                        <div class="card-subject">"Reminder: Honeycomb Accounting: Monthly Expense Confirmation"</div>
+                        <div class="card-meta">Edited Jun 2, 2026 · irishv@gappify.com</div>
+                        <div class="card-footer">
+                            <div class="toggle" onclick="event.stopPropagation(); toggleSwitch(this)">
+                                <div class="toggle-track"><div class="toggle-thumb"></div></div>
+                                <span class="toggle-label">Active</span>
+                            </div>
+                            <button class="btn-edit" onclick="event.stopPropagation(); openEditor('ext-reminder')">Edit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Internal -->
+            <div class="template-group">
+                <div class="template-group-header">Internal</div>
+                <div class="template-cards">
+                    <div class="template-card" onclick="openEditor('int-first')">
+                        <div class="card-badge first"><span class="dot"></span>Confirmation Email</div>
+                        <div class="card-title">Initial Accrual Request</div>
+                        <div class="card-subject">"Honeycomb Accounting: Monthly Expense Confirmation"</div>
+                        <div class="card-meta">Edited Jun 2, 2026 · irishv@gappify.com</div>
+                        <div class="card-footer">
+                            <div class="toggle" onclick="event.stopPropagation(); toggleSwitch(this)">
+                                <div class="toggle-track"><div class="toggle-thumb"></div></div>
+                                <span class="toggle-label">Active</span>
+                            </div>
+                            <button class="btn-edit" onclick="event.stopPropagation(); openEditor('int-first')">Edit</button>
+                        </div>
+                    </div>
+                    <div class="template-card" onclick="openEditor('int-reminder')">
+                        <div class="card-badge reminder"><span class="dot"></span>Reminder</div>
+                        <div class="card-title">Accrual Reminder</div>
+                        <div class="card-subject">"Reminder: Honeycomb Accounting: Monthly Expense Confirmation"</div>
+                        <div class="card-meta">Edited Jun 2, 2026 · irishv@gappify.com</div>
+                        <div class="card-footer">
+                            <div class="toggle" onclick="event.stopPropagation(); toggleSwitch(this)">
+                                <div class="toggle-track"><div class="toggle-thumb"></div></div>
+                                <span class="toggle-label">Active</span>
+                            </div>
+                            <button class="btn-edit" onclick="event.stopPropagation(); openEditor('int-reminder')">Edit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: EDITOR -->
+        <div class="screen" id="screen-editor">
+            <div class="editor-header">
+                <div class="editor-breadcrumb">
+                    <span class="breadcrumb-back" onclick="goToLanding()">← Email Templates</span>
+                    <span class="breadcrumb-sep">/</span>
+                    <span class="breadcrumb-current" id="editor-title">Vendors — Confirmation Email</span>
+                </div>
+                <div class="editor-actions">
+                    <button class="btn-secondary" onclick="openModal('modal-send-test')">Send Test</button>
+                    <button class="btn-secondary" onclick="goToLanding()">Cancel</button>
+                    <button class="btn-primary" onclick="saveTemplate()">Save</button>
+                </div>
+            </div>
+
+            <!-- Subject -->
+            <div class="editor-subject-row">
+                <span class="editor-subject-label">Subject:</span>
+                <input class="editor-subject-input" type="text" id="subject-input"
+                    value="Honeycomb Accounting: Monthly Expense Confirmation" oninput="syncPreview()">
+            </div>
+
+            <!-- Panels -->
+            <div class="editor-panels">
+
+                <!-- LEFT: Compose -->
+                <div class="editor-panel">
+                    <div class="editor-panel-header">Compose</div>
+
+                    <!-- Logo block -->
+                    <div class="logo-block" id="logo-block" onclick="openModal('modal-logo')">
+                        <div class="logo-block-placeholder" id="logo-placeholder">
+                            <span class="icon">🖼</span>
+                            <span>Click to upload your company logo</span>
+                            <span class="logo-hint">Applies to all 4 email templates</span>
+                        </div>
+                        <img id="logo-editor-img" style="display:none;" src="" alt="Logo">
+                    </div>
+
+                    <!-- Toolbar -->
+                    <div class="editor-toolbar">
+                        <button class="toolbar-btn" onclick="fmt('bold')" title="Bold"><b>B</b></button>
+                        <button class="toolbar-btn" onclick="fmt('italic')" title="Italic"><i style="font-size:14px;">I</i></button>
+                        <button class="toolbar-btn" onclick="fmt('underline')" title="Underline"><u>U</u></button>
+                        <div class="toolbar-sep"></div>
+                        <button class="toolbar-btn" onclick="fmt('insertUnorderedList')" title="Bullet list">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="2" cy="4" r="1.5" fill="currentColor"/><rect x="5" y="3" width="8" height="2" rx="1" fill="currentColor"/><circle cx="2" cy="10" r="1.5" fill="currentColor"/><rect x="5" y="9" width="8" height="2" rx="1" fill="currentColor"/></svg>
+                        </button>
+                        <button class="toolbar-btn" onclick="fmt('insertOrderedList')" title="Numbered list">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><text x="0" y="10" font-size="8" fill="currentColor" font-family="sans-serif">1.</text><rect x="6" y="3" width="7" height="2" rx="1" fill="currentColor"/><rect x="6" y="9" width="7" height="2" rx="1" fill="currentColor"/></svg>
+                        </button>
+                        <div class="toolbar-sep"></div>
+                        <button class="toolbar-btn" onclick="triggerHyperlink()" title="Hyperlink">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M6 8L8 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M5.5 5.5L4 7a2.83 2.83 0 000 4 2.83 2.83 0 004 0l1.5-1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8.5 8.5L10 7a2.83 2.83 0 000-4 2.83 2.83 0 00-4 0L4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                        </button>
+                        <div class="toolbar-sep"></div>
+
+                        <!-- Insert menu -->
+                        <div class="insert-btn-wrap" id="insert-wrap">
+                            <button class="btn-insert" onclick="toggleInsertMenu(event)">＋ Insert ▾</button>
+                            <div class="insert-dropdown" id="insert-dropdown">
+                                <div class="insert-section-label">Elements</div>
+                                <div class="insert-option" onclick="openModal('modal-button'); closeInsert();">
+                                    <div class="insert-option-icon i-btn">⬛</div>
+                                    <div>
+                                        <div class="insert-option-name">Button</div>
+                                        <div class="insert-option-desc">Clickable button with a URL</div>
+                                    </div>
+                                </div>
+                                <div class="insert-option" onclick="triggerHyperlink(); closeInsert();">
+                                    <div class="insert-option-icon i-link">🔗</div>
+                                    <div>
+                                        <div class="insert-option-name">Hyperlink</div>
+                                        <div class="insert-option-desc">Wrap selected text with a link</div>
+                                    </div>
+                                </div>
+                                <div class="insert-divider"></div>
+                                <div class="insert-section-label">Variables</div>
+                                <div class="insert-option" id="var-option"
+                                    onmouseenter="showVarMenu()" onmouseleave="scheduleHideVar()">
+                                    <div class="insert-option-icon i-var">{ }</div>
+                                    <div style="flex:1;">
+                                        <div class="insert-option-name">Variable</div>
+                                        <div class="insert-option-desc">Insert dynamic content</div>
+                                    </div>
+                                    <span style="color:#9ca3af;font-size:11px;margin-left:4px;">›</span>
+                                    <!-- Var submenu -->
+                                    <div class="var-submenu" id="var-submenu"
+                                        onmouseenter="cancelHideVar()" onmouseleave="hideVarMenu()">
+                                        <div class="insert-section-label">Available Variables</div>
+                                        <div class="var-option" onclick="insertVar('Recipient Name','Acme Corp')">
+                                            <div class="var-option-name">Recipient Name</div>
+                                            <div class="var-option-example">e.g. Acme Corp</div>
+                                        </div>
+                                        <div class="var-option" onclick="insertVar('Company Name','Honeycomb')">
+                                            <div class="var-option-name">Company Name</div>
+                                            <div class="var-option-example">e.g. Honeycomb</div>
+                                        </div>
+                                        <div class="var-option" onclick="insertVar('Accrual Period','June 2026')">
+                                            <div class="var-option-name">Accrual Period</div>
+                                            <div class="var-option-example">e.g. June 2026</div>
+                                        </div>
+                                        <div class="var-option" onclick="insertVar('Response Due Date','Jun 19, 2026')">
+                                            <div class="var-option-name">Response Due Date</div>
+                                            <div class="var-option-example">e.g. Jun 19, 2026</div>
+                                        </div>
+                                        <div class="var-option" onclick="insertVar('Accounting Email','accruals@honeycomb.com')">
+                                            <div class="var-option-name">Accounting Team Email</div>
+                                            <div class="var-option-example">e.g. accruals@honeycomb.com</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Body editor -->
+                    <div class="body-editor" id="body-editor"
+                        contenteditable="true"
+                        oninput="syncPreview()"
+                        onkeydown="handleKey(event)"></div>
+
+                    <!-- Locked footer hint -->
+                    <div class="editor-footer-lock">
+                        🔒 <span>"Powered by Gappify" footer is locked and cannot be removed.</span>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Preview -->
+                <div class="preview-panel">
+                    <div class="preview-controls">
+                        <span class="preview-label">Live Preview</span>
+                        <div class="preview-toggle-group">
+                            <button class="preview-toggle-btn active" onclick="setPreviewMode('with', this)">With transactions</button>
+                            <button class="preview-toggle-btn" onclick="setPreviewMode('none', this)">No transactions</button>
+                        </div>
+                    </div>
+                    <div class="preview-email">
+                        <div class="preview-email-frame">
+                            <div class="preview-email-inner" id="preview-inner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- MODAL: Logo Upload -->
+<div class="modal-overlay" id="modal-logo">
+    <div class="modal">
+        <div class="modal-title">Company Logo</div>
+        <div class="modal-subtitle">Appears in all email templates. Upload once, updates everywhere.</div>
+        <div id="upload-zone-wrap">
+            <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+                <div class="upload-zone-icon">⬆️</div>
+                <div class="upload-zone-text">Drag a file or click to upload</div>
+                <div class="upload-zone-hint">PNG, JPG, or SVG · max 1 MB · Recommended height: 48px</div>
+            </div>
+        </div>
+        <div class="upload-preview" id="upload-preview" style="display:none;">
+            <img id="upload-preview-img" src="" alt="Logo preview">
+        </div>
+        <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleUpload(event)">
+        <div class="modal-field">
+            <label class="modal-label">Alignment</label>
+            <div class="radio-group">
+                <label class="radio-label"><input type="radio" name="logo-align" value="left"> Left</label>
+                <label class="radio-label"><input type="radio" name="logo-align" value="center" checked> Center</label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeModal('modal-logo')">Cancel</button>
+            <button class="btn-primary" onclick="applyLogo()">Save Logo</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Insert Button -->
+<div class="modal-overlay" id="modal-button">
+    <div class="modal">
+        <div class="modal-title">Insert Button</div>
+        <div class="modal-subtitle">Add a clickable button that links somewhere.</div>
+        <div class="modal-field">
+            <label class="modal-label">Button label</label>
+            <input class="modal-input" type="text" id="btn-label" value="Form Link" placeholder="e.g. Submit Now">
+        </div>
+        <div class="modal-field">
+            <label class="modal-label">Links to</label>
+            <select class="modal-input" id="btn-link-type" onchange="toggleUrlField()">
+                <option value="form">Accrual submission form (dynamic per recipient)</option>
+                <option value="custom">Custom URL…</option>
+            </select>
+        </div>
+        <div class="modal-field" id="custom-url-wrap" style="display:none">
+            <label class="modal-label">URL</label>
+            <input class="modal-input" type="text" id="custom-url" placeholder="https://…">
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeModal('modal-button')">Cancel</button>
+            <button class="btn-primary" onclick="confirmButton()">Insert</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Hyperlink -->
+<div class="modal-overlay" id="modal-hyperlink">
+    <div class="modal">
+        <div class="modal-title">Insert Hyperlink</div>
+        <div class="modal-subtitle">Wrap text with a clickable link.</div>
+        <div class="modal-field">
+            <label class="modal-label">Display text</label>
+            <input class="modal-input" type="text" id="link-text" placeholder="e.g. contact us">
+        </div>
+        <div class="modal-field">
+            <label class="modal-label">URL</label>
+            <input class="modal-input" type="text" id="link-url" placeholder="https://…">
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeModal('modal-hyperlink')">Cancel</button>
+            <button class="btn-primary" onclick="confirmLink()">Insert</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Send Test -->
+<div class="modal-overlay" id="modal-send-test">
+    <div class="modal">
+        <div class="modal-title">Send Test Email</div>
+        <div class="modal-subtitle">Preview what recipients will receive, rendered with sample data.</div>
+        <div class="modal-field">
+            <label class="modal-label">Send to</label>
+            <input class="modal-input" type="email" id="test-email" value="irishv@gappify.com">
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeModal('modal-send-test')">Cancel</button>
+            <button class="btn-primary" onclick="sendTest()">Send Test</button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ <span id="toast-msg">Saved</span></div>
+
+<script>
+    // ── State ──────────────────────────────────────────────
+    let currentEditor = 'ext-first';
+    let previewMode = 'with';
+    let savedRange = null;
+    let varTimer = null;
+    let logoDataUrl = null;
+    let pendingLogoDataUrl = null;
+
+    const editorTitles = {
+        'ext-first':    'Vendors — Confirmation Email',
+        'ext-reminder': 'Vendors — Reminder',
+        'int-first':    'Internal — Confirmation Email',
+        'int-reminder': 'Internal — Reminder',
+    };
+
+    const defaultBodies = {
+        'ext-first': `<p>Greetings <span class="var-chip" data-var="Recipient Name" data-val="Acme Corp" contenteditable="false">Recipient Name</span>,</p><p>On a monthly basis, all active Vendors are required to provide an estimate of all unbilled or un-invoiced charges to <span class="var-chip" data-var="Company Name" data-val="Honeycomb" contenteditable="false">Company Name</span>'s Accounting Team. Please provide your estimate by selecting "Form Link" below.</p><p><span class="smart-block" contenteditable="false"><span style="font-size:16px;">🔘</span><span><span class="smart-block-name">Submit Button</span><br><span class="smart-block-label">Form Link</span></span><span class="smart-block-lock">required · cannot remove</span></span></p><p>To prevent invoice payment delays, we kindly ask that Vendors complete these confirmations within two business days. Thank you for your cooperation, and if you have any questions please email <a href="mailto:accruals@honeycomb.com" style="color:#7c3aed;">accruals@honeycomb.com</a>.</p><p>Thank you,<br><strong><span class="var-chip" data-var="Company Name" data-val="Honeycomb" contenteditable="false">Company Name</span> Finance</strong></p>`,
+        'ext-reminder': `<p>Greetings <span class="var-chip" data-var="Recipient Name" data-val="Acme Corp" contenteditable="false">Recipient Name</span>,</p><p><strong>This is a friendly reminder</strong> that your monthly accrual submission for <span class="var-chip" data-var="Accrual Period" data-val="June 2026" contenteditable="false">Accrual Period</span> is still pending. Please complete it by <span class="var-chip" data-var="Response Due Date" data-val="Jun 19, 2026" contenteditable="false">Response Due Date</span>.</p><p><span class="smart-block" contenteditable="false"><span style="font-size:16px;">🔘</span><span><span class="smart-block-name">Submit Button</span><br><span class="smart-block-label">Form Link</span></span><span class="smart-block-lock">required · cannot remove</span></span></p><p>Thank you,<br><strong><span class="var-chip" data-var="Company Name" data-val="Honeycomb" contenteditable="false">Company Name</span> Finance</strong></p>`,
+        'int-first': `<p>Greetings PO Owners,</p><p>On a monthly basis, all Coupa PO owners must (1) provide an estimate of all unbilled or un-invoiced charges to <span class="var-chip" data-var="Company Name" data-val="Honeycomb" contenteditable="false">Company Name</span>'s Finance Team, and (2) confirm whether each open PO can be closed. Please complete this exercise by selecting "Form Link" below.</p><p><span class="smart-block" contenteditable="false"><span style="font-size:16px;">🔘</span><span><span class="smart-block-name">Submit Button</span><br><span class="smart-block-label">Form Link</span></span><span class="smart-block-lock">required · cannot remove</span></span></p><p>To prevent invoice payment delays to your Suppliers, we kindly ask that you respond within two business days. Thank you for your cooperation and please email <a href="mailto:accruals@honeycomb.com" style="color:#7c3aed;">accruals@honeycomb.com</a> if you have any questions.</p><p>Thank you,<br><strong><span class="var-chip" data-var="Company Name" data-val="Honeycomb" contenteditable="false">Company Name</span> Finance</strong></p>`,
+        'int-reminder': `<p>Greetings PO Owners,</p><p><strong>Reminder:</strong> Your accrual submission for <span class="var-chip" data-var="Accrual Period" data-val="June 2026" contenteditable="false">Accrual Period</span> is due by <span class="var-chip" data-var="Response Due Date" data-val="Jun 19, 2026" contenteditable="false">Response Due Date</span>. Please submit at your earliest convenience.</p><p><span class="smart-block" contenteditable="false"><span style="font-size:16px;">🔘</span><span><span class="smart-block-name">Submit Button</span><br><span class="smart-block-label">Form Link</span></span><span class="smart-block-lock">required · cannot remove</span></span></p><p>Thank you,<br><strong><span class="var-chip" data-var="Company Name" data-val="Honeycomb" contenteditable="false">Company Name</span> Finance</strong></p>`,
+    };
+
+    // ── Navigation ─────────────────────────────────────────
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function goToLanding() {
+        showScreen('screen-landing');
+    }
+
+    function openEditor(type) {
+        currentEditor = type;
+        document.getElementById('editor-title').textContent = editorTitles[type];
+        document.getElementById('body-editor').innerHTML = defaultBodies[type];
+        syncPreview();
+        showScreen('screen-editor');
+    }
+
+    // ── Sidebar groups ─────────────────────────────────────
+    function toggleGroup(id, el) {
+        const group = document.getElementById(id);
+        const chevron = document.getElementById('chevron-' + id);
+        if (!group) return;
+        const open = group.style.display !== 'none';
+        group.style.display = open ? 'none' : '';
+        if (chevron) chevron.classList.toggle('open', !open);
+    }
+
+    // ── Toolbar ────────────────────────────────────────────
+    function fmt(cmd) {
+        document.getElementById('body-editor').focus();
+        document.execCommand(cmd, false, null);
+        syncPreview();
+    }
+
+    // ── Insert menu ────────────────────────────────────────
+    function toggleInsertMenu(e) {
+        e.stopPropagation();
+        saveSelection();
+        const dd = document.getElementById('insert-dropdown');
+        dd.classList.toggle('open');
+    }
+
+    function closeInsert() {
+        document.getElementById('insert-dropdown').classList.remove('open');
+        hideVarMenu();
+    }
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#insert-wrap')) closeInsert();
+    });
+
+    // ── Var submenu ────────────────────────────────────────
+    function showVarMenu() {
+        cancelHideVar();
+        document.getElementById('var-submenu').classList.add('open');
+    }
+    function hideVarMenu() {
+        document.getElementById('var-submenu').classList.remove('open');
+    }
+    function scheduleHideVar() { varTimer = setTimeout(hideVarMenu, 200); }
+    function cancelHideVar() { clearTimeout(varTimer); }
+
+    // ── Selection helpers ──────────────────────────────────
+    function saveSelection() {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0) savedRange = sel.getRangeAt(0).cloneRange();
+    }
+
+    function restoreSelection() {
+        if (!savedRange) return;
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(savedRange);
+    }
+
+    // ── Insert Variable ────────────────────────────────────
+    function insertVar(name, val) {
+        closeInsert();
+        const editor = document.getElementById('body-editor');
+        editor.focus();
+        restoreSelection();
+
+        const chip = document.createElement('span');
+        chip.className = 'var-chip';
+        chip.setAttribute('data-var', name);
+        chip.setAttribute('data-val', val);
+        chip.setAttribute('contenteditable', 'false');
+        chip.textContent = name;
+
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0) {
+            const r = sel.getRangeAt(0);
+            r.deleteContents();
+            r.insertNode(chip);
+            r.setStartAfter(chip);
+            r.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(r);
+        } else {
+            editor.appendChild(chip);
+        }
+        syncPreview();
+    }
+
+    // ── @ shortcut ─────────────────────────────────────────
+    function handleKey(e) {
+        if (e.key === '@') {
+            setTimeout(() => {
+                saveSelection();
+                document.getElementById('insert-dropdown').classList.add('open');
+                showVarMenu();
+            }, 20);
+        }
+    }
+
+    // ── Button ─────────────────────────────────────────────
+    function toggleUrlField() {
+        const t = document.getElementById('btn-link-type').value;
+        document.getElementById('custom-url-wrap').style.display = t === 'custom' ? 'block' : 'none';
+    }
+
+    function confirmButton() {
+        const label = document.getElementById('btn-label').value || 'Form Link';
+        closeModal('modal-button');
+
+        const editor = document.getElementById('body-editor');
+        editor.focus();
+        restoreSelection();
+
+        const btn = document.createElement('span');
+        btn.className = 'email-btn-block';
+        btn.setAttribute('contenteditable', 'false');
+        btn.textContent = label;
+
+        const p = document.createElement('p');
+        p.appendChild(btn);
+
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0) {
+            const r = sel.getRangeAt(0);
+            r.deleteContents();
+            r.insertNode(p);
+            r.setStartAfter(p);
+            sel.removeAllRanges();
+            sel.addRange(r);
+        } else {
+            editor.appendChild(p);
+        }
+        syncPreview();
+    }
+
+    // ── Hyperlink ──────────────────────────────────────────
+    function triggerHyperlink() {
+        closeInsert();
+        const sel = window.getSelection();
+        const selected = sel ? sel.toString() : '';
+        if (selected) document.getElementById('link-text').value = selected;
+        else document.getElementById('link-text').value = '';
+        document.getElementById('link-url').value = '';
+        saveSelection();
+        openModal('modal-hyperlink');
+    }
+
+    function confirmLink() {
+        const text = document.getElementById('link-text').value;
+        const url = document.getElementById('link-url').value;
+        if (!text || !url) return;
+        closeModal('modal-hyperlink');
+
+        const editor = document.getElementById('body-editor');
+        editor.focus();
+        restoreSelection();
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.textContent = text;
+        a.style.color = '#7c3aed';
+
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0) {
+            const r = sel.getRangeAt(0);
+            r.deleteContents();
+            r.insertNode(a);
+            r.setStartAfter(a);
+            sel.removeAllRanges();
+            sel.addRange(r);
+        }
+        syncPreview();
+    }
+
+    // ── Logo ───────────────────────────────────────────────
+    function handleUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            pendingLogoDataUrl = ev.target.result;
+            document.getElementById('upload-preview').style.display = 'block';
+            document.getElementById('upload-preview-img').src = pendingLogoDataUrl;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function applyLogo() {
+        if (pendingLogoDataUrl) {
+            logoDataUrl = pendingLogoDataUrl;
+            document.getElementById('logo-placeholder').style.display = 'none';
+            document.getElementById('logo-editor-img').src = logoDataUrl;
+            document.getElementById('logo-editor-img').style.display = 'block';
+            syncPreview();
+        }
+        closeModal('modal-logo');
+    }
+
+    // ── Preview sync ───────────────────────────────────────
+    function syncPreview() {
+        const editorHtml = document.getElementById('body-editor').innerHTML;
+
+        // Render var chips as preview chips with real values
+        let html = editorHtml.replace(
+            /<span class="var-chip"[^>]*data-var="([^"]*)"[^>]*data-val="([^"]*)"[^>]*>[^<]*<\/span>/g,
+            (_, varName, val) => `<span class="preview-chip">${val}</span>`
+        );
+
+        // Render smart block (submit button)
+        html = html.replace(
+            /<span class="smart-block"[^>]*>[\s\S]*?<\/span>/g,
+            `<div style="margin:12px 0;"><a class="preview-form-btn">Form Link</a></div>`
+        );
+
+        // Render inserted buttons
+        html = html.replace(
+            /<span class="email-btn-block"[^>]*>([^<]*)<\/span>/g,
+            (_, label) => `<a class="preview-form-btn">${label}</a>`
+        );
+
+        const txnBlock = previewMode === 'with'
+            ? `<table class="preview-txn-table">
+                <thead><tr><th>Invoice #</th><th>Date</th><th>Amount</th></tr></thead>
+                <tbody>
+                    <tr><td>INV-2026-0041</td><td>May 15, 2026</td><td>$12,400.00</td></tr>
+                    <tr><td>INV-2026-0038</td><td>Apr 22, 2026</td><td>$8,250.00</td></tr>
+                </tbody></table>`
+            : `<p class="preview-no-txn">[No transactions found.]</p>`;
+
+        const logoHtml = logoDataUrl
+            ? `<div style="margin-bottom:20px;text-align:center;"><img src="${logoDataUrl}" style="max-height:48px;"></div>`
+            : `<div style="margin-bottom:20px;">
+                <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M26 6L36 12V24L26 30L16 24V12Z" fill="#f59e0b" opacity="0.9"/>
+                    <path d="M36 24L46 18V30L36 36L26 30V18Z" fill="#f59e0b" opacity="0.7"/>
+                    <path d="M16 24L26 30V42L16 48L6 42V30Z" fill="#f59e0b" opacity="0.8"/>
+                    <path d="M26 30L36 36V48L26 54L16 48V36Z" fill="#f59e0b" opacity="0.95"/>
+                </svg>
+               </div>`;
+
+        document.getElementById('preview-inner').innerHTML = `
+            ${logoHtml}
+            ${html}
+            <div style="margin-top:10px;">${txnBlock}</div>
+            <div class="preview-footer">
+                <div style="font-size:11px;color:#9ca3af;margin-bottom:4px;">Powered by</div>
+                <div class="preview-gappify-logo">GAPPIFY</div>
+            </div>`;
+    }
+
+    function setPreviewMode(mode, btn) {
+        previewMode = mode;
+        document.querySelectorAll('.preview-toggle-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        syncPreview();
+    }
+
+    // ── Modals ─────────────────────────────────────────────
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    document.querySelectorAll('.modal-overlay').forEach(o => {
+        o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+    });
+
+    // ── Send test ──────────────────────────────────────────
+    function sendTest() {
+        const email = document.getElementById('test-email').value;
+        closeModal('modal-send-test');
+        showToast('Test email sent to ' + email);
+    }
+
+    // ── Save ───────────────────────────────────────────────
+    function saveTemplate() { showToast('Template saved'); }
+
+    // ── Toggle ─────────────────────────────────────────────
+    function toggleSwitch(el) {
+        const track = el.querySelector('.toggle-track');
+        const label = el.querySelector('.toggle-label');
+        track.classList.toggle('off');
+        label.textContent = track.classList.contains('off') ? 'Inactive' : 'Active';
+    }
+
+    // ── Toast ──────────────────────────────────────────────
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        document.getElementById('toast-msg').textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // ── Init ───────────────────────────────────────────────
+    syncPreview();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gappify - Support Tools</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    background-color: #f0f2f5;
+    color: rgba(0,0,0,0.88);
+  }
+
+  /* HEADER */
+  .header {
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 50px;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+  }
+  .header-menu-icon { display: flex; align-items: center; margin-right: 10px; }
+  .header-left { display: flex; align-items: center; }
+  .logo img { height: 24px; display: flex; justify-content: center; }
+  .user-profile-dropdown { margin-left: 20px; margin-right: 0; flex-grow: 1; display: flex; justify-content: flex-end; align-items: center; }
+
+  .ant-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 1px solid #d9d9d9;
+    background: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    color: rgba(0,0,0,0.88);
+    transition: 0.3s;
+    padding: 4px 15px;
+    line-height: 1.5714;
+  }
+  .ant-btn-circle { border-radius: 50%; width: 32px; height: 32px; padding: 0; }
+  .ant-btn-round { border-radius: 32px; padding: 4px 15px; }
+  .g-btn-danger {
+    border: 2px solid red !important;
+    background-color: transparent !important;
+    color: red !important;
+  }
+
+  /* SIDEBAR */
+  .ant-layout-sider {
+    background-color: #725bb4 !important;
+    position: fixed;
+    top: 50px; left: 0; bottom: 20px;
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+  }
+  .ant-layout-sider-children { display: flex; flex-direction: column; height: 100%; }
+  .sidebar-content { flex-grow: 1; display: flex; flex-direction: column; height: 100%; }
+  .ant-menu {
+    list-style: none;
+    padding: 4px 0;
+    background-color: #725bb4;
+  }
+  .ant-menu-item {
+    color: #fff;
+    cursor: pointer;
+    padding: 10px 24px;
+    font-size: 14px;
+    border-radius: 0;
+    margin: 0;
+    width: 100%;
+  }
+  .ant-menu-item:hover { background-color: #000; color: #fff; }
+  .ant-menu-item-selected { background-color: #000 !important; color: #fff; }
+  .ant-menu-submenu-title {
+    color: #fff;
+    cursor: pointer;
+    padding: 10px 24px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .ant-menu-submenu-title:hover { background-color: #000; }
+  .ant-menu-submenu-arrow {
+    display: inline-block;
+    width: 10px; height: 10px;
+    position: relative;
+  }
+  .ant-menu-submenu-arrow::before,
+  .ant-menu-submenu-arrow::after {
+    content: '';
+    position: absolute;
+    width: 6px; height: 1.5px;
+    background: rgba(255,255,255,0.65);
+    border-radius: 1px;
+    top: 4px;
+  }
+  .ant-menu-submenu-arrow::before { left: 0; transform: rotate(45deg); }
+  .ant-menu-submenu-arrow::after  { right: 0; transform: rotate(-45deg); }
+
+  /* PAGE CONTAINER */
+  .page-container {
+    padding: 18px 18px 0;
+    margin-top: 50px;
+    position: fixed;
+    width: 100%;
+    height: calc(100vh - 50px);
+    overflow-y: auto;
+    background-color: #f0f2f5;
+  }
+  .launch-monitoring-dashboard-content {
+    flex-grow: 1;
+    margin-left: 200px;
+    overflow: hidden;
+  }
+
+  /* TABLE */
+  .ant-table-wrapper {
+    height: 100%;
+    overflow: hidden;
+  }
+  .ant-spin-nested-loading { height: 100%; }
+  .ant-spin-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+  }
+  .ant-table {
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px 8px 0 0;
+    overflow-x: auto;
+  }
+  .ant-table-container { position: relative; }
+
+  table { border-collapse: collapse; width: max-content; min-width: 100%; }
+
+  .ant-table-thead th {
+    background: #fafafa;
+    font-weight: 600;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    border-right: 1px solid #f0f0f0;
+    text-align: center;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .ant-table-thead th:first-child { text-align: left; }
+  .ant-table-thead th:last-child { border-right: none; }
+
+  .ant-table-column-sorters {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+    width: 100%;
+  }
+  .ant-table-thead th:first-child .ant-table-column-sorters { justify-content: flex-start; }
+  .ant-table-column-title { flex: 1; }
+  .ant-table-column-sorter { display: flex; flex-direction: column; gap: 1px; }
+  .ant-table-column-sorter-up,
+  .ant-table-column-sorter-down { display: block; line-height: 1; color: #bfbfbf; font-size: 10px; }
+
+  .ant-table-tbody tr { border-bottom: 1px solid #f0f0f0; }
+  .ant-table-tbody tr:hover td { background: #fafafa; }
+  .ant-table-tbody td {
+    padding: 12px 16px;
+    border-right: 1px solid #f0f0f0;
+    font-size: 14px;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .ant-table-tbody td:first-child { text-align: left; }
+  .ant-table-tbody td:last-child { border-right: none; }
+
+  /* PAGINATION */
+  .ant-pagination {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    justify-content: flex-end;
+    padding: 12px 16px;
+    background: #fff;
+    border-top: 1px solid #f0f0f0;
+    border-radius: 0 0 8px 8px;
+  }
+  .ant-pagination-item {
+    min-width: 32px; height: 32px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: rgba(0,0,0,0.88);
+    list-style: none;
+  }
+  .ant-pagination-item:hover { border-color: #725bb4; color: #725bb4; }
+  .ant-pagination-item-active { background: #725bb4; border-color: #725bb4; color: #fff; }
+  .ant-pagination-item-active:hover { color: #fff; }
+  .ant-pagination-prev,
+  .ant-pagination-next {
+    min-width: 32px; height: 32px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    list-style: none;
+  }
+  .ant-pagination-prev:hover,
+  .ant-pagination-next:hover { border-color: #725bb4; color: #725bb4; }
+  .ant-pagination-disabled { opacity: 0.4; cursor: not-allowed; }
+  .ant-pagination-jump-next { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; list-style: none; }
+  .ant-pagination-options {
+    list-style: none;
+  }
+  .ant-pagination-options select {
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 14px;
+    cursor: pointer;
+    background: #fff;
+    color: rgba(0,0,0,0.88);
+    height: 32px;
+  }
+
+  /* KEBAB MENU */
+  .kebab-wrapper { position: relative; display: inline-block; }
+  .kebab-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: rgba(0,0,0,0.65);
+    font-size: 18px;
+    line-height: 1;
+    letter-spacing: 1px;
+  }
+  .kebab-btn:hover { background: rgba(0,0,0,0.06); }
+  .kebab-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12), 0 3px 6px rgba(0,0,0,0.08);
+    min-width: 160px;
+    z-index: 1000;
+    padding: 4px 0;
+  }
+  .kebab-dropdown.open { display: block; }
+  .kebab-dropdown-item {
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #ff4d4f;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .kebab-dropdown-item:hover { background: #fff1f0; }
+
+  /* MIGRATION MODAL */
+  .modal-mask {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 1100;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-mask.open { display: flex; }
+  .modal-box {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12), 0 9px 28px rgba(0,0,0,0.05);
+    width: 440px;
+    max-width: calc(100vw - 32px);
+    padding: 32px 32px 24px;
+    text-align: center;
+  }
+  .modal-spinner {
+    width: 44px;
+    height: 44px;
+    margin: 0 auto 20px;
+    border: 4px solid #ede9f6;
+    border-top-color: #725bb4;
+    border-radius: 50%;
+    animation: modal-spin 0.9s linear infinite;
+  }
+  @keyframes modal-spin { to { transform: rotate(360deg); } }
+  .modal-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    line-height: 1;
+  }
+  .modal-icon.success { background: #f6ffed; color: #52c41a; border: 2px solid #b7eb8f; }
+  .modal-icon.fail { background: #fff2f0; color: #ff4d4f; border: 2px solid #ffccc7; }
+  .modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: rgba(0,0,0,0.88);
+    margin-bottom: 8px;
+  }
+  .modal-text {
+    font-size: 14px;
+    color: rgba(0,0,0,0.65);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .modal-text b { color: rgba(0,0,0,0.88); font-weight: 600; }
+  .modal-actions { display: flex; justify-content: center; gap: 12px; }
+  .modal-btn {
+    border: 1px solid #d9d9d9;
+    background: #fff;
+    border-radius: 6px;
+    padding: 6px 24px;
+    font-size: 14px;
+    cursor: pointer;
+    color: rgba(0,0,0,0.88);
+    transition: 0.2s;
+  }
+  .modal-btn:hover { border-color: #725bb4; color: #725bb4; }
+  .modal-btn.primary {
+    background: #725bb4;
+    border-color: #725bb4;
+    color: #fff;
+  }
+  .modal-btn.primary:hover { background: #5f4a9e; border-color: #5f4a9e; color: #fff; }
+
+  /* FOOTER */
+  .footer {
+    background-color: #000;
+    color: gray;
+    padding: 15px;
+    text-align: center;
+    position: fixed;
+    left: 0; bottom: 0;
+    width: 100%;
+    height: 20px;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .footer-text { font-size: 12px; margin: 0; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="ant-layout-header header">
+  <div class="header-left">
+    <div class="header-menu-icon">
+      <button type="button" class="ant-btn ant-btn-circle ant-btn-default g-btn-default">
+        <span class="ant-btn-icon">
+          <svg viewBox="64 64 896 896" width="1em" height="1em" fill="currentColor"><path d="M904 160H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8zm0 624H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8zm0-312H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8z"/></svg>
+        </span>
+      </button>
+    </div>
+    <div class="logo">
+      <a href="#">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 52" height="24"><style>.st35{fill:#222630}</style><path class="st35" d="M5.9 51C3 51 .6 48.6.6 45.7V6.3C.6 3.4 3 1 5.9 1H14c2.9 0 5.2 2.4 5.2 5.3v7.8h-5.5V5.5H6v40.9h8.4V30.6h-3.8V26h8.8v19.7c0 2.9-2.3 5.3-5.2 5.3H5.9zM60.2 50.5V30.8h-7.4v19.7h-5.5V6.8c0-2.9 2.4-5.3 5.3-5.3h7.8c2.9 0 5.3 2.4 5.3 5.3v43.8l-5.5-.1zm0-44.5h-7.4v20.3h7.4V6zM94.1 50.5v-49h12.3c2.9 0 5.3 2.4 5.3 5.3v22.9c0 2.9-2.4 5.3-5.3 5.3h-6.8v15.7l-5.5-.2zm12.1-44.4h-6.7v24h6.7v-24zM139.8 50.5v-49h12.3c2.9 0 5.3 2.4 5.3 5.3v22.9c0 2.9-2.4 5.3-5.3 5.3h-6.8v15.7l-5.5-.2zm12.1-44.4h-6.7v24h6.7v-24zM185.5 50.5v-49h5.5v49.1l-5.5-.1zM219.5 50.5v-49H235V6h-10.1v20h8.5v4.6h-8.5v20l-5.4-.1zM266.5 50.5c-2.9 0-5.3-2.4-5.3-5.3v-8.4h5.5V46h7.2V29.7h-7.4c-2.9 0-5.3-2.3-5.3-5.2v-23h5.5V25h7.2V1.5h5.5v43.8c0 2.9-2.4 5.3-5.3 5.3h-7.6z"/></svg>
+      </a>
+    </div>
+  </div>
+  <div class="user-profile-dropdown">
+    <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default">
+      <span class="ant-btn-icon">
+        <svg viewBox="64 64 896 896" width="1em" height="1em" fill="currentColor"><path d="M858.5 763.6a374 374 0 00-80.6-119.5 375.63 375.63 0 00-119.5-80.6c-.4-.2-.8-.3-1.2-.5C719.5 518 760 444.7 760 362c0-137-111-248-248-248S264 225 264 362c0 82.7 40.5 156 102.8 201.1-.4.2-.8.3-1.2.5-44.8 18.9-85 46-119.5 80.6a375.63 375.63 0 00-80.6 119.5A371.7 371.7 0 00136 901.8a8 8 0 008 8.2h60c4.4 0 7.9-3.5 8-7.8 2-77.2 33-149.5 87.8-204.3 56.7-56.7 132-87.9 212.2-87.9s155.5 31.2 212.2 87.9C779 752.7 810 825 812 902.2c.1 4.4 3.6 7.8 8 7.8h60a8 8 0 008-8.2c-1-47.8-10.9-94.3-29.5-138.2zM512 534c-45.9 0-89.1-17.9-121.6-50.4S340 407.9 340 362c0-45.9 17.9-89.1 50.4-121.6S466.1 190 512 190s89.1 17.9 121.6 50.4S684 316.1 684 362c0 45.9-17.9 89.1-50.4 121.6S557.9 534 512 534z"/></svg>
+      </span>
+      <span>Irish Vinluan</span>
+    </button>
+  </div>
+</header>
+
+<!-- PAGE CONTAINER -->
+<div class="page-container">
+
+  <!-- SIDEBAR -->
+  <aside class="ant-layout-sider ant-layout-sider-dark sidebar">
+    <div class="ant-layout-sider-children">
+      <div class="sidebar-content">
+        <div class="menu-wrapper">
+          <ul class="ant-menu ant-menu-root ant-menu-inline ant-menu-light">
+            <li class="ant-menu-item" style="padding-left:24px;"><span class="ant-menu-title-content"><span>Launch Calendar</span></span></li>
+            <li class="ant-menu-submenu ant-menu-submenu-inline">
+              <div class="ant-menu-submenu-title" style="padding-left:24px;">
+                <span class="ant-menu-title-content"><span>Customer Success</span></span>
+                <i class="ant-menu-submenu-arrow"></i>
+              </div>
+            </li>
+            <li class="ant-menu-item" style="padding-left:24px;"><span class="ant-menu-title-content"><span>Tenant List</span></span></li>
+            <li class="ant-menu-item" style="padding-left:24px;"><span class="ant-menu-title-content"><span>User List</span></span></li>
+            <li class="ant-menu-item" style="padding-left:24px;"><span class="ant-menu-title-content"><span>Tenant Creation</span></span></li>
+            <li class="ant-menu-item ant-menu-item-selected" style="padding-left:24px;"><span class="ant-menu-title-content"><span>Migrate to Prod</span></span></li>
+            <li class="ant-menu-item" style="padding-left:24px;"><span class="ant-menu-title-content"><span>Data Flow Monitoring</span></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="launch-monitoring-dashboard-content">
+    <div class="ant-table-wrapper">
+      <div class="ant-spin-nested-loading">
+        <div class="ant-spin-container">
+          <div class="ant-table ant-table-bordered ant-table-fixed-header">
+            <div class="ant-table-container">
+              <table>
+                  <colgroup>
+                    <col style="width:250px;">
+                    <col style="width:150px;">
+                    <col style="width:250px;">
+                    <col style="width:250px;">
+                    <col style="width:250px;">
+                    <col style="width:250px;">
+                    <col style="width:250px;">
+                    <col style="width:300px;">
+                    <col style="width:80px;">
+                  </colgroup>
+                  <thead class="ant-table-thead">
+                    <tr>
+                      <th>
+                        <div class="ant-table-column-sorters">
+                          <span class="ant-table-column-title">Customer Name</span>
+                          <span class="ant-table-column-sorter"><span class="ant-table-column-sorter-up">▲</span><span class="ant-table-column-sorter-down">▼</span></span>
+                        </div>
+                      </th>
+                      <th>
+                        <div class="ant-table-column-sorters">
+                          <span class="ant-table-column-title">Customer ID</span>
+                          <span class="ant-table-column-sorter"><span class="ant-table-column-sorter-up">▲</span><span class="ant-table-column-sorter-down">▼</span></span>
+                        </div>
+                      </th>
+                      <th>
+                        <div class="ant-table-column-sorters">
+                          <span class="ant-table-column-title">Company Domain</span>
+                          <span class="ant-table-column-sorter"><span class="ant-table-column-sorter-up">▲</span><span class="ant-table-column-sorter-down">▼</span></span>
+                        </div>
+                      </th>
+                      <th>
+                        <div class="ant-table-column-sorters">
+                          <span class="ant-table-column-title">Customer API Name</span>
+                          <span class="ant-table-column-sorter"><span class="ant-table-column-sorter-up">▲</span><span class="ant-table-column-sorter-down">▼</span></span>
+                        </div>
+                      </th>
+                      <th>
+                        <div class="ant-table-column-sorters">
+                          <span class="ant-table-column-title">Database Name</span>
+                          <span class="ant-table-column-sorter"><span class="ant-table-column-sorter-up">▲</span><span class="ant-table-column-sorter-down">▼</span></span>
+                        </div>
+                      </th>
+                      <th>
+                        <div class="ant-table-column-sorters">
+                          <span class="ant-table-column-title">Customer Ready</span>
+                          <span class="ant-table-column-sorter"><span class="ant-table-column-sorter-up">▲</span><span class="ant-table-column-sorter-down">▼</span></span>
+                        </div>
+                      </th>
+                      <th>
+                        <div class="ant-table-column-sorters">
+                          <span class="ant-table-column-title">Created At</span>
+                          <span class="ant-table-column-sorter"><span class="ant-table-column-sorter-up">▲</span><span class="ant-table-column-sorter-down">▼</span></span>
+                        </div>
+                      </th>
+                      <th>
+                        <div class="ant-table-column-sorters">
+                          <span class="ant-table-column-title">Login to</span>
+                          <span class="ant-table-column-sorter"><span class="ant-table-column-sorter-up">▲</span><span class="ant-table-column-sorter-down">▼</span></span>
+                        </div>
+                      </th>
+                      <th>
+                        <div class="ant-table-column-sorters">
+                          <span class="ant-table-column-title">Actions</span>
+                          <span class="ant-table-column-sorter"><span class="ant-table-column-sorter-up">▲</span><span class="ant-table-column-sorter-down">▼</span></span>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="ant-table-tbody">
+                    <tr class="ant-table-row ant-table-row-level-0">
+                      <td class="ant-table-cell">New Sample Company</td>
+                      <td class="ant-table-cell">126</td>
+                      <td class="ant-table-cell">@gappify.com</td>
+                      <td class="ant-table-cell">new-sample-company-126</td>
+                      <td class="ant-table-cell">gappify_hnytst</td>
+                      <td class="ant-table-cell"><span>Yes</span></td>
+                      <td class="ant-table-cell">2021-12-12 7:39 PM / PST</td>
+                      <td class="ant-table-cell">
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default" style="margin-right:10px;"><span>Accrual Cloud</span></button>
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default"><span>Admin V2</span></button>
+                      </td>
+                      <td class="ant-table-cell">
+                        <div class="kebab-wrapper">
+                          <button class="kebab-btn" onclick="toggleKebab(this)">•••</button>
+                          <div class="kebab-dropdown">
+                            <div class="kebab-dropdown-item">Delete Source Data</div>
+                            <div class="kebab-dropdown-item" style="color:rgba(0,0,0,0.88);" onclick="startMigration(this)">Migrate to Production</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="ant-table-row ant-table-row-level-0">
+                      <td class="ant-table-cell">Puma Biotechnology</td>
+                      <td class="ant-table-cell">183</td>
+                      <td class="ant-table-cell">@pumabiotechnology.com</td>
+                      <td class="ant-table-cell">puma-biotechnology-183</td>
+                      <td class="ant-table-cell">gappify_puma</td>
+                      <td class="ant-table-cell"><span>No</span></td>
+                      <td class="ant-table-cell">2022-07-05 7:35 PM / PST</td>
+                      <td class="ant-table-cell">
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default" style="margin-right:10px;"><span>Accrual Cloud</span></button>
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default"><span>Admin V2</span></button>
+                      </td>
+                      <td class="ant-table-cell">
+                        <div class="kebab-wrapper">
+                          <button class="kebab-btn" onclick="toggleKebab(this)">•••</button>
+                          <div class="kebab-dropdown">
+                            <div class="kebab-dropdown-item">Delete Source Data</div>
+                            <div class="kebab-dropdown-item" style="color:rgba(0,0,0,0.88);" onclick="startMigration(this)">Migrate to Production</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="ant-table-row ant-table-row-level-0">
+                      <td class="ant-table-cell">Connor Group</td>
+                      <td class="ant-table-cell">258</td>
+                      <td class="ant-table-cell">@connorgp.com</td>
+                      <td class="ant-table-cell">connor-group-258</td>
+                      <td class="ant-table-cell">gappify_connorgroup4</td>
+                      <td class="ant-table-cell"><span>No</span></td>
+                      <td class="ant-table-cell">2023-03-24 7:11 AM / PST</td>
+                      <td class="ant-table-cell">
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default" style="margin-right:10px;"><span>Accrual Cloud</span></button>
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default"><span>Admin V2</span></button>
+                      </td>
+                      <td class="ant-table-cell">
+                        <div class="kebab-wrapper">
+                          <button class="kebab-btn" onclick="toggleKebab(this)">•••</button>
+                          <div class="kebab-dropdown">
+                            <div class="kebab-dropdown-item">Delete Source Data</div>
+                            <div class="kebab-dropdown-item" style="color:rgba(0,0,0,0.88);" onclick="startMigration(this)">Migrate to Production</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="ant-table-row ant-table-row-level-0">
+                      <td class="ant-table-cell">SOAProjects 02</td>
+                      <td class="ant-table-cell">289</td>
+                      <td class="ant-table-cell">@soaprojects.com</td>
+                      <td class="ant-table-cell">soaprojects-02-289</td>
+                      <td class="ant-table-cell">soaprojects_02_uat</td>
+                      <td class="ant-table-cell"><span>No</span></td>
+                      <td class="ant-table-cell">2023-07-18 6:06 AM / PST</td>
+                      <td class="ant-table-cell">
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default" style="margin-right:10px;"><span>Accrual Cloud</span></button>
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default"><span>Admin V2</span></button>
+                      </td>
+                      <td class="ant-table-cell">
+                        <div class="kebab-wrapper">
+                          <button class="kebab-btn" onclick="toggleKebab(this)">•••</button>
+                          <div class="kebab-dropdown">
+                            <div class="kebab-dropdown-item">Delete Source Data</div>
+                            <div class="kebab-dropdown-item" style="color:rgba(0,0,0,0.88);" onclick="startMigration(this)">Migrate to Production</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="ant-table-row ant-table-row-level-0">
+                      <td class="ant-table-cell">Connor Group 01</td>
+                      <td class="ant-table-cell">293</td>
+                      <td class="ant-table-cell">@connorgp.com</td>
+                      <td class="ant-table-cell">connor-group-01-293</td>
+                      <td class="ant-table-cell">connor_group_01_uat</td>
+                      <td class="ant-table-cell"><span>No</span></td>
+                      <td class="ant-table-cell">2023-07-24 11:28 PM / PST</td>
+                      <td class="ant-table-cell">
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default" style="margin-right:10px;"><span>Accrual Cloud</span></button>
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default"><span>Admin V2</span></button>
+                      </td>
+                      <td class="ant-table-cell">
+                        <div class="kebab-wrapper">
+                          <button class="kebab-btn" onclick="toggleKebab(this)">•••</button>
+                          <div class="kebab-dropdown">
+                            <div class="kebab-dropdown-item">Delete Source Data</div>
+                            <div class="kebab-dropdown-item" style="color:rgba(0,0,0,0.88);" onclick="startMigration(this)">Migrate to Production</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="ant-table-row ant-table-row-level-0">
+                      <td class="ant-table-cell">Effectus Group 15</td>
+                      <td class="ant-table-cell">325</td>
+                      <td class="ant-table-cell">@effectusgroup.com</td>
+                      <td class="ant-table-cell">effectus-group-15-325</td>
+                      <td class="ant-table-cell">effectus_group_15_uat</td>
+                      <td class="ant-table-cell"><span>No</span></td>
+                      <td class="ant-table-cell">2023-08-22 7:50 PM / PST</td>
+                      <td class="ant-table-cell">
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default" style="margin-right:10px;"><span>Accrual Cloud</span></button>
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default"><span>Admin V2</span></button>
+                      </td>
+                      <td class="ant-table-cell">
+                        <div class="kebab-wrapper">
+                          <button class="kebab-btn" onclick="toggleKebab(this)">•••</button>
+                          <div class="kebab-dropdown">
+                            <div class="kebab-dropdown-item">Delete Source Data</div>
+                            <div class="kebab-dropdown-item" style="color:rgba(0,0,0,0.88);" onclick="startMigration(this)">Migrate to Production</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="ant-table-row ant-table-row-level-0">
+                      <td class="ant-table-cell">Luffy The Persian LLC</td>
+                      <td class="ant-table-cell">388</td>
+                      <td class="ant-table-cell">@zanovoy.com</td>
+                      <td class="ant-table-cell">luffy-the-persian-llc-388</td>
+                      <td class="ant-table-cell">zanovoy_02_uat</td>
+                      <td class="ant-table-cell"><span>No</span></td>
+                      <td class="ant-table-cell">2023-10-30 4:15 PM / PST</td>
+                      <td class="ant-table-cell">
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default" style="margin-right:10px;"><span>Accrual Cloud</span></button>
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default"><span>Admin V2</span></button>
+                      </td>
+                      <td class="ant-table-cell">
+                        <div class="kebab-wrapper">
+                          <button class="kebab-btn" onclick="toggleKebab(this)">•••</button>
+                          <div class="kebab-dropdown">
+                            <div class="kebab-dropdown-item">Delete Source Data</div>
+                            <div class="kebab-dropdown-item" style="color:rgba(0,0,0,0.88);" onclick="startMigration(this)">Migrate to Production</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="ant-table-row ant-table-row-level-0">
+                      <td class="ant-table-cell">Gappify_partner 07</td>
+                      <td class="ant-table-cell">425</td>
+                      <td class="ant-table-cell">@gappify.com</td>
+                      <td class="ant-table-cell">gappify-partner-07-425</td>
+                      <td class="ant-table-cell">gappifypartner_07_uat</td>
+                      <td class="ant-table-cell"><span>No</span></td>
+                      <td class="ant-table-cell">2023-12-04 7:47 PM / PST</td>
+                      <td class="ant-table-cell">
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default" style="margin-right:10px;"><span>Accrual Cloud</span></button>
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default"><span>Admin V2</span></button>
+                      </td>
+                      <td class="ant-table-cell">
+                        <div class="kebab-wrapper">
+                          <button class="kebab-btn" onclick="toggleKebab(this)">•••</button>
+                          <div class="kebab-dropdown">
+                            <div class="kebab-dropdown-item">Delete Source Data</div>
+                            <div class="kebab-dropdown-item" style="color:rgba(0,0,0,0.88);" onclick="startMigration(this)">Migrate to Production</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="ant-table-row ant-table-row-level-0">
+                      <td class="ant-table-cell">Cantaloupe</td>
+                      <td class="ant-table-cell">493</td>
+                      <td class="ant-table-cell">@cantaloupe.com</td>
+                      <td class="ant-table-cell">cantaloupe-493</td>
+                      <td class="ant-table-cell">cantaloupe_uat</td>
+                      <td class="ant-table-cell"><span>No</span></td>
+                      <td class="ant-table-cell">2025-01-30 7:09 PM / PST</td>
+                      <td class="ant-table-cell">
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default" style="margin-right:10px;"><span>Accrual Cloud</span></button>
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default"><span>Admin V2</span></button>
+                      </td>
+                      <td class="ant-table-cell">
+                        <div class="kebab-wrapper">
+                          <button class="kebab-btn" onclick="toggleKebab(this)">•••</button>
+                          <div class="kebab-dropdown">
+                            <div class="kebab-dropdown-item">Delete Source Data</div>
+                            <div class="kebab-dropdown-item" style="color:rgba(0,0,0,0.88);" onclick="startMigration(this)">Migrate to Production</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="ant-table-row ant-table-row-level-0">
+                      <td class="ant-table-cell">2U</td>
+                      <td class="ant-table-cell">535</td>
+                      <td class="ant-table-cell">@2u.com</td>
+                      <td class="ant-table-cell">2u-535</td>
+                      <td class="ant-table-cell">2u_uat</td>
+                      <td class="ant-table-cell"><span>No</span></td>
+                      <td class="ant-table-cell">2026-04-08 8:20 AM / PST</td>
+                      <td class="ant-table-cell">
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default" style="margin-right:10px;"><span>Accrual Cloud</span></button>
+                        <button type="button" class="ant-btn ant-btn-round ant-btn-default g-btn-default"><span>Admin V2</span></button>
+                      </td>
+                      <td class="ant-table-cell">
+                        <div class="kebab-wrapper">
+                          <button class="kebab-btn" onclick="toggleKebab(this)">•••</button>
+                          <div class="kebab-dropdown">
+                            <div class="kebab-dropdown-item">Delete Source Data</div>
+                            <div class="kebab-dropdown-item" style="color:rgba(0,0,0,0.88);" onclick="startMigration(this)">Migrate to Production</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+          </div>
+
+          <!-- PAGINATION -->
+          <ul class="ant-pagination ant-table-pagination ant-table-pagination-right">
+            <li class="ant-pagination-prev ant-pagination-disabled" aria-disabled="true">
+              <button class="ant-pagination-item-link" type="button" disabled>
+                <svg viewBox="64 64 896 896" width="1em" height="1em" fill="currentColor"><path d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"/></svg>
+              </button>
+            </li>
+            <li class="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"><a rel="nofollow">1</a></li>
+            <li class="ant-pagination-item ant-pagination-item-2"><a rel="nofollow">2</a></li>
+            <li class="ant-pagination-item ant-pagination-item-3"><a rel="nofollow">3</a></li>
+            <li class="ant-pagination-item ant-pagination-item-4"><a rel="nofollow">4</a></li>
+            <li class="ant-pagination-item ant-pagination-item-5"><a rel="nofollow">5</a></li>
+            <li class="ant-pagination-jump-next"><a class="ant-pagination-item-link"><span>•••</span></a></li>
+            <li class="ant-pagination-item ant-pagination-item-29"><a rel="nofollow">29</a></li>
+            <li class="ant-pagination-next">
+              <button class="ant-pagination-item-link" type="button">
+                <svg viewBox="64 64 896 896" width="1em" height="1em" fill="currentColor"><path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"/></svg>
+              </button>
+            </li>
+            <li class="ant-pagination-options">
+              <select>
+                <option>10 / page</option>
+                <option>20 / page</option>
+                <option>50 / page</option>
+              </select>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <p class="footer-text">© Gappify 2026 Version : ENV: uat VERSION: 1.2.22 TAG: 1.2.22-rc GIT_HASH: 0588fe1</p>
+  </div>
+</footer>
+
+<!-- MIGRATION MODAL -->
+<div class="modal-mask" id="migrationModal">
+  <div class="modal-box">
+
+    <!-- Loading state -->
+    <div id="migrationLoading">
+      <div class="modal-spinner"></div>
+      <div class="modal-title">Migration in progress…</div>
+      <div class="modal-text">Migrating <b id="migrationName">this tenant</b> from UAT to Production.</div>
+    </div>
+
+    <!-- Success state -->
+    <div id="migrationSuccess" style="display:none;">
+      <div class="modal-icon success">✓</div>
+      <div class="modal-title">Migration Successful</div>
+      <div class="modal-text">Go to <b>Tools Production &gt; Tenant List</b> to access the Tenant.</div>
+      <div class="modal-actions">
+        <button class="modal-btn primary" onclick="closeMigration()">Done</button>
+      </div>
+    </div>
+
+    <!-- Failed state -->
+    <div id="migrationFailed" style="display:none;">
+      <div class="modal-icon fail">✕</div>
+      <div class="modal-title">Migration Failed</div>
+      <div class="modal-text">Something went wrong during the migration. Please try again, or contact support if the problem persists.</div>
+      <div class="modal-actions">
+        <button class="modal-btn" onclick="closeMigration()">Close</button>
+        <button class="modal-btn primary" onclick="retryMigration()">Retry</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function toggleKebab(btn) {
+  const dropdown = btn.nextElementSibling;
+  const isOpen = dropdown.classList.contains('open');
+  document.querySelectorAll('.kebab-dropdown.open').forEach(d => d.classList.remove('open'));
+  if (!isOpen) dropdown.classList.add('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.kebab-wrapper')) {
+    document.querySelectorAll('.kebab-dropdown.open').forEach(d => d.classList.remove('open'));
+  }
+});
+
+// --- Migrate to Production flow ---
+// Mockup toggle: flip to true to preview the Failed result screen.
+const forceFail = false;
+
+function showState(id) {
+  ['migrationLoading', 'migrationSuccess', 'migrationFailed'].forEach(s => {
+    document.getElementById(s).style.display = (s === id) ? 'block' : 'none';
+  });
+}
+
+function runMigration() {
+  showState('migrationLoading');
+  document.getElementById('migrationModal').classList.add('open');
+  setTimeout(function() {
+    showState(forceFail ? 'migrationFailed' : 'migrationSuccess');
+  }, 2500);
+}
+
+function startMigration(item) {
+  // Close the kebab dropdown
+  document.querySelectorAll('.kebab-dropdown.open').forEach(d => d.classList.remove('open'));
+  // Pull the customer name from the first cell of this row
+  const row = item.closest('tr');
+  const name = row ? row.querySelector('td').textContent.trim() : 'this tenant';
+  document.getElementById('migrationName').textContent = name;
+  runMigration();
+}
+
+function retryMigration() {
+  runMigration();
+}
+
+function closeMigration() {
+  document.getElementById('migrationModal').classList.remove('open');
+}
+</script>
+</body>
+</html>

@@ -1217,9 +1217,12 @@ a:where(.css-1odpy5d){color:#1677ff;text-decoration:none;background-color:transp
   <div style="flex: 1 1 0%; min-width: 0px; overflow: hidden;">
             <div class="audit-log-container" style="height: 100%; display: flex; flex-direction: column;">
   <!-- Page header -->
-  <div class="audit-log-toolbar" style="margin-bottom: 0; padding-bottom: 20px;">
-    <h1 class="audit-log-title">API Field Manager</h1>
-    <p style="font-size:14px;color:rgba(0,0,0,0.45);margin:0;">Configure which fields are required for each source data type during API ingestion.</p>
+  <div class="audit-log-toolbar" style="margin-bottom: 0; padding-bottom: 20px; display:flex; align-items:flex-start; justify-content:space-between;">
+    <div>
+      <h1 class="audit-log-title">API Field Manager</h1>
+      <p style="font-size:14px;color:rgba(0,0,0,0.45);margin:0;">Configure which fields are required for each source data type during API ingestion.</p>
+    </div>
+    <button onclick="openAuditTrail()" style="height:32px;padding:0 16px;border:1px solid #d9d9d9;border-radius:6px;background:#fff;color:rgba(0,0,0,0.88);font-size:14px;font-family:inherit;cursor:pointer;white-space:nowrap;flex-shrink:0;">Audit Trail</button>
   </div>
 
   <!-- Source data type tabs -->
@@ -1239,23 +1242,6 @@ a:where(.css-1odpy5d){color:#1677ff;text-decoration:none;background-color:transp
         </tr>
       </thead>
       <tbody id="afm-tbody"></tbody>
-    </table>
-  </div>
-
-  <!-- History panel (hidden by default) -->
-  <div id="afm-history-panel" style="display:none;flex-direction:column;flex:1;overflow-y:auto;padding:0 24px 24px;">
-    <table style="width:100%;border-collapse:collapse;margin-top:0;">
-      <thead style="position:sticky;top:0;background:#f8f9fa;z-index:10;">
-        <tr>
-          <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;border-bottom:1px solid #e5e7eb;white-space:nowrap;">Date</th>
-          <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;border-bottom:1px solid #e5e7eb;white-space:nowrap;">Performed By</th>
-          <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;border-bottom:1px solid #e5e7eb;white-space:nowrap;">Source Type</th>
-          <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;border-bottom:1px solid #e5e7eb;white-space:nowrap;">Field</th>
-          <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;border-bottom:1px solid #e5e7eb;white-space:nowrap;">Old Value</th>
-          <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;border-bottom:1px solid #e5e7eb;white-space:nowrap;">New Value</th>
-        </tr>
-      </thead>
-      <tbody id="afm-history-tbody"></tbody>
     </table>
   </div>
 
@@ -1512,42 +1498,7 @@ function renderTabs() {
     ">${st.label}</div>
   `).join('');
 
-  const historyTab = `
-    <div onclick="switchTab('history')" style="
-      padding: 12px 16px;
-      font-size: 14px;
-      cursor: pointer;
-      border-bottom: 2px solid ${activeTab === 'history' ? '#725bb4' : 'transparent'};
-      color: ${activeTab === 'history' ? '#725bb4' : 'rgba(0,0,0,0.65)'};
-      font-weight: ${activeTab === 'history' ? '600' : '400'};
-      white-space: nowrap;
-      user-select: none;
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    ">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      History
-    </div>
-  `;
-
-  container.innerHTML = sourceTabs + historyTab;
-
-  // Show/hide fields panel and save bar
-  const fieldsPanel = document.getElementById('afm-fields-panel');
-  const saveBar = document.getElementById('afm-save-bar');
-  const historyPanel = document.getElementById('afm-history-panel');
-  if (activeTab === 'history') {
-    fieldsPanel.style.display = 'none';
-    saveBar.style.display = 'none';
-    historyPanel.style.display = 'flex';
-    renderHistory();
-  } else {
-    fieldsPanel.style.display = 'flex';
-    saveBar.style.display = 'flex';
-    historyPanel.style.display = 'none';
-  }
+  container.innerHTML = sourceTabs;
 }
 
 function renderHistory() {
@@ -1556,23 +1507,23 @@ function renderHistory() {
     tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:#8c8c8c;font-size:13px;">No history yet</td></tr>`;
     return;
   }
-  tbody.innerHTML = HISTORY_LOG.map((entry, i) => {
-    const bg = i % 2 === 0 ? '#ffffff' : '#fafcff';
+  const cell = 'padding:16px;border-bottom:1px solid #f0f0f0;font-size:14px;color:rgba(0,0,0,0.85);overflow-wrap:break-word;';
+  tbody.innerHTML = HISTORY_LOG.map(entry => {
     const newBadge = entry.newVal === 'Required'
       ? `<span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;font-weight:500;background:#fff1f0;color:#cf1322;border:1px solid #ffa39e;">Required</span>`
       : `<span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;font-weight:500;background:#f5f5f5;color:#8c8c8c;border:1px solid #d9d9d9;">Not Required</span>`;
     const oldBadge = entry.oldVal === 'Required'
       ? `<span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;font-weight:500;background:#fff1f0;color:#cf1322;border:1px solid #ffa39e;">Required</span>`
       : `<span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;font-weight:500;background:#f5f5f5;color:#8c8c8c;border:1px solid #d9d9d9;">Not Required</span>`;
-    return `<tr style="background:${bg};border-bottom:1px solid #f0f0f0;"
-               onmouseover="this.style.background='#f5f3ff'"
-               onmouseout="this.style.background='${bg}'">
-      <td style="padding:10px 16px;font-size:12px;color:#6b7280;white-space:nowrap;">${entry.date}</td>
-      <td style="padding:10px 16px;font-size:12px;color:#111827;">${entry.user}</td>
-      <td style="padding:10px 16px;font-size:12px;color:#4b5563;">${entry.sourceType}</td>
-      <td style="padding:10px 16px;font-size:12px;font-family:'SFMono-Regular',Consolas,monospace;color:#111827;">${entry.field}</td>
-      <td style="padding:10px 16px;">${oldBadge}</td>
-      <td style="padding:10px 16px;">${newBadge}</td>
+    return `<tr style="background:#fff;transition:background .3s;"
+               onmouseover="this.style.background='#fafafa'"
+               onmouseout="this.style.background='#fff'">
+      <td style="${cell}white-space:nowrap;">${entry.date}</td>
+      <td style="${cell}">${entry.user}</td>
+      <td style="${cell}">${entry.sourceType}</td>
+      <td style="${cell}font-family:'SFMono-Regular',Consolas,monospace;">${entry.field}</td>
+      <td style="${cell}">${oldBadge}</td>
+      <td style="${cell}">${newBadge}</td>
     </tr>`;
   }).join('');
 }
@@ -1659,7 +1610,16 @@ function toggleField(key, val) {
 function switchTab(key) {
   activeTab = key;
   renderTabs();
-  if (key !== 'history') renderFields();
+  renderFields();
+}
+
+function openAuditTrail() {
+  renderHistory();
+  document.getElementById('afm-audit-modal').style.display = 'flex';
+}
+
+function closeAuditTrail() {
+  document.getElementById('afm-audit-modal').style.display = 'none';
 }
 
 function formatNow() {
@@ -1721,5 +1681,61 @@ function cancelChanges() {
 renderTabs();
 renderFields();
 </script>
+
+<!-- Audit Trail Modal -->
+<div id="afm-audit-modal" onclick="if(event.target===this)closeAuditTrail()" style="display:none;position:fixed;bottom:0;left:0;outline:0;overflow:auto;right:0;top:0;z-index:1000;background:#00000073;">
+  <div style="margin:60px auto 24px;width:1100px;max-width:calc(100vw - 32px);pointer-events:auto;position:relative;">
+
+    <!-- ant-modal-content -->
+    <div style="background-clip:padding-box;background-color:#fff;border:0;border-radius:12px;overflow:hidden;box-shadow:0 3px 6px -4px rgba(0,0,0,0.12),0 6px 16px 0 rgba(0,0,0,0.08),0 9px 28px 8px rgba(0,0,0,0.05);pointer-events:auto;position:relative;display:flex;flex-direction:column;max-height:calc(100vh - 100px);">
+
+      <!-- Close button -->
+      <button onclick="closeAuditTrail()" style="background:transparent;border:0;color:rgba(0,0,0,0.45);cursor:pointer;font-weight:700;line-height:1;outline:0;padding:0;position:absolute;right:0;top:0;z-index:10;width:54px;height:54px;font-size:16px;display:flex;align-items:center;justify-content:center;transition:color .3s;" onmouseover="this.style.color='rgba(0,0,0,0.75)'" onmouseout="this.style.color='rgba(0,0,0,0.45)'">
+        <svg fill-rule="evenodd" viewBox="64 64 896 896" width="1em" height="1em" fill="currentColor"><path d="M799.86 166.31c.02 0 .04.02.08.06l57.69 57.7c.04.03.05.05.06.08a.12.12 0 010 .06c0 .03-.02.05-.06.09L569.93 512l287.7 287.7c.04.04.05.06.06.09a.12.12 0 010 .07c0 .02-.02.04-.06.08l-57.7 57.69c-.03.04-.05.05-.07.06a.12.12 0 01-.07 0c-.03 0-.05-.02-.09-.06L512 569.93l-287.7 287.7c-.04.04-.06.05-.09.06a.12.12 0 01-.07 0c-.02 0-.04-.02-.08-.06l-57.69-57.7c-.04-.03-.05-.05-.06-.07a.12.12 0 010-.07c0-.03.02-.05.06-.09L454.07 512l-287.7-287.7c-.04-.04-.05-.06-.06-.09a.12.12 0 010-.07c0-.02.02-.04.06-.08l57.7-57.69c.03-.04.05-.05.07-.06a.12.12 0 01.07 0c.03 0 .05.02.09.06L512 454.07l287.7-287.7c.04-.04.06-.05.09-.06a.12.12 0 01.07 0z"/></svg>
+      </button>
+
+      <!-- ant-modal-header -->
+      <div style="background:#fff;border-bottom:1px solid #f0f0f0;padding:16px 24px;flex-shrink:0;">
+        <div style="word-wrap:break-word;color:rgba(0,0,0,0.85);font-size:16px;font-weight:500;line-height:22px;margin:0;">Audit Trail</div>
+      </div>
+
+      <!-- ant-modal-body: split sticky-header + scrollable-body table -->
+      <div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;">
+
+        <!-- Sticky thead -->
+        <div style="overflow:hidden;flex-shrink:0;">
+          <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+            <colgroup>
+              <col style="width:200px"><col style="width:180px"><col style="width:160px">
+              <col style="width:160px"><col style="width:110px"><col style="width:110px">
+            </colgroup>
+            <thead>
+              <tr>
+                <th style="background:#fafafa;border-bottom:1px solid #f0f0f0;color:rgba(0,0,0,0.85);font-weight:500;padding:16px;text-align:left;font-size:14px;">Date</th>
+                <th style="background:#fafafa;border-bottom:1px solid #f0f0f0;color:rgba(0,0,0,0.85);font-weight:500;padding:16px;text-align:left;font-size:14px;">Performed By</th>
+                <th style="background:#fafafa;border-bottom:1px solid #f0f0f0;color:rgba(0,0,0,0.85);font-weight:500;padding:16px;text-align:left;font-size:14px;">Source Type</th>
+                <th style="background:#fafafa;border-bottom:1px solid #f0f0f0;color:rgba(0,0,0,0.85);font-weight:500;padding:16px;text-align:left;font-size:14px;">Field</th>
+                <th style="background:#fafafa;border-bottom:1px solid #f0f0f0;color:rgba(0,0,0,0.85);font-weight:500;padding:16px;text-align:left;font-size:14px;">Old Value</th>
+                <th style="background:#fafafa;border-bottom:1px solid #f0f0f0;color:rgba(0,0,0,0.85);font-weight:500;padding:16px;text-align:left;font-size:14px;">New Value</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+
+        <!-- Scrollable tbody -->
+        <div style="overflow:auto;flex:1;">
+          <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+            <colgroup>
+              <col style="width:200px"><col style="width:180px"><col style="width:160px">
+              <col style="width:160px"><col style="width:110px"><col style="width:110px">
+            </colgroup>
+            <tbody id="afm-history-tbody"></tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>

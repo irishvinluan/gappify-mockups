@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transaction Column Manager - Settings - Gappify</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, Inter, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  color: #222630;
+  background: #fff;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Top Nav ── */
+.top-nav {
+  position: sticky;
+  z-index: 1000;
+  background: #fff;
+  border-bottom: 1px solid #e1e1e1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 56px;
+  flex-shrink: 0;
+}
+
+.top-nav-logo {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: #111827;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-family: -apple-system, BlinkMacSystemFont, Inter, 'Segoe UI', sans-serif;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+  gap: 0;
+  margin: 0 16px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  position: relative;
+  cursor: pointer;
+}
+
+.nav-link {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #374151;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.nav-link:hover { color: #7c3aed; }
+
+.nav-item.active .nav-link { color: #111827; }
+.nav-item.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 14px;
+  right: 14px;
+  height: 2px;
+  background: #111827;
+  border-radius: 2px 2px 0 0;
+}
+
+.profile-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 32px;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 400;
+  font-family: inherit;
+}
+.profile-pill:hover { border-color: #7c3aed; color: #7c3aed; }
+
+/* ── Layout ── */
+.app-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── Settings Sidebar ── */
+.settings-sidebar {
+  width: 340px;
+  min-width: 340px;
+  background: #fff;
+  border-right: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  height: 100%;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 12px 24px;
+}
+
+.sidebar-heading {
+  font-size: 28px;
+  font-weight: 600;
+  color: #000000e0;
+}
+
+.sidebar-collapse-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid #d9d9d9;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #7c3aed;
+  flex-shrink: 0;
+}
+.sidebar-collapse-btn:hover { border-color: #7c3aed; background: #f5f3ff; }
+
+.sidebar-menu { list-style: none; padding: 4px 0; }
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 24px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #000000d9;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.sidebar-item:hover { background: #f5f5f5; }
+
+.sidebar-item.active {
+  background: #ede9fe;
+  color: #5b21b6;
+  font-weight: 500;
+  border-right: 3px solid #7c3aed;
+}
+
+.sidebar-submenu-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  padding: 0 24px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #000000d9;
+  cursor: pointer;
+  user-select: none;
+}
+.sidebar-submenu-title:hover { background: #f5f5f5; }
+
+.sidebar-chevron {
+  width: 16px;
+  height: 16px;
+  color: #9ca3af;
+  transition: transform 0.2s;
+}
+.sidebar-submenu-title.open .sidebar-chevron { transform: rotate(180deg); }
+
+.sidebar-sub { list-style: none; }
+.sidebar-sub .sidebar-item {
+  padding-left: 48px;
+  height: 40px;
+  font-size: 14px;
+}
+.sidebar-sub .sidebar-item.active {
+  background: #ede9fe;
+  color: #5b21b6;
+  font-weight: 500;
+  border-right: 3px solid #7c3aed;
+}
+
+/* ── Main Content ── */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 28px 36px 0 36px;
+  min-width: 0;
+}
+
+.page-title {
+  font-size: 26px;
+  font-weight: 600;
+  color: #000000e0;
+  margin-bottom: 0;
+  letter-spacing: -0.01em;
+}
+
+.divider {
+  height: 1px;
+  background: #f0f0f0;
+  margin: 16px 0 0 0;
+}
+
+/* ── Toolbar ── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f5f3ff;
+  border-radius: 6px 6px 0 0;
+  padding: 10px 16px;
+  margin-top: 16px;
+  border: 1px solid #ede9fe;
+  border-bottom: none;
+}
+
+.toolbar-left { display: flex; align-items: center; gap: 8px; }
+.toolbar-right { display: flex; align-items: center; gap: 8px; }
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d1d5db;
+  border-radius: 32px;
+  padding: 6px 14px;
+  gap: 8px;
+  width: 280px;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+.search-wrapper:focus-within { border-color: #7c3aed; }
+
+.search-input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #111827;
+  background: transparent;
+  width: 100%;
+  font-family: inherit;
+}
+.search-input::placeholder { color: #9ca3af; }
+
+.edit-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: #d1d5db;
+  border-radius: 24px;
+  transition: 0.2s;
+}
+.toggle-slider::before {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  bottom: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.toggle-switch input:checked + .toggle-slider { background: #7c3aed; }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+/* ── Table ── */
+.table-container {
+  flex: 1;
+  overflow: auto;
+  border: 1px solid #ede9fe;
+  border-radius: 0 0 6px 6px;
+  margin-bottom: 24px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead { position: sticky; top: 0; z-index: 2; }
+
+th {
+  background: #fafafa;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 11px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  text-align: left;
+  white-space: nowrap;
+}
+
+th.center { text-align: center; }
+
+td {
+  padding: 10px 16px;
+  font-size: 14px;
+  color: #374151;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
+}
+
+td.center { text-align: center; }
+td.drag-cell { padding: 10px 8px 10px 12px; width: 36px; }
+td.api-cell { color: #374151; font-size: 14px; }
+td.label-cell { color: #111827; }
+
+tr:hover td { background: #faf5ff; }
+tr:last-child td { border-bottom: none; }
+
+.drag-handle {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2.5px;
+  cursor: grab;
+  opacity: 0.4;
+  padding: 2px 3px;
+}
+.drag-handle:hover { opacity: 0.75; }
+.drag-dot-row { display: flex; gap: 2.5px; }
+.drag-dot {
+  width: 3px;
+  height: 3px;
+  background: #6b7280;
+  border-radius: 50%;
+}
+
+/* Check icon — matches real app: thin blue-grey checkmark */
+.check-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #6366f1;
+}
+.check-icon svg { width: 16px; height: 16px; }
+</style>
+</head>
+<body>
+
+<!-- Top Nav -->
+<nav class="top-nav">
+  <a class="top-nav-logo" href="#">gappify</a>
+
+  <div class="nav-menu">
+    <div class="nav-item"><a class="nav-link" href="#">Review Center</a></div>
+    <div class="nav-item">
+      <a class="nav-link" href="#">Transactions</a>
+    </div>
+    <div class="nav-item"><a class="nav-link" href="#">QJE's</a></div>
+    <div class="nav-item"><a class="nav-link" href="#">Accrual Manager</a></div>
+    <div class="nav-item"><a class="nav-link" href="#">AI Accruals</a></div>
+    <div class="nav-item"><a class="nav-link" href="#">Insights</a></div>
+    <div class="nav-item active"><a class="nav-link" href="#">Settings</a></div>
+  </div>
+
+  <button class="profile-pill">
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+      <circle cx="8" cy="5.5" r="2.5" fill="#6b7280"/>
+      <path d="M2 13.5c0-3.038 2.686-5.5 6-5.5s6 2.462 6 5.5" stroke="#6b7280" stroke-width="1.4" fill="none"/>
+    </svg>
+    honeycombAAAAdmin
+  </button>
+</nav>
+
+<!-- App Body -->
+<div class="app-body">
+
+  <!-- Settings Sidebar -->
+  <aside class="settings-sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-heading">Settings</span>
+      <button class="sidebar-collapse-btn" title="Collapse sidebar">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    <ul class="sidebar-menu">
+      <li><a class="sidebar-item" href="#">Schedule Manager</a></li>
+      <li>
+        <div class="sidebar-submenu-title open">
+          <span>Accrual Manager</span>
+          <svg class="sidebar-chevron" viewBox="0 0 16 16" fill="none">
+            <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <ul class="sidebar-sub">
+          <li><a class="sidebar-item" href="#">Accrual Rules</a></li>
+        </ul>
+      </li>
+      <li><a class="sidebar-item" href="#">Enable Features</a></li>
+      <li><a class="sidebar-item" href="#">Company Settings</a></li>
+      <li>
+        <div class="sidebar-submenu-title open">
+          <span>Integrations</span>
+          <svg class="sidebar-chevron" viewBox="0 0 16 16" fill="none">
+            <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <ul class="sidebar-sub">
+          <li><a class="sidebar-item" href="#">API Keys</a></li>
+          <li><a class="sidebar-item" href="#">Logs</a></li>
+          <li><a class="sidebar-item" href="#">API Error Notification</a></li>
+          <li><a class="sidebar-item" href="#">Slack Notifications</a></li>
+          <li><a class="sidebar-item" href="#">Source Data</a></li>
+        </ul>
+      </li>
+      <li><a class="sidebar-item" href="#">Insights</a></li>
+      <li>
+        <div class="sidebar-submenu-title open">
+          <span>Column Manager</span>
+          <svg class="sidebar-chevron" viewBox="0 0 16 16" fill="none">
+            <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <ul class="sidebar-sub">
+          <li><a class="sidebar-item active" href="#" data-module="accrual-manager">Accrual Manager</a></li>
+          <li><a class="sidebar-item" href="#" data-module="transactions">Transactions</a></li>
+          <li><a class="sidebar-item" href="#" data-module="qjes">QJE's</a></li>
+        </ul>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <h2 class="page-title">Transactions</h2>
+    <div class="divider"></div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <div class="search-wrapper">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <circle cx="6.5" cy="6.5" r="5" stroke="#9ca3af" stroke-width="1.5"/>
+            <path d="M10.5 10.5L14 14" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <input class="search-input" type="text" placeholder="Search" id="searchInput">
+        </div>
+      </div>
+      <div class="toolbar-right">
+        <div id="editActions" style="display:none; gap:8px; align-items:center; display:none;">
+          <button id="saveBtn" onclick="saveChanges()" style="background:#7c3aed;color:#fff;border:none;border-radius:20px;padding:6px 20px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;">Save</button>
+          <button id="cancelBtn" onclick="cancelChanges()" style="background:#fff;color:#374151;border:1px solid #d1d5db;border-radius:20px;padding:6px 20px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;">Cancel</button>
+        </div>
+        <div class="edit-toggle">
+          <span>Edit</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="editToggle">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+      <table id="columnTable">
+        <thead>
+          <tr>
+            <th style="width:36px;"></th>
+            <th style="width:260px;">Field API Name</th>
+            <th>Field label</th>
+            <th class="center" style="width:100px;">Show</th>
+            <th class="center col-readonly" style="width:120px;">Read-only</th>
+            <th class="center col-override" style="width:180px;">Require Override Reason?</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script>
+const CHECK = `<span class="check-icon"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z" fill="currentColor"/></svg></span>`;
+
+const moduleData = {
+  transactions: {
+    title: 'Transactions',
+    rows: [
+  ["g_po_number","PO Number",1,0,1],
+  ["g_name","Vendor Name",1,1,1],
+  ["g_vendor_id","Vendor ID",1,1,0],
+  ["g_status","Status",1,1,0],
+  ["g_created_at","Created At",1,1,0],
+  ["vdac_g_status","Vendor Status",1,1,0],
+  ["open_g_status","Internal Status",1,1,0],
+  ["man_g_status","Calculated Status",1,1,0],
+  ["vdac_g_email","Vendor Email",1,0,1],
+  ["vdac_g_cc_email","Vendor CC Email",1,0,1],
+  ["open_g_email","Internal Email",1,0,1],
+  ["open_g_cc_email","Internal CC Email",1,0,1],
+  ["g_accrual_amount","Proposed Amount",1,0,1],
+  ["g_accrual_amount_original","Proposed Amount (Original)",1,1,0],
+  ["vdac_g_accrual_amount","Vendor Amount",1,1,0],
+  ["open_g_accrual_amount","Internal Amount",1,1,0],
+  ["man_g_accrual_amount_calculated","Calculated Amount",1,1,0],
+  ["man_g_accrual_amount_manual","Manual Amount",1,1,0],
+  ["man_g_accrual_amount_imported","Imported Amount",1,1,0],
+  ["man_g_accrual_amount_unapproved_invoice","Unapproved Invoice Amount",1,1,0],
+  ["man_g_accrual_amount_late_invoice","Late Invoice Amount",1,1,0],
+  ["vdac_g_accrual_type","Vendor Accrual Type",1,1,0],
+  ["open_g_accrual_type","Internal Accrual Type",1,1,0],
+  ["man_g_accrual_type","Calculated Accrual Type",1,1,0],
+  ["g_class_debit","Class - Expense",1,0,1],
+  ["g_class_debit_id","Class - Expense ID",1,1,0],
+  ["g_class_credit","Class - Liability",1,0,1],
+  ["g_class_credit_id","Class - Liability ID",1,1,0],
+  ["g_is_prepaid","Potential Prepaid Flag",1,1,0],
+  ["open_g_percentage_of_completion","Internal Percentage of Completion",1,1,0],
+  ["vdac_g_percentage_of_completion","Vendor Percentage of Completion",1,1,0],
+  ["vdac_g_accrual_description","Vendor Amount Description",1,0,1],
+  ["open_g_accrual_description","Internal Amount Description",1,0,1],
+  ["g_po_line_description","PO Line Description",1,0,1],
+  ["g_po_line_amount","PO Line Amount",1,0,1],
+  ["g_invoiced_amount","Invoiced Amount",1,0,1],
+  ["g_po_balance","PO Balance",1,0,1],
+  ["g_po_owner","PO Owner",1,0,1],
+  ["g_service_start_date","Service Start Date",1,0,1],
+  ["g_service_end_date","Service End Date",1,0,1],
+  ["g_subsidiary","Subsidiary",1,0,1],
+  ["g_glaccount_debit","Account - Debit",1,0,1],
+  ["g_glaccount_credit","Account - Credit",1,0,1],
+  ["g_department_debit","Department - Debit",1,0,1],
+  ["g_department_credit","Department - Credit",1,0,1],
+  ["g_transaction_currency","Transaction Currency",1,0,1],
+  ["g_reporting_currency","Reporting Currency",1,1,0],
+  ["g_reporting_amount","Reporting Amount",1,1,0],
+  ["g_date_submitted","Date Submitted",1,1,0],
+  ["g_review_comments","Review Comments",1,0,0],
+  ["g_override_flag","Override",1,1,0],
+  ["override_reason","Override Reason",1,0,1],
+  ["g_overridden_by","Overridden By",1,1,0],
+  ["g_reporting_amount_original","Reporting Amount (Original)",1,1,0],
+  ["vdac_g_dummy_vdac_invoice_details","Vendor Invoices",1,1,0],
+  ["open_g_dummy_open_invoice_details","PO Invoices",1,1,0],
+  ["g_po_id","PO ID",1,0,1],
+  ["g_product_debit_id","Product - Expense ID",1,1,0],
+  ["g_subsidiary_id","Subsidiary ID",1,1,0],
+  ["g_product_debit","Product - Expense",1,0,1],
+  ["g_product_credit","Product - Liability",1,0,1],
+  ["g_product_credit_id","Product - Liability ID",1,1,0],
+  ["g_glaccount_debit_id","Account - Expense ID",1,1,0],
+  ["g_glaccount_credit_id","Account - Liability ID",1,1,0],
+  ["g_department_debit_id","Department - Expense ID",1,1,0],
+  ["g_department_credit_id","Department - Liability ID",1,1,0],
+  ["g_location_debit","Location - Expense",1,0,1],
+  ["g_location_debit_id","Location - Expense ID",1,1,0],
+  ["g_location_credit","Location - Liability",1,0,1],
+  ["g_location_credit_id","Location - Liability ID",1,1,0],
+  ["g_project_debit","Project - Expense",1,0,1],
+  ["g_project_debit_id","Project - Expense ID",1,1,0],
+  ["g_project_credit","Project - Liability",1,0,1],
+  ["g_project_credit_id","Project - Liability ID",1,1,0],
+  ["g_region_debit","Region - Expense",1,0,1],
+  ["g_region_debit_id","Region - Expense ID",1,1,0],
+  ["g_region_credit","Region - Liability",1,0,1],
+  ["g_region_credit_id","Region - Liability ID",1,1,0],
+  ["g_company_debit","Company - Expense",1,0,1],
+  ["g_company_debit_id","Company - Expense ID",1,1,0],
+  ["g_company_credit","Company - Liability",1,0,1],
+  ["g_company_credit_id","Company - Liability ID",1,1,0],
+  ["g_intercompany_debit","Intercompany - Expense",1,0,1],
+  ["g_intercompany_debit_id","Intercompany - Expense ID",1,1,0],
+  ["g_intercompany_credit","Intercompany - Liability",1,0,1],
+  ["g_intercompany_credit_id","Intercompany - Liability ID",1,1,0],
+  ["g_channel_debit","Channel - Expense",1,0,1],
+  ["g_channel_debit_id","Channel - Expense ID",1,1,0],
+  ["g_channel_credit","Channel - Liability",1,0,1],
+  ["g_channel_credit_id","Channel - Liability ID",1,1,0],
+  ["g_transaction_currency_id","Transaction Currency ID",1,1,0],
+  ["g_reporting_currency_id","Reporting Currency ID",1,1,0],
+  ["g_subsidiary_amount","Subsidiary Amount",1,1,0],
+  ["g_subsidiary_currency","Subsidiary Currency",1,1,0],
+  ["g_subsidiary_currency_id","Subsidiary Currency ID",1,1,0],
+  ["task_id","Task ID",1,1,0],
+  ["g_po_line_id","PO Line ID",1,0,1],
+  ["vdac_g_due_date","Vendor Due Date",1,1,0],
+  ["open_g_due_date","Internal Due Date",1,1,0],
+  ["g_po_header_description","PO Header Description",1,0,1],
+  ["g_po_line_status","PO Line Status",1,0,1],
+  ["g_po_line_amount_usd","PO Line Amount USD",1,0,1],
+  ["g_po_balance_usd","PO Balance USD",1,0,1],
+  ["g_po_line_amount_cancelled","PO Line Amount Cancelled",1,0,1],
+  ["man_g_current_period","Current Period",1,1,0],
+  ["man_g_current_period_bills","Bills - Current Period",1,1,0],
+  ["man_g_period_1_bills","Bills - Period 1",1,1,0],
+  ["man_g_period_2_bills","Bills - Period 2",1,1,0],
+  ["man_g_period_3_bills","Bills - Period 3",1,1,0],
+  ["open_g_close_po","Close PO?",1,0,1],
+  ["g_threshold_support_document","Threshold Support Document",1,0,1],
+  ["man_g_imported_from","Imported From",1,0,1],
+  ["vdac_g_service_period","Service Period",1,0,1],
+  ["g_created_by","Created By",1,1,0],
+  ["g_updated_at","Updated At",1,1,0],
+  ["g_last_modified_by","Last Modified By",1,1,0],
+  ["g_period","Period",1,1,0],
+  ["g_line_source","Line Source",1,1,0],
+  ["g_custom_text_1","Custom Text 1",1,0,1],
+  ["g_custom_text_2","Custom Text 2",1,0,1],
+  ["g_custom_text_3","Custom Text 3",1,0,1],
+  ["g_custom_text_4","Custom Text 4",1,0,1],
+  ["g_custom_text_5","Custom Text 5",1,0,1],
+  ["g_custom_date_1","Custom Date 1",1,0,1],
+  ["g_custom_date_2","Custom Date 2",1,0,1],
+  ["g_custom_date_3","Custom Date 3",1,0,1],
+  ["g_custom_date_4","Custom Date 4",1,0,1],
+  ["g_custom_date_5","Custom Date 5",1,0,1],
+  ["g_custom_numeric_1","Custom Numeric 1",1,0,1],
+  ["g_custom_numeric_2","Custom Numeric 2",1,0,1],
+  ["g_custom_numeric_3","Custom Numeric 3",1,0,1],
+  ["g_custom_numeric_4","Custom Numeric 4",1,0,1],
+  ["g_custom_numeric_5","Custom Numeric 5",1,0,1],
+  ["g_prepaid_account","Account - Prepaid",1,1,1],
+  ["g_prepaid_account_id","Prepaid Account Id",1,1,0],
+  ["g_po_header_amount","PO Header Amount",1,0,1],
+  ["man_g_accrual_description_calculated","Manual Accrual Description",1,0,1],
+  ["man_g_accrual_description_manual","Manual Amount Description",1,0,1],
+  ["man_g_accrual_description_imported","Imported Amount Description",1,0,1],
+  ["man_g_accrual_description_unapproved_invoice","Unapproved Invoice Amount Description",1,0,1],
+  ["man_g_accrual_description_late_invoice","Late Invoice Amount Description",1,0,1],
+  ["man_g_invoice_start_date","Invoice Start Date",1,1,1],
+  ["man_g_invoice_end_date","Invoice End Date",1,1,1],
+  ["man_g_invoice_amount","Invoice Amount",1,1,1],
+  ["g_invoice_status","Invoice Status",1,0,1],
+  ["g_invoice_number","Invoice Number",1,0,1],
+  ["vdac_g_accrual_amount_original","Vendor Amount (Original)",1,1,0],
+  ["open_g_accrual_amount_original","Internal Amount (Original)",1,1,0],
+  ["man_g_accrual_amount_original","Calculated Amount (Original)",1,1,0],
+    ]
+  },
+  qjes: {
+    title: "QJE's",
+    rows: [
+      // — Current QJE Headers (shown) —
+      ["g_status","Status",1,1,0],
+      ["g_external_id","External Id",1,1,0],
+      ["g_name","Vendor Name",1,1,0],
+      ["g_reviewed","Reviewed",1,1,0],
+      ["g_department","Department",1,0,0],
+      ["g_preparer","Preparer",1,1,0],
+      ["g_subsidiary","Subsidiary",1,0,0],
+      ["g_currency","Currency",1,1,0],
+      ["g_debit","Debit",1,0,0],
+      ["g_credit","Credit",1,0,0],
+      ["g_glaccount","GL Account",1,0,0],
+      ["g_line_description","Line Description",1,0,0],
+      ["g_class","Class",1,0,0],
+      ["g_po_number","PO Number",1,0,0],
+      ["transaction_number","Transaction Number",1,1,0],
+      ["g_posted_by","Posted By",1,1,0],
+      ["g_posted_at","Posted At",1,1,0],
+      ["g_po_line_amount_usd","PO Line Amount USD",1,1,0],
+      ["g_po_balance_usd","PO Balance USD",1,1,0],
+      ["g_prepaid_account","Prepaid Account",1,0,0],
+      ["g_prepaid_account_id","Prepaid Account Id",1,1,0],
+      ["g_is_prepaid","Is Prepaid?",1,1,0],
+      ["id","QJE ID",1,1,0],
+      ["g_je_approval_type","Approval Type",1,1,0],
+      ["token_id","Token ID",1,1,0],
+      // — All QJE Headers (not shown) —
+      ["g_je_approval_type_id","Approval Type Id",0,1,0],
+      ["g_channel","Channel",0,0,0],
+      ["g_channel_id","Channel Id",0,1,0],
+      ["g_class_id","Class Id",0,1,0],
+      ["g_close_po","Close PO",0,0,0],
+      ["g_company","Company",0,0,0],
+      ["g_company_id","Company Id",0,1,0],
+      ["created_at","Created At",0,1,0],
+      ["g_currency_id","Currency Id",0,1,0],
+      ["g_custom_text_1","Custom Text 1",0,0,0],
+      ["g_custom_text_2","Custom Text 2",0,0,0],
+      ["g_custom_text_3","Custom Text 3",0,0,0],
+      ["g_custom_text_4","Custom Text 4",0,0,0],
+      ["g_custom_text_5","Custom Text 5",0,0,0],
+      ["g_custom_date_1","Custom Date 1",0,0,0],
+      ["g_custom_date_2","Custom Date 2",0,0,0],
+      ["g_custom_date_3","Custom Date 3",0,0,0],
+      ["g_custom_date_4","Custom Date 4",0,0,0],
+      ["g_custom_date_5","Custom Date 5",0,0,0],
+      ["g_custom_numeric_1","Custom Numeric 1",0,0,0],
+      ["g_custom_numeric_2","Custom Numeric 2",0,0,0],
+      ["g_custom_numeric_3","Custom Numeric 3",0,0,0],
+      ["g_custom_numeric_4","Custom Numeric 4",0,0,0],
+      ["g_custom_numeric_5","Custom Numeric 5",0,0,0],
+      ["g_department_id","Department Id",0,1,0],
+      ["g_error_details","Error Details",0,1,0],
+      ["g_exported_filename","G Exported Filename",0,1,0],
+      ["g_je_batch","G Je Batch",0,1,0],
+      ["g_je_reject_reason","G Je Reject Reason",0,1,0],
+      ["g_product","G Product",0,0,0],
+      ["g_product_id","G Product Id",0,1,0],
+      ["g_rejected_at","G Rejected At",0,1,0],
+      ["g_rejected_by","G Rejected By",0,1,0],
+      ["g_glaccount_id","GL Account Id",0,1,0],
+      ["g_intercompany","Intercompany",0,0,0],
+      ["g_intercompany_id","Intercompany Id",0,1,0],
+      ["g_je_date","JE Date",0,0,0],
+      ["g_je_id","JE ID",0,1,0],
+      ["g_je_memo","JE Memo",0,0,0],
+      ["g_je_reversal_date","JE Reversal Date",0,0,0],
+      ["line_group","Line Group",0,1,0],
+      ["line_id","Line ID",0,1,0],
+      ["g_location","Location",0,0,0],
+      ["g_location_id","Location Id",0,1,0],
+      ["g_period","Period",0,1,0],
+      ["g_po_line_amount","PO Line Amount",0,0,0],
+      ["g_po_line_description","PO Line Description",0,0,0],
+      ["g_po_line_id","PO Line ID",0,1,0],
+      ["g_po_source_system_id","PO Source System Id",0,1,0],
+      ["g_project","Project",0,0,0],
+      ["g_project_id","Project Id",0,1,0],
+      ["g_qje_type","QJE Type",0,1,0],
+      ["g_region","Region",0,0,0],
+      ["g_region_id","Region Id",0,1,0],
+      ["g_reporting_amount","Reporting Amount",0,1,0],
+      ["g_reporting_currency","Reporting Currency",0,1,0],
+      ["g_reporting_currency_id","Reporting Currency Id",0,1,0],
+      ["g_resubmitted","Resubmitted",0,1,0],
+      ["g_service_end_date","Service End Date",0,0,0],
+      ["g_service_start_date","Service Start Date",0,0,0],
+      ["g_subsidiary_amount","Subsidiary Amount",0,1,0],
+      ["g_subsidiary_currency","Subsidiary Currency",0,1,0],
+      ["g_subsidiary_currency_id","Subsidiary Currency Id",0,1,0],
+      ["g_subsidiary_id","Subsidiary Id",0,1,0],
+      ["g_task_id","TaskId",0,1,0],
+      ["g_threshold_support_document","Threshold Support Document",0,0,0],
+      ["g_transaction_app","Transaction App",0,1,0],
+      ["g_transaction_id","Transaction Id",0,1,0],
+      ["updated_at","Updated At",0,1,0],
+      ["g_vendor_id","Vendor Id",0,1,0],
+    ]
+  },
+  'accrual-manager': {
+    title: 'Accrual Manager',
+    rows: [
+      // Shown (right side)
+      ["active","Active",1,0,0],
+      ["name","Name",1,0,0],
+      ["task_inactive","Task Inactive",1,0,0],
+      ["vendor_task_id","Vendor Task ID",1,0,0],
+      ["task_id","task_id",1,0,0],
+      ["task_type","Task Type",1,0,0],
+      ["type","g_type",1,0,0],
+      ["accrual_type","Accrual Type",1,0,0],
+      ["vendor_id","VT Vendor ID",1,0,0],
+      ["vendor_id","VTD Vendor ID",1,0,0],
+      ["vendor_id","g_vendor_id",1,0,0],
+      ["external_accrual","Vendor Accrual",1,0,0],
+      ["internal_accrual","Internal Accrual",1,0,0],
+      ["calculation","Calculation",1,0,0],
+      ["external_accrual_form","Vendor Accrual Form",1,0,0],
+      ["internal_accrual_form","Internal Accrual Form",1,0,0],
+      ["calculated_accrual_form","Calculated Accrual Form",1,0,0],
+      ["custom_text_1","Custom Text 1",1,0,0],
+      ["po_header_description","g_po_header_description",1,0,0],
+      ["po_line_description","PO Line Description",1,0,0],
+      ["review_comments","Review Comments",1,0,0],
+      ["email","Vendor Email",1,0,0],
+      ["cc_email","CC Email",1,0,0],
+      ["internal_email","Internal Email",1,0,0],
+      ["internal_cc_email","Internal CC Email",1,0,0],
+      ["service_start_date","Service Start Date",1,0,0],
+      ["service_end_date","Service End Date",1,0,0],
+      ["glaccount_debit","Account - Expense",1,0,0],
+      ["glaccount_debit_id","Glaccount Debit Id",1,0,0],
+      ["glaccount_credit","Account - Liability",1,0,0],
+      ["glaccount_credit_id","Glaccount Credit Id",1,0,0],
+      ["channel_credit","Channel Credit",1,0,0],
+      ["channel_credit_id","Channel Credit Id",1,0,0],
+      ["channel_debit","Channel Debit",1,0,0],
+      ["channel_debit_id","Channel Debit Id",1,0,0],
+      ["class_credit","Class Credit",1,0,0],
+      ["class_credit_id","Class Credit Id",1,0,0],
+      ["class_debit","Class Debit",1,0,0],
+      ["class_debit_id","Class Debit Id",1,0,0],
+      ["company_credit","Company Credit",1,0,0],
+      ["company_credit_id","Company Credit Id",1,0,0],
+      ["company_debit","Company Debit",1,0,0],
+      ["company_debit_id","Company Debit Id",1,0,0],
+      ["department_debit","Department - Expense",1,0,0],
+      ["department_debit_id","Department Debit Id",1,0,0],
+      ["department_credit","Department - Liability",1,0,0],
+      ["department_credit_id","Department Credit Id",1,0,0],
+      ["intercompany_credit","Intercompany Credit",1,0,0],
+      ["intercompany_credit_id","Intercompany Credit Id",1,0,0],
+      ["intercompany_debit","Intercompany Debit",1,0,0],
+      ["intercompany_debit_id","Intercompany Debit Id",1,0,0],
+      ["location_credit","Location Credit",1,0,0],
+      ["location_credit_id","Location Credit Id",1,0,0],
+      ["location_debit","Location Debit",1,0,0],
+      ["location_debit_id","Location Debit Id",1,0,0],
+      ["product_credit","Product Credit",1,0,0],
+      ["product_credit_id","Product Credit Id",1,0,0],
+      ["product_debit","Product Debit",1,0,0],
+      ["product_debit_id","Product Debit Id",1,0,0],
+      ["project_credit","Project Credit",1,0,0],
+      ["project_credit_id","Project Credit Id",1,0,0],
+      ["project_debit","Project Debit",1,0,0],
+      ["project_debit_id","Project Debit Id",1,0,0],
+      ["region_credit","Region Credit",1,0,0],
+      ["region_credit_id","Region Credit Id",1,0,0],
+      ["region_debit","Region Debit",1,0,0],
+      ["region_debit_id","Region Debit Id",1,0,0],
+      ["g_prepaid_account","Prepaid Account",1,0,0],
+      ["g_prepaid_account_id","Prepaid Account Id",1,0,0],
+      ["subsidiary","Subsidiary",1,0,0],
+      ["subsidiary_id","Subsidiary ID",1,0,0],
+      ["subsidiary_currency","Subsidiary Currency",1,0,0],
+      ["subsidiary_currency_id","Subsidiary Currency ID",1,0,0],
+      ["transaction_currency","Currency",1,0,0],
+      ["transaction_currency_id","Transaction Currency Id",1,0,0],
+      ["vendor_task_details_id","Calculated Accruals",1,0,0],
+      ["calculated_accruals","Calculated Accruals",1,0,0],
+      ["custom_date_1","Custom Date 1",1,0,0],
+      ["custom_date_2","Custom Date 2",1,0,0],
+      ["custom_date_3","Custom Date 3",1,0,0],
+      ["custom_date_4","Custom Date 4",1,0,0],
+      ["custom_date_5","Custom Date 5",1,0,0],
+      ["custom_numeric_1","Custom Numeric 1",1,0,0],
+      ["custom_numeric_2","Custom Numeric 2",1,0,0],
+      ["custom_numeric_3","Custom Numeric 3",1,0,0],
+      ["custom_numeric_4","Custom Numeric 4",1,0,0],
+      ["custom_numeric_5","Custom Numeric 5",1,0,0],
+      ["custom_text_2","Custom Text 2",1,0,0],
+      ["custom_text_3","Custom Text 3",1,0,0],
+      ["custom_text_4","Custom Text 4",1,0,0],
+      ["custom_text_5","Custom Text 5",1,0,0],
+      ["form_name","VT Form Name",1,0,0],
+      ["form_name","VTD Form Name",1,0,0],
+      ["po_header_amount","g_po_header_amount",1,0,0],
+      ["po_id","VTD 1 PO ID",1,0,0],
+      ["po_id","VTD 2 PO ID",1,0,0],
+      ["po_line_id","g_po_line_id",1,0,0],
+      ["g_generate_accruals","Generate Accruals",1,0,0],
+      ["id","VT ID",1,0,0],
+      ["id","VTD ID",1,0,0],
+      ["vendor_po_id","VT Vendor PO ID",1,0,0],
+      ["vendor_po_id","VTD Vendor PO ID",1,0,0],
+      ["source_vendor_id","Source Vendor ID",1,0,0],
+      ["internal_source_vendor_id","Internal Source Vendor Id",1,0,0],
+      ["internal_source_purchase_order_id","Internal Source Purchase Order Id",1,0,0],
+      ["invoiced_amount","Invoiced Amount",1,0,0],
+      ["is_active","Is Active",1,0,0],
+      ["parent_id","Parent Id",1,0,0],
+      ["period","Period",1,0,0],
+      ["po_balance","PO Balance",1,0,0],
+      ["po_balance_usd","PO Balance USD",1,0,0],
+      ["po_line_amount","PO Line Amount",1,0,0],
+      ["po_line_amount_cancelled","VTD 1 PO Line Amount Cancelled",1,0,0],
+      ["po_line_amount_usd","PO Line Amount USD",1,0,0],
+      ["po_line_status","PO Line Status",1,0,0],
+      ["po_number","PO Number",1,0,0],
+      ["po_owner","PO Owner",1,0,0],
+      ["source_po_id","Source PO ID",1,0,0],
+      ["tx_name","Transaction Group",1,0,0],
+      ["transaction_group","Transaction Group",1,0,0],
+      ["unique_line_identifier","Unique Line Identifier",1,0,0],
+      ["created_at","VTD Created At",1,0,0],
+      ["created_at","VT Created At",1,0,0],
+      ["updated_at","VTD Updated At",1,0,0],
+      ["updated_at","VT Updated At",1,0,0],
+      ["g_po_date","PO Date",1,0,0],
+      ["internal_id","internal_id",1,0,0],
+      // Not shown (left side)
+      ["transaction_currency_id","transaction_currency_id",0,0,0],
+      ["transaction_currency_id","transaction_currency_id",0,0,0],
+      ["transaction_currency_id","transaction_currency_id",0,0,0],
+      ["auto_nudge_count","auto_nudge_count",0,0,0],
+      ["custom_date_1","Custom Date 1",0,0,0],
+      ["custom_date_2","Custom Date 2",0,0,0],
+      ["custom_date_3","Custom Date 3",0,0,0],
+      ["custom_date_4","Custom Date 4",0,0,0],
+      ["custom_date_5","Custom Date 5",0,0,0],
+      ["custom_numeric_1","Custom Numeric 1",0,0,0],
+      ["custom_numeric_2","Custom Numeric 2",0,0,0],
+      ["custom_numeric_3","Custom Numeric 3",0,0,0],
+      ["custom_numeric_4","Custom Numeric 4",0,0,0],
+      ["custom_numeric_5","Custom Numeric 5",0,0,0],
+      ["custom_text_1","Custom Text 1",0,0,0],
+      ["custom_text_2","Custom Text 2",0,0,0],
+      ["custom_text_3","Custom Text 3",0,0,0],
+      ["custom_text_4","Custom Text 4",0,0,0],
+      ["custom_text_5","Custom Text 5",0,0,0],
+      ["accrual_amount","g_accrual_amount",0,0,0],
+      ["accrual_description","g_accrual_description",0,0,0],
+      ["close_po","g_close_po",0,0,0],
+      ["created_by","g_created_by",0,0,0],
+      ["custom_message","g_custom_message",0,0,0],
+      ["custom_notification","g_custom_notification",0,0,0],
+      ["date_submitted","g_date_submitted",0,0,0],
+      ["due_date","g_due_date",0,0,0],
+      ["exchange_rate","g_exchange_rate",0,0,0],
+      ["last_modified_by","g_last_modified_by",0,0,0],
+      ["line_source","g_line_source",0,0,0],
+      ["line_type","g_line_type",0,0,0],
+      ["nocharges","g_nocharges",0,0,0],
+      ["po_closed","g_po_closed",0,0,0],
+      ["qje_credit_id","g_qje_credit_id",0,0,0],
+      ["qje_debit_id","g_qje_debit_id",0,0,0],
+      ["source_system_id","g_source_system_id",0,0,0],
+      ["status","g_status",0,0,0],
+      ["unique_key","g_unique_key",0,0,0],
+      ["group_name","group_name",0,0,0],
+      ["hash","hash",0,0,0],
+      ["message_id","message_id",0,0,0],
+      ["override_flag","Override Flag",0,0,0],
+      ["override_reason","override_reason",0,0,0],
+      ["parent_hash","parent_hash",0,0,0],
+      ["passback_flag","passback_flag",0,0,0],
+      ["subsidiary_amount","Subsidiary Amount",0,0,0],
+      ["taskinactive","taskinactive",0,0,0],
+      ["token_id","token_id",0,0,0],
+      ["transaction_id","transaction_id",0,0,0],
+      ["po_line_amount_cancelled","VTD 2 PO Line Amount Cancelled",0,0,0],
+      ["weight","weight",0,0,0],
+      ["workflow_id","workflow_id",0,0,0],
+    ]
+  }
+};
+
+let currentModule = 'transactions';
+let isEditMode = false;
+// Deep copy of rows being edited (not yet saved)
+let pendingRows = [];
+
+function deepCopy(rows) {
+  return rows.map(r => [...r]);
+}
+
+function dragHandle() {
+  return `<div class="drag-handle">
+    <div class="drag-dot-row"><div class="drag-dot"></div><div class="drag-dot"></div></div>
+    <div class="drag-dot-row"><div class="drag-dot"></div><div class="drag-dot"></div></div>
+    <div class="drag-dot-row"><div class="drag-dot"></div><div class="drag-dot"></div></div>
+  </div>`;
+}
+
+function checkbox(checked, idx, col) {
+  return `<input type="checkbox" ${checked ? 'checked' : ''} data-idx="${idx}" data-col="${col}"
+    style="width:16px;height:16px;accent-color:#7c3aed;cursor:pointer;">`;
+}
+
+function renderRows(data) {
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '';
+  const showOverride = currentModule === 'transactions';
+  const showReadonly = currentModule === 'transactions';
+
+  data.forEach(([api, label, show, readonly, override], idx) => {
+    const tr = document.createElement('tr');
+
+    let showCell, readonlyCell, overrideCell, labelCell;
+
+    if (isEditMode) {
+      showCell     = `<td class="center">${checkbox(show, idx, 2)}</td>`;
+      readonlyCell = `<td class="center col-readonly">${showReadonly ? checkbox(readonly, idx, 3) : ''}</td>`;
+      overrideCell = `<td class="center col-override">${showOverride ? checkbox(override, idx, 4) : ''}</td>`;
+      labelCell    = `<td class="label-cell"><input type="text" value="${label}" data-idx="${idx}" data-col="1"
+        style="border:1px solid #d1d5db;border-radius:4px;padding:4px 8px;font-size:13px;font-family:inherit;width:100%;outline:none;"></td>`;
+    } else {
+      showCell     = `<td class="center">${show ? CHECK : ''}</td>`;
+      readonlyCell = `<td class="center col-readonly">${readonly ? CHECK : ''}</td>`;
+      overrideCell = `<td class="center col-override">${override ? CHECK : ''}</td>`;
+      labelCell    = `<td class="label-cell">${label}</td>`;
+    }
+
+    tr.innerHTML = `
+      <td class="drag-cell">${dragHandle()}</td>
+      <td class="api-cell">${api}</td>
+      ${labelCell}
+      ${showCell}
+      ${readonlyCell}
+      ${overrideCell}
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Attach live-update listeners in edit mode
+  if (isEditMode) {
+    tbody.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', function() {
+        const i = parseInt(this.dataset.idx);
+        const c = parseInt(this.dataset.col);
+        pendingRows[i][c] = this.checked ? 1 : 0;
+      });
+    });
+    tbody.querySelectorAll('input[type="text"]').forEach(inp => {
+      inp.addEventListener('input', function() {
+        const i = parseInt(this.dataset.idx);
+        pendingRows[i][1] = this.value;
+      });
+    });
+  }
+
+  // Apply column visibility
+  document.querySelectorAll('.col-override').forEach(el => {
+    el.style.display = showOverride ? '' : 'none';
+  });
+  document.querySelectorAll('.col-readonly').forEach(el => {
+    el.style.display = showReadonly ? '' : 'none';
+  });
+}
+
+function setEditMode(on) {
+  isEditMode = on;
+  document.getElementById('editToggle').checked = on;
+  document.getElementById('editActions').style.display = on ? 'flex' : 'none';
+  if (on) {
+    pendingRows = deepCopy(moduleData[currentModule].rows);
+  }
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const source = isEditMode ? pendingRows : moduleData[currentModule].rows;
+  const filtered = q ? source.filter(r => r[0].toLowerCase().includes(q) || r[1].toLowerCase().includes(q)) : source;
+  renderRows(filtered);
+}
+
+function saveChanges() {
+  moduleData[currentModule].rows = deepCopy(pendingRows);
+  setEditMode(false);
+}
+
+function cancelChanges() {
+  setEditMode(false);
+}
+
+function switchModule(module) {
+  // Turn off edit mode without saving when switching modules
+  if (isEditMode) {
+    isEditMode = false;
+    document.getElementById('editToggle').checked = false;
+    document.getElementById('editActions').style.display = 'none';
+  }
+  currentModule = module;
+  const data = moduleData[module];
+  document.querySelector('.page-title').textContent = data.title;
+  document.getElementById('searchInput').value = '';
+  renderRows(data.rows);
+  document.querySelectorAll('[data-module]').forEach(el => {
+    el.classList.toggle('active', el.dataset.module === module);
+  });
+}
+
+switchModule('accrual-manager');
+
+document.querySelectorAll('[data-module]').forEach(el => {
+  el.addEventListener('click', function(e) {
+    e.preventDefault();
+    switchModule(this.dataset.module);
+  });
+});
+
+document.getElementById('editToggle').addEventListener('change', function() {
+  setEditMode(this.checked);
+});
+
+document.getElementById('searchInput').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  const source = isEditMode ? pendingRows : moduleData[currentModule].rows;
+  const filtered = q ? source.filter(r => r[0].toLowerCase().includes(q) || r[1].toLowerCase().includes(q)) : source;
+  renderRows(filtered);
+});
+</script>
+</body>
+</html>

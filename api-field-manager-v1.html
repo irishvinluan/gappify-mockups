@@ -1225,9 +1225,13 @@ a:where(.css-1odpy5d){color:#1677ff;text-decoration:none;background-color:transp
     <button onclick="openAuditTrail()" style="height:32px;padding:0 16px;border:1px solid #d9d9d9;border-radius:6px;background:#fff;color:rgba(0,0,0,0.88);font-size:14px;font-family:inherit;cursor:pointer;white-space:nowrap;flex-shrink:0;">Audit Trail</button>
   </div>
 
-  <!-- Source data type tabs -->
-  <div id="afm-tabs" style="display:flex;gap:0;border-bottom:1px solid #f0f0f0;padding:0 24px;flex-shrink:0;">
-    <!-- tabs injected by JS -->
+  <!-- Source type selector -->
+  <div style="display:flex;align-items:center;gap:12px;padding:12px 24px;border-bottom:1px solid #f0f0f0;flex-shrink:0;background:#fff;">
+    <span style="font-size:14px;color:rgba(0,0,0,0.65);white-space:nowrap;">Source Type</span>
+    <div style="position:relative;display:inline-block;">
+      <select id="afm-source-select" onchange="switchTab(this.value)" style="height:32px;border:1px solid #d9d9d9;border-radius:6px;background:#fff;font-size:14px;font-family:inherit;color:rgba(0,0,0,0.88);padding:0 32px 0 10px;appearance:none;-webkit-appearance:none;cursor:pointer;min-width:220px;outline:none;"></select>
+      <svg style="position:absolute;right:8px;top:50%;transform:translateY(-50%);pointer-events:none;" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
   </div>
 
   <!-- Fields table area -->
@@ -1484,21 +1488,10 @@ const HISTORY_LOG = [
 ];
 
 function renderTabs() {
-  const container = document.getElementById('afm-tabs');
-  const sourceTabs = SOURCE_TYPES.map(st => `
-    <div onclick="switchTab('${st.key}')" style="
-      padding: 12px 16px;
-      font-size: 14px;
-      cursor: pointer;
-      border-bottom: 2px solid ${activeTab === st.key ? '#725bb4' : 'transparent'};
-      color: ${activeTab === st.key ? '#725bb4' : 'rgba(0,0,0,0.65)'};
-      font-weight: ${activeTab === st.key ? '600' : '400'};
-      white-space: nowrap;
-      user-select: none;
-    ">${st.label}</div>
-  `).join('');
-
-  container.innerHTML = sourceTabs;
+  const select = document.getElementById('afm-source-select');
+  select.innerHTML = SOURCE_TYPES.map(st =>
+    `<option value="${st.key}"${activeTab === st.key ? ' selected' : ''}>${st.label}</option>`
+  ).join('');
 }
 
 function renderHistory() {

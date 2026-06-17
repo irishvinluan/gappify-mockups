@@ -1228,7 +1228,7 @@ a:where(.css-1odpy5d){color:#1677ff;text-decoration:none;background-color:transp
   </div>
 
   <!-- Fields table area -->
-  <div style="flex:1;overflow-y:auto;padding:0 24px 24px;">
+  <div id="afm-fields-panel" style="flex:1;overflow-y:auto;padding:0 24px 24px;display:flex;flex-direction:column;">
     <table style="width:100%;border-collapse:collapse;margin-top:0;">
       <thead id="afm-thead" style="position:sticky;top:0;background:#f8f9fa;z-index:10;">
         <tr>
@@ -1242,8 +1242,25 @@ a:where(.css-1odpy5d){color:#1677ff;text-decoration:none;background-color:transp
     </table>
   </div>
 
+  <!-- History panel (hidden by default) -->
+  <div id="afm-history-panel" style="display:none;flex-direction:column;flex:1;overflow-y:auto;padding:0 24px 24px;">
+    <table style="width:100%;border-collapse:collapse;margin-top:0;">
+      <thead style="position:sticky;top:0;background:#f8f9fa;z-index:10;">
+        <tr>
+          <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;border-bottom:1px solid #e5e7eb;white-space:nowrap;">Date</th>
+          <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;border-bottom:1px solid #e5e7eb;white-space:nowrap;">Performed By</th>
+          <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;border-bottom:1px solid #e5e7eb;white-space:nowrap;">Source Type</th>
+          <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;border-bottom:1px solid #e5e7eb;white-space:nowrap;">Field</th>
+          <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;border-bottom:1px solid #e5e7eb;white-space:nowrap;">Old Value</th>
+          <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;border-bottom:1px solid #e5e7eb;white-space:nowrap;">New Value</th>
+        </tr>
+      </thead>
+      <tbody id="afm-history-tbody"></tbody>
+    </table>
+  </div>
+
   <!-- Save bar -->
-  <div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:14px 24px;border-top:1px solid #f0f0f0;background:#fff;flex-shrink:0;">
+  <div id="afm-save-bar" style="display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:14px 24px;border-top:1px solid #f0f0f0;background:#fff;flex-shrink:0;">
     <button onclick="cancelChanges()" style="height:32px;padding:0 15px;border:1px solid #d9d9d9;border-radius:6px;background:#fff;color:rgba(0,0,0,0.88);font-size:14px;font-family:inherit;cursor:pointer;">Cancel</button>
     <button onclick="saveChanges()" style="height:32px;padding:0 15px;border:none;border-radius:6px;background:#725bb4;color:#fff;font-size:14px;font-family:inherit;font-weight:500;cursor:pointer;">Save Changes</button>
   </div>
@@ -1460,10 +1477,30 @@ SOURCE_TYPES.forEach(st => {
 
 let activeTab = 'purchase-orders';
 
+// Snapshot of state at last save (for diff on next save)
+let savedState = {};
+SOURCE_TYPES.forEach(st => {
+  savedState[st.key] = {};
+  (FIELDS_BY_TYPE[st.key] || []).forEach(f => {
+    savedState[st.key][f.key] = f.def === 'required';
+  });
+});
+
+// History log — pre-populated with realistic sample entries
+const HISTORY_LOG = [
+  { date: '12 Jun 2026 09:14:03', user: 'irishv@gappify.com',   sourceType: 'Purchase Orders',    field: 'po_owner',           oldVal: 'Not Required', newVal: 'Required' },
+  { date: '12 Jun 2026 09:14:03', user: 'irishv@gappify.com',   sourceType: 'Purchase Orders',    field: 'po_date',            oldVal: 'Not Required', newVal: 'Required' },
+  { date: '05 Jun 2026 14:32:11', user: 'admin@gappify.com',    sourceType: 'Vendors',            field: 'currency_id',        oldVal: 'Not Required', newVal: 'Required' },
+  { date: '05 Jun 2026 14:32:11', user: 'admin@gappify.com',    sourceType: 'Vendors',            field: 'currency_name',      oldVal: 'Not Required', newVal: 'Required' },
+  { date: '28 May 2026 11:05:44', user: 'ops@gappify.com',      sourceType: 'Invoices',           field: 'period',             oldVal: 'Required',     newVal: 'Not Required' },
+  { date: '15 May 2026 16:48:22', user: 'admin@gappify.com',    sourceType: 'Chart of Accounts',  field: 'account_type',       oldVal: 'Not Required', newVal: 'Required' },
+  { date: '02 May 2026 10:22:57', user: 'irishv@gappify.com',   sourceType: 'Transactions',       field: 'subsidiary',         oldVal: 'Not Required', newVal: 'Required' },
+];
+
 function renderTabs() {
   const container = document.getElementById('afm-tabs');
-  container.innerHTML = SOURCE_TYPES.map(st => `
-    <div onclick="switchTab('${st.key}')" id="tab-${st.key}" style="
+  const sourceTabs = SOURCE_TYPES.map(st => `
+    <div onclick="switchTab('${st.key}')" style="
       padding: 12px 16px;
       font-size: 14px;
       cursor: pointer;
@@ -1471,10 +1508,73 @@ function renderTabs() {
       color: ${activeTab === st.key ? '#725bb4' : 'rgba(0,0,0,0.65)'};
       font-weight: ${activeTab === st.key ? '600' : '400'};
       white-space: nowrap;
-      transition: color 0.15s;
       user-select: none;
     ">${st.label}</div>
   `).join('');
+
+  const historyTab = `
+    <div onclick="switchTab('history')" style="
+      padding: 12px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      border-bottom: 2px solid ${activeTab === 'history' ? '#725bb4' : 'transparent'};
+      color: ${activeTab === 'history' ? '#725bb4' : 'rgba(0,0,0,0.65)'};
+      font-weight: ${activeTab === 'history' ? '600' : '400'};
+      white-space: nowrap;
+      user-select: none;
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    ">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      History
+    </div>
+  `;
+
+  container.innerHTML = sourceTabs + historyTab;
+
+  // Show/hide fields panel and save bar
+  const fieldsPanel = document.getElementById('afm-fields-panel');
+  const saveBar = document.getElementById('afm-save-bar');
+  const historyPanel = document.getElementById('afm-history-panel');
+  if (activeTab === 'history') {
+    fieldsPanel.style.display = 'none';
+    saveBar.style.display = 'none';
+    historyPanel.style.display = 'flex';
+    renderHistory();
+  } else {
+    fieldsPanel.style.display = 'flex';
+    saveBar.style.display = 'flex';
+    historyPanel.style.display = 'none';
+  }
+}
+
+function renderHistory() {
+  const tbody = document.getElementById('afm-history-tbody');
+  if (!HISTORY_LOG.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:#8c8c8c;font-size:13px;">No history yet</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = HISTORY_LOG.map((entry, i) => {
+    const bg = i % 2 === 0 ? '#ffffff' : '#fafcff';
+    const newBadge = entry.newVal === 'Required'
+      ? `<span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;font-weight:500;background:#fff1f0;color:#cf1322;border:1px solid #ffa39e;">Required</span>`
+      : `<span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;font-weight:500;background:#f5f5f5;color:#8c8c8c;border:1px solid #d9d9d9;">Not Required</span>`;
+    const oldBadge = entry.oldVal === 'Required'
+      ? `<span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;font-weight:500;background:#fff1f0;color:#cf1322;border:1px solid #ffa39e;">Required</span>`
+      : `<span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;font-weight:500;background:#f5f5f5;color:#8c8c8c;border:1px solid #d9d9d9;">Not Required</span>`;
+    return `<tr style="background:${bg};border-bottom:1px solid #f0f0f0;"
+               onmouseover="this.style.background='#f5f3ff'"
+               onmouseout="this.style.background='${bg}'">
+      <td style="padding:10px 16px;font-size:12px;color:#6b7280;white-space:nowrap;">${entry.date}</td>
+      <td style="padding:10px 16px;font-size:12px;color:#111827;">${entry.user}</td>
+      <td style="padding:10px 16px;font-size:12px;color:#4b5563;">${entry.sourceType}</td>
+      <td style="padding:10px 16px;font-size:12px;font-family:'SFMono-Regular',Consolas,monospace;color:#111827;">${entry.field}</td>
+      <td style="padding:10px 16px;">${oldBadge}</td>
+      <td style="padding:10px 16px;">${newBadge}</td>
+    </tr>`;
+  }).join('');
 }
 
 function renderFields() {
@@ -1559,19 +1659,59 @@ function toggleField(key, val) {
 function switchTab(key) {
   activeTab = key;
   renderTabs();
-  renderFields();
+  if (key !== 'history') renderFields();
+}
+
+function formatNow() {
+  const d = new Date();
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = months[d.getMonth()];
+  const yyyy = d.getFullYear();
+  const hh = String(d.getHours()).padStart(2,'0');
+  const min = String(d.getMinutes()).padStart(2,'0');
+  const ss = String(d.getSeconds()).padStart(2,'0');
+  return `${dd} ${mm} ${yyyy} ${hh}:${min}:${ss}`;
 }
 
 function saveChanges() {
-  alert('Changes saved successfully!');
+  const timestamp = formatNow();
+  const user = 'irishv@gappify.com';
+  let hasChanges = false;
+
+  SOURCE_TYPES.forEach(st => {
+    const sourceLabel = st.label;
+    (FIELDS_BY_TYPE[st.key] || []).forEach(f => {
+      const prev = savedState[st.key][f.key];
+      const curr = tabState[st.key][f.key];
+      if (prev !== curr) {
+        hasChanges = true;
+        HISTORY_LOG.unshift({
+          date: timestamp,
+          user,
+          sourceType: sourceLabel,
+          field: f.key,
+          oldVal: prev ? 'Required' : 'Not Required',
+          newVal: curr ? 'Required' : 'Not Required',
+        });
+        savedState[st.key][f.key] = curr;
+      }
+    });
+  });
+
+  if (hasChanges) {
+    const bar = document.getElementById('afm-save-bar');
+    const orig = bar.style.background;
+    bar.style.background = '#f0fdf4';
+    setTimeout(() => { bar.style.background = orig; }, 800);
+  }
 }
 
 function cancelChanges() {
-  // Reset to defaults
   SOURCE_TYPES.forEach(st => {
     tabState[st.key] = {};
     (FIELDS_BY_TYPE[st.key] || []).forEach(f => {
-      tabState[st.key][f.key] = f.def === 'required';
+      tabState[st.key][f.key] = savedState[st.key][f.key];
     });
   });
   renderFields();

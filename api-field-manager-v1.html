@@ -1550,15 +1550,15 @@ function renderFields() {
     return `<tr style="background:${bg};border-bottom:1px solid #f0f0f0;" 
                onmouseover="this.style.background='#f5f3ff'" 
                onmouseout="this.style.background='${bg}'">
-      <td style="padding:10px 16px;font-size:12px;font-family:'SFMono-Regular',Consolas,monospace;color:#111827;">${f.key}</td>
+      <td style="padding:10px 16px;">
+        <div style="font-size:12px;font-family:'SFMono-Regular',Consolas,monospace;color:#111827;">${f.key}</div>
+        ${f.def === 'conditional' ? `<div style="font-size:11px;color:rgba(0,0,0,0.45);margin-top:3px;font-family:inherit;">${f.condition}</div>` : ''}
+      </td>
       <td style="padding:10px 16px;">
         <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;font-weight:500;background:${tb.bg};color:${tb.color};border:1px solid ${tb.border};">${tb.label}</span>
       </td>
       <td style="padding:10px 16px;">
-        ${f.def === 'conditional'
-          ? `<span onmouseenter="showFieldTooltip(this,'${f.condition.replace(/'/g, "&#39;")}')" onmouseleave="hideFieldTooltip()" style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;font-weight:500;background:${db.bg};color:${db.color};border:1px solid ${db.border};text-decoration:underline dotted;text-decoration-color:#aaa;text-underline-offset:3px;cursor:default;">${db.label}</span>`
-          : `<span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;font-weight:500;background:${db.bg};color:${db.color};border:1px solid ${db.border};">${db.label}</span>`
-        }
+        <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;font-weight:500;background:${db.bg};color:${db.color};border:1px solid ${db.border};">${db.label}</span>
       </td>
       <td style="padding:10px 16px;text-align:center;">
         ${isLocked

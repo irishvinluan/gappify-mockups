@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gappify – SSO Settings</title>
+<link rel="stylesheet" href="https://unpkg.com/antd@4.24.16/dist/antd.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Niramit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*, body { font-family: 'Niramit', sans-serif; }
+
+/* Gappify antd overrides */
+.ant-btn:active, .ant-btn:hover, .ant-btn:focus { color:#725bb4!important; border-color:#725bb4!important; }
+.ant-btn-primary { border-color:#725bb4!important; background:#725bb4!important; }
+.ant-btn-primary:active, .ant-btn-primary:hover, .ant-btn-primary:focus { color:#222630!important; border-color:#d9d3ef!important; background-color:#d9d3ef!important; }
+.ant-btn-default, .ant-btn-primary { border-radius:5px!important; }
+.ant-btn-round { border-radius:32px!important; }
+.ant-btn[disabled], .ant-btn[disabled]:hover { color:rgba(0,0,0,.25)!important; border-color:#d9d9d9!important; }
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected { background-color:#d9d3ef!important; }
+.ant-menu-item-selected, .ant-menu-item-selected a, .ant-menu-item-selected a:hover { color:#725bb4!important; }
+.ant-menu-item:active, .ant-menu-submenu-title:active { background:#d9d3ef!important; }
+.ant-menu-light .ant-menu-item:hover, .ant-menu-light .ant-menu-submenu-title:hover { color:#725bb4!important; }
+.ant-menu-item a:hover { color:#725bb4!important; }
+.ant-menu-submenu:hover > .ant-menu-submenu-title > .ant-menu-submenu-arrow { color:#725bb4!important; }
+.ant-menu-inline .ant-menu-item:after { border-right:3px solid #725bb4!important; }
+.navbar-container .ant-menu-item-selected a, .navbar-container .ant-menu-item-selected a:hover { color:#222630!important; }
+.navbar-container .ant-menu-horizontal > .ant-menu-item a { color:#222630; }
+.navbar-container a { color:#222630; }
+.navbar-container a:hover { color:#222630!important; }
+.navbar-container .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item { padding:0 13px; }
+a { color:#725bb4; }
+
+/* Layout */
+html, body { margin:0; padding:0; background:#fff; }
+.navbar-container {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  height:56px; background:#fff; border-bottom:1px solid #f0f0f0;
+  display:flex; align-items:center; padding:0 20px;
+}
+.navbar-container__left { display:flex; align-items:center; margin-right:32px; }
+.navbar-container__center { flex:1; display:flex; align-items:center; }
+.navbar-container__center .ant-menu { border-bottom:none; line-height:54px; }
+.navbar-container__right { display:flex; align-items:center; }
+
+.page-container { padding:18px; padding-top:74px; min-height:100vh; box-sizing:border-box; }
+.main-layout { display:flex; min-height:calc(100vh - 74px); }
+.settings-sider { width:240px; flex-shrink:0; border-right:1px solid #f0f0f0; }
+.settings-sider .ant-menu { border-right:none; }
+.settings-sider h2 { margin:16px 24px 8px; font-size:16px; font-weight:500; }
+.main-content { flex:1; min-width:0; padding:0 24px 40px; }
+.ant-divider-horizontal { margin:12px 0; border-top:1px solid #f0f0f0; }
+
+/* Cert banner */
+.cert-banner { display:flex; align-items:center; gap:10px; background:#fffbe6; border:1px solid #ffe58f; border-radius:4px; padding:10px 14px; margin-bottom:16px; font-size:14px; color:#613400; }
+.cert-banner a { color:#d48806; font-weight:500; }
+.cert-dismiss { background:none; border:none; cursor:pointer; color:rgba(0,0,0,.45); margin-left:auto; padding:0; font-size:14px; font-family:inherit; }
+.cert-dismiss:hover { color:rgba(0,0,0,.75); }
+
+/* SSO status */
+.sso-status-tag { display:inline-flex; align-items:center; gap:5px; font-size:12px; padding:2px 8px; border-radius:4px; margin-left:10px; vertical-align:middle; }
+.status-unconfigured { background:#f5f5f5; color:rgba(0,0,0,.45); border:1px solid #d9d9d9; }
+.status-active { background:#f6ffed; color:#52c41a; border:1px solid #b7eb8f; }
+
+/* IdP picker */
+.idp-section { background:#fafafa; border:1px solid #f0f0f0; border-radius:6px; padding:20px 24px 24px; }
+.idp-picker-title { font-size:15px; font-weight:500; color:rgba(0,0,0,.85); margin:0 0 4px; }
+.idp-picker-desc { font-size:13px; color:rgba(0,0,0,.45); margin:0 0 16px; }
+.idp-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
+.idp-card { border:1px solid #d9d9d9; border-radius:6px; padding:14px 10px 10px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:7px; background:#fff; text-align:center; transition:border-color .12s,background .12s; }
+.idp-card:hover { border-color:#725bb4; background:#f7f5fc; }
+.idp-card.selected { border:2px solid #725bb4; background:#f1f0f8; }
+.idp-icon { width:36px; height:36px; border-radius:8px; background:#f5f5f5; display:flex; align-items:center; justify-content:center; font-size:18px; color:rgba(0,0,0,.35); }
+.idp-card.selected .idp-icon { background:#e8e3f5; color:#725bb4; }
+.idp-name { font-size:13px; font-weight:500; color:rgba(0,0,0,.85); }
+
+/* Steps expanded inline */
+.steps-expanded { margin-top:12px; display:none; }
+.steps-expanded.visible { display:block; }
+
+.step-block { border:1px solid #f0f0f0; border-radius:6px; background:#fff; margin-bottom:10px; overflow:hidden; }
+.step-header { display:flex; align-items:center; gap:12px; padding:14px 18px; background:#fff; border-bottom:1px solid #f0f0f0; }
+.step-num { width:24px; height:24px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+.step-num.done { background:#52c41a; color:#fff; }
+.step-num.active { background:#725bb4; color:#fff; }
+.step-num.pending { background:#725bb4; color:#fff; border:none; }
+.step-title { font-size:14px; font-weight:500; color:rgba(0,0,0,.85); }
+.step-body { padding:18px 20px 20px; }
+
+/* Copy fields */
+.copy-field { background:#f5f5f5; border:1px solid #e8e8e8; border-radius:4px; padding:10px 12px; margin-bottom:10px; }
+.copy-lbl { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:rgba(0,0,0,.35); margin-bottom:5px; }
+.copy-row { display:flex; align-items:center; gap:10px; }
+.copy-val { font-family:'SFMono-Regular',Consolas,monospace; font-size:12px; color:rgba(0,0,0,.65); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.copy-btn { border:1px solid #d9d9d9; border-radius:4px; padding:3px 11px; font-size:12px; color:rgba(0,0,0,.65); background:#fff; cursor:pointer; flex-shrink:0; font-family:'Niramit',sans-serif; }
+.copy-btn:hover { border-color:#725bb4; color:#725bb4; }
+.copy-btn.copied { color:#52c41a; border-color:#b7eb8f; background:#f6ffed; }
+
+/* Info callout */
+.info-callout { background:#e6f4ff; border-left:3px solid #1677ff; border-radius:0 4px 4px 0; padding:10px 14px; margin:0 0 14px; font-size:13px; color:#003eb3; line-height:1.6; }
+.idp-help-toggle { display:inline-flex; align-items:center; gap:6px; font-size:13px; color:rgba(0,0,0,.45); cursor:pointer; user-select:none; margin-bottom:0; padding:4px 0; }
+.idp-help-toggle:hover { color:#725bb4; }
+.idp-help-body { display:none; margin-top:10px; background:#fafafa; border:1px solid #f0f0f0; border-radius:6px; overflow:hidden; }
+.idp-help-body.open { display:block; }
+.idp-help-tabs { display:flex; border-bottom:1px solid #f0f0f0; background:#fff; }
+.idp-help-tab { flex:1; border:none; background:none; padding:8px 4px; font-size:12px; font-family:inherit; cursor:pointer; color:rgba(0,0,0,.45); border-bottom:2px solid transparent; transition:color .15s; }
+.idp-help-tab:hover { color:#725bb4; }
+.idp-help-tab.active { color:#725bb4; border-bottom-color:#725bb4; font-weight:500; }
+.idp-help-content { display:none; padding:12px 14px; font-size:13px; color:rgba(0,0,0,.65); line-height:1.6; }
+.idp-help-content.active { display:block; }
+
+/* Metadata input */
+.meta-input { width:100%; padding:7px 11px; border:1px solid #d9d9d9; border-radius:4px; font-size:14px; font-family:'SFMono-Regular',Consolas,monospace; color:rgba(0,0,0,.85); background:#fff; outline:none; box-sizing:border-box; }
+.meta-input:focus { border-color:#725bb4; box-shadow:0 0 0 2px rgba(114,91,180,.2); }
+.meta-input::placeholder { color:rgba(0,0,0,.25); }
+.field-lbl { font-size:14px; color:rgba(0,0,0,.85); display:block; margin-bottom:6px; }
+.field-req { color:#ff4d4f; margin-right:3px; }
+
+/* Attr table */
+.attr-wrap { border:1px solid #f0f0f0; border-radius:4px; overflow:hidden; }
+.attr-tbl { width:100%; border-collapse:collapse; font-size:13px; }
+.attr-tbl th { background:#f7f6fb; font-size:12px; font-weight:500; color:rgba(0,0,0,.45); text-align:left; padding:9px 16px; border-bottom:1px solid #f0f0f0; }
+.attr-tbl td { padding:10px 16px; border-bottom:1px solid #f0f0f0; color:rgba(0,0,0,.85); }
+.attr-tbl tr:last-child td { border-bottom:none; }
+code { font-family:'SFMono-Regular',Consolas,monospace; font-size:12px; background:#f5f5f5; padding:2px 5px; border-radius:3px; }
+.tag-req { font-size:12px; color:#ff4d4f; font-weight:500; }
+.tag-opt { font-size:12px; color:rgba(0,0,0,.35); }
+
+/* Test step */
+.test-info-box { background:#fafafa; border:1px solid #f0f0f0; border-radius:4px; padding:14px 16px; margin-bottom:14px; }
+.test-info-title { font-size:14px; font-weight:500; color:rgba(0,0,0,.85); margin-bottom:8px; }
+.test-steps-ol { margin:0; padding-left:20px; font-size:13px; color:rgba(0,0,0,.65); line-height:2.1; }
+.test-result { border-radius:4px; padding:12px 16px; margin-bottom:14px; font-size:14px; display:flex; align-items:flex-start; gap:10px; }
+.result-pass { background:#f6ffed; border:1px solid #b7eb8f; color:#135200; }
+.result-fail { background:#fff2f0; border:1px solid #ffccc7; color:#820014; }
+.result-pending { background:#fafafa; border:1px solid #f0f0f0; color:rgba(0,0,0,.65); }
+.result-title { font-weight:600; }
+.result-body { font-size:13px; margin-top:3px; line-height:1.6; }
+
+@keyframes spin { to { transform:rotate(360deg); } }
+.spin-icon { animation:spin 1s linear infinite; display:inline-block; font-size:18px; }
+
+/* No-metadata toggle */
+.no-meta-toggle { display:inline-flex; align-items:center; gap:7px; font-size:13px; color:rgba(0,0,0,.45); cursor:pointer; font-weight:400; margin-bottom:0; user-select:none; }
+.no-meta-toggle:hover { color:#725bb4; }
+.no-meta-body { display:none; margin-top:14px; padding:16px; background:#fafafa; border:1px solid #f0f0f0; border-radius:6px; }
+.no-meta-body.open { display:block; }
+.cert-upload-area { border:1.5px dashed #d9d9d9; border-radius:6px; padding:24px; text-align:center; cursor:pointer; background:#fff; display:flex; flex-direction:column; align-items:center; gap:6px; transition:border-color .15s,background .15s; }
+.cert-upload-area:hover, .cert-upload-area.drag-over { border-color:#725bb4; background:#f7f5fc; }
+.cert-upload-text { font-size:13px; color:rgba(0,0,0,.45); }
+.cert-upload-text.has-file { color:#52c41a; font-weight:500; }
+
+/* Demo toggle — floating, not part of the page */
+.demo-toggle {
+  position:fixed; bottom:24px; right:24px; z-index:9999;
+  background:#1f1f1f; border-radius:8px; padding:8px 10px;
+  display:flex; align-items:center; gap:8px;
+  box-shadow:0 4px 16px rgba(0,0,0,.3);
+}
+.demo-toggle-label { font-size:11px; color:rgba(255,255,255,.45); font-family:'Niramit',sans-serif; white-space:nowrap; }
+.view-toggle { display:inline-flex; border:1px solid rgba(255,255,255,.15); border-radius:5px; overflow:hidden; }
+.toggle-btn { border:none; background:transparent; padding:4px 12px; font-size:12px; font-family:'Niramit',sans-serif; cursor:pointer; color:rgba(255,255,255,.55); }
+.toggle-btn:hover { background:rgba(255,255,255,.1); color:#fff; }
+.toggle-btn.active { background:#725bb4; color:#fff; }
+
+/* Configured view */
+.configured-view { display:none; }
+.config-card { background:#fafafa; border:1px solid #f0f0f0; border-radius:6px; padding:24px; }
+.config-row { display:flex; gap:32px; flex-wrap:wrap; margin-bottom:20px; }
+.config-field { flex:1; min-width:200px; }
+.config-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:rgba(0,0,0,.35); margin-bottom:6px; }
+.config-value { font-size:14px; color:rgba(0,0,0,.85); display:flex; align-items:center; gap:8px; }
+.config-value code { font-family:'SFMono-Regular',Consolas,monospace; font-size:12px; background:#f0f0f0; padding:2px 6px; border-radius:3px; }
+.config-divider { height:1px; background:#f0f0f0; margin:16px 0; }
+.config-actions { display:flex; gap:8px; margin-top:20px; }
+.status-dot { width:8px; height:8px; border-radius:50%; background:#52c41a; display:inline-block; }
+
+/* Buttons */
+.btn-default { border:1px solid #d9d9d9; border-radius:5px; padding:4px 15px; font-size:14px; background:#fff; cursor:pointer; color:rgba(0,0,0,.85); display:inline-flex; align-items:center; gap:6px; font-family:'Niramit',sans-serif; height:32px; }
+.btn-default:hover { border-color:#725bb4!important; color:#725bb4!important; }
+.btn-primary { border:1px solid #725bb4; border-radius:5px; padding:4px 15px; font-size:14px; background:#725bb4; cursor:pointer; color:#fff; display:inline-flex; align-items:center; gap:6px; font-family:'Niramit',sans-serif; height:32px; }
+.btn-primary:hover { background:#d9d3ef!important; border-color:#d9d3ef!important; color:#222630!important; }
+.btn-success { border:1px solid #52c41a; border-radius:5px; padding:4px 15px; font-size:14px; background:#52c41a; cursor:pointer; color:#fff; display:inline-flex; align-items:center; gap:6px; font-family:'Niramit',sans-serif; height:32px; }
+
+/* Success screen */
+.success-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:200px; text-align:center; padding:32px; }
+.success-icon-wrap { width:56px; height:56px; border-radius:50%; background:#f6ffed; display:flex; align-items:center; justify-content:center; margin-bottom:12px; }
+.success-title { font-size:17px; font-weight:500; color:rgba(0,0,0,.85); margin-bottom:6px; }
+.success-body { font-size:14px; color:rgba(0,0,0,.45); max-width:320px; line-height:1.65; margin-bottom:20px; }
+</style>
+</head>
+<body>
+<div id="root">
+
+<!-- Navbar -->
+<div class="navbar-container">
+  <div class="navbar-container__left">
+    <a href="#" style="font-size:20px;font-weight:700;color:#222630;text-decoration:none;letter-spacing:-0.5px">gappify</a>
+  </div>
+  <div class="navbar-container__center">
+    <ul class="ant-menu ant-menu-root ant-menu-horizontal ant-menu-light" role="menu">
+      <li class="ant-menu-item" role="menuitem"><span class="ant-menu-title-content"><a href="#">Review Center</a></span></li>
+      <li class="ant-menu-submenu ant-menu-submenu-horizontal" role="none"><div class="ant-menu-submenu-title" role="menuitem"><span class="ant-menu-title-content">Transactions</span><i class="ant-menu-submenu-arrow"></i></div></li>
+      <li class="ant-menu-item" role="menuitem"><span class="ant-menu-title-content"><a href="#">QJE's</a></span></li>
+      <li class="ant-menu-item" role="menuitem"><span class="ant-menu-title-content"><a href="#">Accrual Manager</a></span></li>
+      <li class="ant-menu-item" role="menuitem"><span class="ant-menu-title-content"><a href="#">Insights</a></span></li>
+    </ul>
+  </div>
+  <div class="navbar-container__right">
+    <button type="button" class="ant-btn ant-btn-round ant-btn-default" style="font-family:'Niramit',sans-serif">
+      <svg viewBox="64 64 896 896" width="14" height="14" fill="currentColor" style="margin-right:5px"><path d="M858.5 763.6a374 374 0 00-80.6-119.5 375.63 375.63 0 00-119.5-80.6c-.4-.2-.8-.3-1.2-.5C719.5 518 760 444.7 760 362c0-137-111-248-248-248S264 225 264 362c0 82.7 40.5 156 102.8 201.1-.4.2-.8.3-1.2.5-44.8 18.9-85 46-119.5 80.6a375.63 375.63 0 00-80.6 119.5A371.7 371.7 0 00136 901.8a8 8 0 008 8.2h60c4.4 0 7.9-3.5 8-7.8 2-77.2 33-149.5 87.8-204.3 56.7-56.7 132-87.9 212.2-87.9s155.5 31.2 212.2 87.9C779 752.7 810 825 812 902.2c.1 4.4 3.6 7.8 8 7.8h60a8 8 0 008-8.2c-1-47.8-10.9-94.3-29.5-138.2zM512 534c-45.9 0-89.1-17.9-121.6-50.4S340 407.9 340 362c0-45.9 17.9-89.1 50.4-121.6S466.1 190 512 190s89.1 17.9 121.6 50.4S684 316.1 684 362c0 45.9-17.9 89.1-50.4 121.6S557.9 534 512 534z"></path></svg>
+      honeycombAAAdmin
+    </button>
+  </div>
+</div>
+
+<!-- Page -->
+<div class="page-container">
+<div class="main-layout">
+
+  <!-- Sidebar -->
+  <div class="settings-sider">
+    <h2>Settings</h2>
+    <ul class="ant-menu ant-menu-root ant-menu-inline ant-menu-light" role="menu">
+      <li class="ant-menu-item" role="menuitem" style="padding-left:24px"><span class="ant-menu-title-content"><a href="#">Period Management</a></span></li>
+      <li class="ant-menu-submenu ant-menu-submenu-inline ant-menu-submenu-open ant-menu-submenu-selected" role="none">
+        <div class="ant-menu-submenu-title" style="padding-left:24px"><span class="ant-menu-title-content">User Management</span><i class="ant-menu-submenu-arrow"></i></div>
+        <ul class="ant-menu ant-menu-sub ant-menu-inline" role="menu">
+          <li class="ant-menu-item" role="menuitem" style="padding-left:48px"><span class="ant-menu-title-content"><a href="#">Users</a></span></li>
+          <li class="ant-menu-item ant-menu-item-selected ant-menu-item-active" role="menuitem" style="padding-left:48px"><span class="ant-menu-title-content"><a href="#">SSO</a></span></li>
+          <li class="ant-menu-item" role="menuitem" style="padding-left:48px"><span class="ant-menu-title-content"><a href="#">Login Audit Trail</a></span></li>
+        </ul>
+      </li>
+      <li class="ant-menu-item" role="menuitem" style="padding-left:24px"><span class="ant-menu-title-content"><a href="#">Schedule Manager</a></span></li>
+      <li class="ant-menu-submenu ant-menu-submenu-inline ant-menu-submenu-open" role="none">
+        <div class="ant-menu-submenu-title" style="padding-left:24px"><span class="ant-menu-title-content">Accrual Manager</span><i class="ant-menu-submenu-arrow"></i></div>
+        <ul class="ant-menu ant-menu-sub ant-menu-inline" role="menu">
+          <li class="ant-menu-item" role="menuitem" style="padding-left:48px"><span class="ant-menu-title-content"><a href="#">Accrual Rules</a></span></li>
+        </ul>
+      </li>
+      <li class="ant-menu-item" role="menuitem" style="padding-left:24px"><span class="ant-menu-title-content"><a href="#">Enable Features</a></span></li>
+      <li class="ant-menu-item" role="menuitem" style="padding-left:24px"><span class="ant-menu-title-content"><a href="#">Company Settings</a></span></li>
+      <li class="ant-menu-submenu ant-menu-submenu-inline ant-menu-submenu-open" role="none">
+        <div class="ant-menu-submenu-title" style="padding-left:24px"><span class="ant-menu-title-content">Integrations</span><i class="ant-menu-submenu-arrow"></i></div>
+        <ul class="ant-menu ant-menu-sub ant-menu-inline" role="menu">
+          <li class="ant-menu-item" role="menuitem" style="padding-left:48px"><span class="ant-menu-title-content"><a href="#">API Keys</a></span></li>
+          <li class="ant-menu-item" role="menuitem" style="padding-left:48px"><span class="ant-menu-title-content"><a href="#">Logs</a></span></li>
+          <li class="ant-menu-item" role="menuitem" style="padding-left:48px"><span class="ant-menu-title-content"><a href="#">Slack Notifications</a></span></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Main -->
+  <div class="main-content">
+
+    <!-- Header -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:20px;font-weight:500;color:rgba(0,0,0,.85)">SSO</span>
+        <span class="sso-status-tag status-unconfigured" id="sso-status">
+          <span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block;opacity:.6"></span>
+          Not configured
+        </span>
+      </div>
+      <button type="button" class="ant-btn ant-btn-default" style="font-family:'Niramit',sans-serif"><span>Audit Trail</span></button>
+    </div>
+    <span style="color:rgba(0,0,0,.45);font-size:14px">Connect Gappify to your identity provider using SAML. Follow the steps below to complete the setup.</span>
+    <div class="ant-divider ant-divider-horizontal" role="separator"></div>
+
+
+    <!-- Configured view -->
+    <div class="configured-view" id="configured-view">
+      <div class="config-card">
+        <div class="config-row">
+          <div class="config-field">
+            <div class="config-label">Last tested</div>
+            <div class="config-value">June 29, 2026 at 1:52 PM</div>
+          </div>
+        </div>
+        <div class="config-divider"></div>
+        <div class="config-row">
+          <div class="config-field" style="flex:2">
+            <div class="config-label">Metadata URL</div>
+            <div class="config-value"><code>https://integrator-9983012.okta.com/app/exk14khn5su5lvzdi698/sso/saml/metadata</code></div>
+          </div>
+        </div>
+        <div class="config-row">
+          <div class="config-field">
+            <div class="config-label">ACS URL</div>
+            <div class="config-value" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+              <code>https://gappify-sso-saml-honeycombaa.auth.us-west-2.amazoncognito.com/saml2/idpresponse</code>
+              <button class="copy-btn" onclick="doCopy('https://gappify-sso-saml-honeycombaa.auth.us-west-2.amazoncognito.com/saml2/idpresponse',this)" style="flex-shrink:0">Copy</button>
+            </div>
+          </div>
+        </div>
+        <div class="config-row">
+          <div class="config-field">
+            <div class="config-label">Entity ID</div>
+            <div class="config-value" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+              <code>urn:amazon:cognito:sp:us-west-2_a3UhYjYLC</code>
+              <button class="copy-btn" onclick="doCopy('urn:amazon:cognito:sp:us-west-2_a3UhYjYLC',this)" style="flex-shrink:0">Copy</button>
+            </div>
+          </div>
+        </div>
+        <div class="config-divider"></div>
+        <!-- Read mode actions -->
+        <div class="config-actions" id="config-read-actions">
+          <button class="btn-default" onclick="setConfigEdit(true)">Edit configuration</button>
+          <button class="btn-default" style="color:#ff4d4f;border-color:#ffccc7" onmouseover="this.style.background='#fff2f0'" onmouseout="this.style.background='#fff'" onclick="disableSSO()">Disable SSO</button>
+        </div>
+
+        <!-- Edit mode (hidden by default) -->
+        <div id="config-edit-mode" style="display:none">
+          <div class="config-divider"></div>
+          <div style="margin-bottom:16px">
+            <label class="field-lbl"><span class="field-req">*</span>Metadata URL</label>
+            <input type="url" id="config-edit-meta" class="meta-input" value="https://integrator-9983012.okta.com/app/exk14khn5su5lvzdi698/sso/saml/metadata"/>
+          </div>
+          <div id="edit-test-result" style="margin-bottom:12px;display:none"></div>
+          <div class="config-actions">
+            <button class="btn-primary" onclick="saveConfigEdit()">Save changes</button>
+            <button class="btn-default" onclick="runEditTest()">Test connection</button>
+            <button class="btn-default" onclick="setConfigEdit(false)">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IdP picker + inline steps -->
+    <div id="idp-section">
+      <div id="steps-expanded" class="visible"></div>
+    </div>
+
+  </div>
+</div>
+</div>
+</div>
+
+<script>
+const IDP_LIST = [
+  {id:'okta',    label:'Okta'},
+  {id:'azure',   label:'Azure AD'},
+  {id:'onelogin',label:'OneLogin'},
+  {id:'pingone', label:'PingOne'},
+  {id:'other',   label:'Other SAML'},
+];
+const HINTS = {
+  okta:    {sp:'Go to <strong>Applications → your SAML app → Sign On</strong> tab. Paste the ACS URL into <strong>Single sign-on URL</strong> and Entity ID into <strong>Audience URI (SP Entity ID)</strong>.',meta:'Go to <strong>Applications → your SAML app → Sign On</strong> tab, scroll to <strong>Metadata URL</strong>, and copy the link.'},
+  azure:   {sp:'Go to <strong>Enterprise Applications → your app → Single sign-on</strong>. Paste ACS URL into <strong>Reply URL</strong> and Entity ID into <strong>Identifier (Entity ID)</strong>.',meta:'Go to <strong>Single sign-on → SAML Signing Certificate</strong> → copy the <strong>App Federation Metadata Url</strong>.'},
+  onelogin:{sp:'Go to <strong>Applications → your app → Configuration</strong>. Paste ACS URL into <strong>ACS (Consumer) URL</strong> and Entity ID into <strong>Audience</strong>.',meta:'Go to your app → <strong>More Actions → SAML Metadata</strong> → copy the metadata URL.'},
+  pingone: {sp:'Go to <strong>Applications → your app → Configuration</strong>. Paste ACS URL into <strong>ACS URLs</strong> and Entity ID into <strong>Entity ID</strong>.',meta:'Go to your application → <strong>Configuration</strong> → copy the <strong>IDP Metadata URL</strong>.'},
+  other:   {sp:'In your IdP\'s SAML app config, paste the ACS URL into <strong>ACS URL / Reply URL / Assertion Consumer Service URL</strong> and Entity ID into <strong>Entity ID / Audience URI</strong>.',meta:'In your IdP, locate the <strong>SAML metadata URL</strong> — usually under SSO settings or a "Federation metadata" section.'},
+};
+
+let selectedIdP = null, testState = null, metaUrl = '';
+
+function checkSVG() { return `<svg viewBox="64 64 896 896" width="11" height="11" fill="currentColor"><path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 00-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z"></path></svg>`; }
+
+function idpHelp(field) {
+  return `<div class="idp-help-toggle" onclick="toggleIdpHelp(this)">
+    <svg viewBox="64 64 896 896" width="10" height="10" fill="currentColor" class="help-arrow" style="transition:transform .15s"><path d="M869 487.8L491.2 159.9c-2.9-2.5-6.6-3.9-10.5-3.9h-88.5c-7.4 0-10.8 9.2-5.2 14l350.2 304H152c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h585.1L386.9 854c-5.6 4.9-2.2 14 5.2 14h91.5c1.9 0 3.8-.7 5.2-2L869 536.2a32.07 32.07 0 000-48.4z"></path></svg>
+    Where do I find this in my IdP?
+  </div>
+  <div class="idp-help-body">
+    <div class="idp-help-tabs">${IDP_LIST.map((idp,i) => `<button class="idp-help-tab${i===0?' active':''}" onclick="switchHelpTab(this,'${idp.id}','${field}')">${idp.label}</button>`).join('')}</div>
+    ${IDP_LIST.map((idp,i) => `<div class="idp-help-content${i===0?' active':''}" id="help-${field}-${idp.id}">${HINTS[idp.id][field]}</div>`).join('')}
+  </div>`;
+}
+
+function toggleIdpHelp(el) {
+  const body = el.nextElementSibling;
+  const arrow = el.querySelector('.help-arrow');
+  const open = body.classList.toggle('open');
+  arrow.style.transform = open ? 'rotate(90deg)' : '';
+}
+
+function switchHelpTab(btn, idpId, field) {
+  const wrap = btn.closest('.idp-help-body');
+  wrap.querySelectorAll('.idp-help-tab').forEach(t => t.classList.remove('active'));
+  wrap.querySelectorAll('.idp-help-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  wrap.querySelector(`#help-${field}-${idpId}`).classList.add('active');
+}
+
+function renderSteps() {
+  const stepDefs = [
+    { title: "Copy Gappify's SP details into your IdP", body: renderStep1() },
+    { title: 'Add your IdP metadata URL',               body: renderStep2() },
+    { title: 'Test and activate',                       body: renderStep4() },
+  ];
+  document.getElementById('steps-expanded').innerHTML = stepDefs.map((s, i) => `
+    <div class="step-block" id="step-block-${i+1}">
+      <div class="step-header">
+        <div class="step-num ${i===0?'active':'pending'}" id="step-num-${i+1}">${i+1}</div>
+        <span class="step-title">${s.title}</span>
+      </div>
+      <div class="step-body">${s.body}</div>
+    </div>
+  `).join('');
+  const inp = document.getElementById('meta-input');
+  if (inp) { inp.value = metaUrl; inp.addEventListener('input', e => metaUrl = e.target.value); }
+}
+
+// Render steps on load
+renderSteps();
+
+function renderStep1() { return `
+  <div class="copy-field">
+    <div class="copy-lbl">ACS URL</div>
+    <div class="copy-row">
+      <span class="copy-val">https://gappify-sso-saml-honeycombaa.auth.us-west-2.amazoncognito.com/saml2/idpresponse</span>
+      <button class="copy-btn" onclick="doCopy('https://gappify-sso-saml-honeycombaa.auth.us-west-2.amazoncognito.com/saml2/idpresponse',this)">Copy</button>
+    </div>
+  </div>
+  <div class="copy-field">
+    <div class="copy-lbl">Entity ID</div>
+    <div class="copy-row">
+      <span class="copy-val">urn:amazon:cognito:sp:us-west-2_a3UhYjYLC</span>
+      <button class="copy-btn" onclick="doCopy('urn:amazon:cognito:sp:us-west-2_a3UhYjYLC',this)">Copy</button>
+    </div>
+  </div>
+  ${idpHelp('sp')}`; }
+
+function renderStep2() { return `
+  ${idpHelp('meta')}
+  <label class="field-lbl" style="margin-top:14px"><span class="field-req">*</span>Metadata URL</label>
+  <input type="url" id="meta-input" class="meta-input" placeholder="https://your-idp.example.com/saml/metadata" style="margin-bottom:20px"/>
+  <div class="no-meta-toggle" onclick="toggleNometa()">
+    <svg id="nometa-arrow" viewBox="64 64 896 896" width="10" height="10" fill="currentColor" style="transition:transform .2s"><path d="M869 487.8L491.2 159.9c-2.9-2.5-6.6-3.9-10.5-3.9h-88.5c-7.4 0-10.8 9.2-5.2 14l350.2 304H152c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h585.1L386.9 854c-5.6 4.9-2.2 14 5.2 14h91.5c1.9 0 3.8-.7 5.2-2L869 536.2a32.07 32.07 0 000-48.4z"></path></svg>
+    My IdP doesn't support a metadata URL
+  </div>
+  <div class="no-meta-body" id="no-meta-body">
+    <p style="font-size:13px;color:rgba(0,0,0,.45);margin:0 0 14px">Upload your IdP's signing certificate manually. Gappify will use it to verify SAML assertions. Note: you'll need to repeat this whenever your IdP rotates its certificate.</p>
+    <label class="field-lbl">Signing Certificate <span style="font-size:12px;color:rgba(0,0,0,.35);font-weight:400">(PEM or CRT format)</span></label>
+    <div class="cert-upload-area" id="cert-upload-area" onclick="document.getElementById('cert-file-input').click()" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handleCertDrop(event)">
+      <svg viewBox="64 64 896 896" width="28" height="28" fill="rgba(0,0,0,.25)"><path d="M518.3 459a8 8 0 00-12.6 0l-112 141.7a7.98 7.98 0 006.3 12.9h73.9V776c0 4.4 3.6 8 8 8h60c4.4 0 8-3.6 8-8V613.7H624c6.7 0 10.4-7.8 6.3-12.9L518.3 459z"></path><path d="M811.4 366.7C765.6 245.9 648.9 160 512.2 160S258.8 245.8 213 366.6C127.3 389.1 64 467.2 64 560c0 110.5 89.5 200 199.9 200H304c4.4 0 8-3.6 8-8v-60c0-4.4-3.6-8-8-8h-40.1c-33.7 0-65.4-13.4-89-37.6-23.5-24.2-36-56.8-34.9-90.2a134.18 134.18 0 0178.3-112.1l45.6-18.6 17.9-47.5C326 169 413 112 512.2 112c99.1 0 186.1 57 231.5 148.8l17.9 47.5 45.6 18.6c44.7 18.7 73.9 62.5 73.9 110.6 0 33.4-13 64.7-36.6 88.3-23.5 23.6-54.8 36.7-88.1 36.7H720c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h40.4C870.5 760 960 670.5 960 560c0-92.8-63.3-170.9-149-193.3z"></path></svg>
+      <div class="cert-upload-text" id="cert-upload-text">Click to upload or drag and drop</div>
+      <div style="font-size:12px;color:rgba(0,0,0,.35)">PEM, CRT, or CER</div>
+      <input type="file" id="cert-file-input" accept=".pem,.crt,.cer" style="display:none" onchange="handleCertFile(this)">
+    </div>
+    <div style="margin-top:12px">
+      <label class="field-lbl">Or paste certificate content</label>
+      <textarea class="meta-input" rows="5" placeholder="-----BEGIN CERTIFICATE-----&#10;MIICpDCCAYwCCQD...&#10;-----END CERTIFICATE-----" style="font-size:12px;resize:vertical"></textarea>
+    </div>
+  </div>`; }
+
+function renderStep3(h) { return `
+  <div class="info-callout">${h.attr}</div>
+  <div class="attr-wrap">
+    <table class="attr-tbl">
+      <thead><tr><th>SAML attribute name</th><th>Maps to</th><th></th></tr></thead>
+      <tbody>
+        <tr><td><code>email</code></td><td style="color:rgba(0,0,0,.65)">User email address</td><td><span class="tag-req">Required</span></td></tr>
+        <tr><td><code>firstName</code></td><td style="color:rgba(0,0,0,.65)">Display name — first</td><td><span class="tag-opt">Optional</span></td></tr>
+        <tr><td><code>lastName</code></td><td style="color:rgba(0,0,0,.65)">Display name — last</td><td><span class="tag-opt">Optional</span></td></tr>
+      </tbody>
+    </table>
+  </div>`; }
+
+function renderStep4() {
+  let resultHTML = '';
+  if (testState === 'pending') {
+    resultHTML = `<div class="test-result result-pending"><span class="spin-icon">↻</span><div><div class="result-title">Initiating SAML handshake…</div><div class="result-body">This may take a few seconds.</div></div></div>`;
+  } else if (testState === 'pass') {
+    resultHTML = `<div class="test-result result-pass"><svg viewBox="64 64 896 896" width="18" height="18" fill="#52c41a" style="flex-shrink:0;margin-top:1px"><path d="M699 353h-46.9c-10.2 0-19.9 4.9-25.9 13.3L469 584.3l-71.2-98.8c-6-8.3-15.6-13.3-25.9-13.3H325c-6.5 0-10.3 7.4-6.5 12.7l124.6 172.8a31.8 31.8 0 0051.7 0l210.6-292c3.9-5.3.1-12.7-6.4-12.7z"></path><path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path></svg><div><div class="result-title">Connection verified</div><div class="result-body">SAML assertion received. Email attribute present and valid.</div></div></div>`;
+  } else if (testState === 'fail') {
+    resultHTML = `<div class="test-result result-fail"><svg viewBox="64 64 896 896" width="18" height="18" fill="#ff4d4f" style="flex-shrink:0;margin-top:1px"><path d="M685.4 354.8c0-4.4-3.6-8-8-8l-66 .3L512 465.6l-99.3-118.4-66.1-.3c-4.4 0-8 3.5-8 8-.1 1.9.7 3.7 1.9 5.1l130.1 155L340.5 670.1c-1.2 1.4-1.9 3.2-1.9 5.1 0 4.4 3.6 8 8 8l66.1-.3L512 564.4l99.3 118.4 66 .3c4.4 0 8-3.5 8-8 .1-1.9-.7-3.7-1.9-5.1L553.5 515l130.1-155c1.2-1.4 1.8-3.2 1.8-5.2z"></path><path d="M512 65C264.6 65 64 265.6 64 513s200.6 448 448 448 448-200.6 448-448S759.4 65 512 65zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path></svg><div><div class="result-title">SAML response missing email attribute</div><div class="result-body">The IdP responded but didn't include an <code>email</code> attribute. Check step 3 and add the mapping in your IdP, then test again.</div></div></div>`;
+  }
+  const activateBtn = testState === 'pass' ? `<button class="btn-success" onclick="activateSSO()" style="margin-left:8px">Activate SSO</button>` : '';
+  const testLbl = (testState === 'pass' || testState === 'fail') ? 'Test again' : 'Run test';
+  return `
+  <div class="test-info-box">
+    <div class="test-info-title">What happens during the test</div>
+    <ol class="test-steps-ol">
+      <li>Gappify sends a SAML AuthnRequest to your IdP</li>
+      <li>You authenticate in a new tab using your IdP credentials</li>
+      <li>Gappify validates the SAML response and checks the email attribute</li>
+      <li>Pass or fail appears here with a specific, actionable message</li>
+    </ol>
+  </div>
+  ${resultHTML}
+  <div style="display:flex;align-items:center">
+    <button class="btn-primary" onclick="runTest()">${testLbl}</button>${activateBtn}
+  </div>`;
+}
+
+function setView(v) {
+  const isConfigured = v === 'configured';
+  document.getElementById('configured-view').style.display = isConfigured ? 'block' : 'none';
+  document.getElementById('idp-section').style.display = isConfigured ? 'none' : 'block';
+  document.getElementById('toggle-setup').classList.toggle('active', !isConfigured);
+  document.getElementById('toggle-configured').classList.toggle('active', isConfigured);
+  const badge = document.getElementById('sso-status');
+  if (isConfigured) {
+    badge.className = 'sso-status-tag status-active';
+    badge.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block"></span> Active`;
+  } else {
+    badge.className = 'sso-status-tag status-unconfigured';
+    badge.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block;opacity:.6"></span> Not configured`;
+  }
+  if (isConfigured && selectedIdP) {
+    document.getElementById('config-idp-name').textContent = IDP_LIST.find(i => i.id === selectedIdP)?.label || 'Okta';
+  }
+}
+
+function setConfigEdit(editing) {
+  document.getElementById('config-read-actions').style.display = editing ? 'none' : 'flex';
+  document.getElementById('config-edit-mode').style.display = editing ? 'block' : 'none';
+}
+
+function runEditTest() {
+  const r = document.getElementById('edit-test-result');
+  r.style.display = 'block';
+  r.innerHTML = `<div class="test-result result-pending"><span class="spin-icon">↻</span><div><div class="result-title">Initiating SAML handshake…</div></div></div>`;
+  setTimeout(() => {
+    r.innerHTML = `<div class="test-result result-pass"><svg viewBox="64 64 896 896" width="16" height="16" fill="#52c41a" style="flex-shrink:0;margin-top:1px"><path d="M699 353h-46.9c-10.2 0-19.9 4.9-25.9 13.3L469 584.3l-71.2-98.8c-6-8.3-15.6-13.3-25.9-13.3H325c-6.5 0-10.3 7.4-6.5 12.7l124.6 172.8a31.8 31.8 0 0051.7 0l210.6-292c3.9-5.3.1-12.7-6.4-12.7z"></path><path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path></svg><div><div class="result-title">Connection verified</div><div class="result-body">SAML assertion received. Email attribute present and valid.</div></div></div>`;
+  }, 2200);
+}
+
+function saveConfigEdit() {
+  const newMeta = document.getElementById('config-edit-meta').value;
+  const idpLabel = IDP_LIST.find(i => i.id === selectedIdP)?.label || 'Okta';
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:9998;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;';
+  overlay.innerHTML = `
+    <div style="width:48px;height:48px;border:3px solid #f0f0f0;border-top-color:#725bb4;border-radius:50%;animation:spin 0.8s linear infinite"></div>
+    <div style="font-size:15px;font-weight:500;color:rgba(0,0,0,.65)">Saving changes…</div>
+    <div style="font-size:13px;color:rgba(0,0,0,.35)">Updating your SSO configuration</div>`;
+  document.body.appendChild(overlay);
+  setTimeout(() => {
+    overlay.remove();
+    document.getElementById('config-idp-name').textContent = idpLabel;
+    document.querySelectorAll('.config-value code')[0].textContent = newMeta;
+    setConfigEdit(false);
+  }, 1800);
+}
+
+function toggleNometa() {
+  const body = document.getElementById('no-meta-body');
+  const arrow = document.getElementById('nometa-arrow');
+  const open = body.classList.toggle('open');
+  arrow.style.transform = open ? 'rotate(90deg)' : '';
+}
+
+function handleCertFile(input) {
+  if (!input.files.length) return;
+  const name = input.files[0].name;
+  const txt = document.getElementById('cert-upload-text');
+  txt.textContent = '✓ ' + name;
+  txt.classList.add('has-file');
+}
+
+function handleCertDrop(e) {
+  e.preventDefault();
+  document.getElementById('cert-upload-area').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (!file) return;
+  const txt = document.getElementById('cert-upload-text');
+  txt.textContent = '✓ ' + file.name;
+  txt.classList.add('has-file');
+}
+
+function doCopy(text, btn) {
+  navigator.clipboard.writeText(text).catch(() => {});
+  const orig = btn.textContent; btn.textContent = '✓ Copied'; btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+}
+
+function runTest() {
+  testState = 'pending';
+  // re-render only step 4 body
+  document.querySelector('#step-block-3 .step-body').innerHTML = renderStep4();
+  setTimeout(() => {
+    testState = 'pass';
+    document.querySelector('#step-block-3 .step-body').innerHTML = renderStep4();
+  }, 2200);
+}
+
+function activateSSO() {
+  // Show loading overlay
+  const overlay = document.createElement('div');
+  overlay.id = 'activate-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:9998;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;';
+  overlay.innerHTML = `
+    <div style="width:48px;height:48px;border:3px solid #f0f0f0;border-top-color:#725bb4;border-radius:50%;animation:spin 0.8s linear infinite"></div>
+    <div style="font-size:15px;font-weight:500;color:rgba(0,0,0,.65)">Activating SSO…</div>
+    <div style="font-size:13px;color:rgba(0,0,0,.35)">Verifying configuration with your IdP</div>`;
+  document.body.appendChild(overlay);
+  setTimeout(() => {
+    overlay.remove();
+    setView('configured');
+  }, 2000);
+}
+
+function disableSSO() {
+  if (!confirm('Are you sure you want to disable SSO? Users will need to log in with their password.')) return;
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:9998;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;';
+  overlay.innerHTML = `
+    <div style="width:48px;height:48px;border:3px solid #f0f0f0;border-top-color:#ff4d4f;border-radius:50%;animation:spin 0.8s linear infinite"></div>
+    <div style="font-size:15px;font-weight:500;color:rgba(0,0,0,.65)">Disabling SSO…</div>`;
+  document.body.appendChild(overlay);
+  setTimeout(() => {
+    overlay.remove();
+    testState = null; metaUrl = '';
+    renderSteps();
+    setView('setup');
+  }, 1500);
+}
+</script>
+
+<!-- Demo toggle — not part of the page UI -->
+<div class="demo-toggle">
+  <span class="demo-toggle-label">Preview</span>
+  <div class="view-toggle">
+    <button class="toggle-btn active" id="toggle-setup" onclick="setView('setup')">Setup view</button>
+    <button class="toggle-btn" id="toggle-configured" onclick="setView('configured')">Configured view</button>
+  </div>
+</div>
+</body>
+</html>

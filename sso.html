@@ -59,6 +59,11 @@ html, body { margin:0; padding:0; background:#fff; }
 .cert-banner a { color:#d48806; font-weight:500; }
 .cert-dismiss { background:none; border:none; cursor:pointer; color:rgba(0,0,0,.45); margin-left:auto; padding:0; font-size:14px; font-family:inherit; }
 .cert-dismiss:hover { color:rgba(0,0,0,.75); }
+.cert-expiry-help { margin-top:8px; font-size:12px; }
+.cert-expiry-help.ok { color:#52c41a; }
+.cert-expiry-help.warn { color:#d46b08; font-weight:500; }
+.cert-warn-banner { display:none; align-items:flex-start; gap:10px; background:#fffbe6; border:1px solid #ffe58f; border-radius:6px; padding:12px 14px; margin-bottom:16px; font-size:13px; color:#613400; line-height:1.5; }
+.cert-warn-banner.visible { display:flex; }
 
 /* SSO status */
 .sso-status-tag { display:inline-flex; align-items:center; gap:5px; font-size:12px; padding:2px 8px; border-radius:4px; margin-left:10px; vertical-align:middle; }
@@ -269,6 +274,10 @@ code { font-family:'SFMono-Regular',Consolas,monospace; font-size:12px; backgrou
       <button type="button" class="ant-btn ant-btn-default" style="font-family:'Niramit',sans-serif"><span>Audit Trail</span></button>
     </div>
     <span style="color:rgba(0,0,0,.45);font-size:14px">Connect Gappify to your identity provider using SAML. Follow the steps below to complete the setup.</span>
+    <div id="cert-warn-banner" class="cert-warn-banner">
+      <svg viewBox="64 64 896 896" width="16" height="16" fill="#d46b08" style="flex-shrink:0;margin-top:1px"><path d="M955.7 856l-416-720c-16-27.7-44.3-43.9-72-44-28.5.1-56.5 16.3-72.5 44l-416 720C-37.1 883.6 13.4 960 72 960h880c58.6 0 109.1-76.3 3.7-104zm-480.7 24c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm48-192c0 8.8-7.2 16-16 16h-64c-8.8 0-16-7.2-16-16V464c0-8.8 7.2-16 16-16h64c8.8 0 16 7.2 16 16v224z"></path></svg>
+      <div><strong>Certificate expiring soon</strong> — Your signing certificate expires on <span id="cert-warn-date"></span>. Update it before it expires to avoid SSO disruptions.</div>
+    </div>
     <div class="ant-divider ant-divider-horizontal" role="separator"></div>
 
 
@@ -282,7 +291,7 @@ code { font-family:'SFMono-Regular',Consolas,monospace; font-size:12px; backgrou
           </div>
         </div>
         <div class="config-divider"></div>
-        <div class="config-row">
+        <div class="config-row" id="config-auth-row">
           <div class="config-field" style="flex:2">
             <div class="config-label">Metadata URL</div>
             <div class="config-value"><code>https://integrator-9983012.okta.com/app/exk14khn5su5lvzdi698/sso/saml/metadata</code></div>
@@ -316,10 +325,7 @@ code { font-family:'SFMono-Regular',Consolas,monospace; font-size:12px; backgrou
         <!-- Edit mode (hidden by default) -->
         <div id="config-edit-mode" style="display:none">
           <div class="config-divider"></div>
-          <div style="margin-bottom:16px">
-            <label class="field-lbl"><span class="field-req">*</span>Metadata URL</label>
-            <input type="url" id="config-edit-meta" class="meta-input" value="https://integrator-9983012.okta.com/app/exk14khn5su5lvzdi698/sso/saml/metadata"/>
-          </div>
+          <div id="config-edit-fields" style="margin-bottom:16px"></div>
           <div id="edit-test-result" style="margin-bottom:12px;display:none"></div>
           <div class="config-actions">
             <button class="btn-primary" onclick="saveConfigEdit()">Save changes</button>
@@ -356,7 +362,7 @@ const HINTS = {
   other:   {sp:'In your IdP\'s SAML app config, paste the ACS URL into <strong>ACS URL / Reply URL / Assertion Consumer Service URL</strong> and Entity ID into <strong>Entity ID / Audience URI</strong>.',meta:'In your IdP, locate the <strong>SAML metadata URL</strong> — usually under SSO settings or a "Federation metadata" section.'},
 };
 
-let selectedIdP = null, testState = null, metaUrl = '';
+let selectedIdP = null, testState = null, metaUrl = '', usedCert = false, certFileName = '';
 
 function checkSVG() { return `<svg viewBox="64 64 896 896" width="11" height="11" fill="currentColor"><path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 00-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z"></path></svg>`; }
 
@@ -442,9 +448,10 @@ function renderStep2() { return `
       <div style="font-size:12px;color:rgba(0,0,0,.35)">PEM, CRT, or CER</div>
       <input type="file" id="cert-file-input" accept=".pem,.crt,.cer" style="display:none" onchange="handleCertFile(this)">
     </div>
+    <div id="cert-expiry-help" class="cert-expiry-help" style="display:none"></div>
     <div style="margin-top:12px">
       <label class="field-lbl">Or paste certificate content</label>
-      <textarea class="meta-input" rows="5" placeholder="-----BEGIN CERTIFICATE-----&#10;MIICpDCCAYwCCQD...&#10;-----END CERTIFICATE-----" style="font-size:12px;resize:vertical"></textarea>
+      <textarea id="cert-paste" class="meta-input" rows="5" placeholder="-----BEGIN CERTIFICATE-----&#10;MIICpDCCAYwCCQD...&#10;-----END CERTIFICATE-----" style="font-size:12px;resize:vertical" oninput="handleCertPaste(this.value)"></textarea>
     </div>
   </div>`; }
 
@@ -510,6 +517,79 @@ function setView(v) {
 function setConfigEdit(editing) {
   document.getElementById('config-read-actions').style.display = editing ? 'none' : 'flex';
   document.getElementById('config-edit-mode').style.display = editing ? 'block' : 'none';
+  if (editing) {
+    const fields = document.getElementById('config-edit-fields');
+    if (usedCert) {
+      fields.innerHTML = `
+        <label class="field-lbl"><span class="field-req">*</span>Signing Certificate <span style="font-size:12px;color:rgba(0,0,0,.35);font-weight:400">(PEM or CRT format)</span></label>
+        <div class="cert-upload-area" id="edit-cert-upload-area"
+          onclick="document.getElementById('edit-cert-file-input').click()"
+          ondragover="event.preventDefault();this.classList.add('drag-over')"
+          ondragleave="this.classList.remove('drag-over')"
+          ondrop="handleEditCertDrop(event)">
+          <svg viewBox="64 64 896 896" width="28" height="28" fill="rgba(0,0,0,.25)"><path d="M518.3 459a8 8 0 00-12.6 0l-112 141.7a7.98 7.98 0 006.3 12.9h73.9V776c0 4.4 3.6 8 8 8h60c4.4 0 8-3.6 8-8V613.7H624c6.7 0 10.4-7.8 6.3-12.9L518.3 459z"></path><path d="M811.4 366.7C765.6 245.9 648.9 160 512.2 160S258.8 245.8 213 366.6C127.3 389.1 64 467.2 64 560c0 110.5 89.5 200 199.9 200H304c4.4 0 8-3.6 8-8v-60c0-4.4-3.6-8-8-8h-40.1c-33.7 0-65.4-13.4-89-37.6-23.5-24.2-36-56.8-34.9-90.2a134.18 134.18 0 0178.3-112.1l45.6-18.6 17.9-47.5C326 169 413 112 512.2 112c99.1 0 186.1 57 231.5 148.8l17.9 47.5 45.6 18.6c44.7 18.7 73.9 62.5 73.9 110.6 0 33.4-13 64.7-36.6 88.3-23.5 23.6-54.8 36.7-88.1 36.7H720c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h40.4C870.5 760 960 670.5 960 560c0-92.8-63.3-170.9-149-193.3z"></path></svg>
+          <div class="cert-upload-text ${certFileName ? 'has-file' : ''}" id="edit-cert-upload-text">${certFileName ? '✓ ' + certFileName : 'Click to upload or drag and drop'}</div>
+          <div style="font-size:12px;color:rgba(0,0,0,.35)">PEM, CRT, or CER</div>
+          <input type="file" id="edit-cert-file-input" accept=".pem,.crt,.cer" style="display:none" onchange="handleEditCertFile(this)">
+        </div>
+        <div id="edit-cert-expiry-help" class="cert-expiry-help" style="display:${certFileName ? 'block' : 'none'};margin-top:8px">${certFileName ? 'Certificate expires on ' + DEMO_CERT_EXPIRY.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) + '.' : ''}</div>
+        <div style="margin-top:12px">
+          <label class="field-lbl">Or paste certificate content</label>
+          <textarea id="edit-cert-paste" class="meta-input" rows="5"
+            placeholder="-----BEGIN CERTIFICATE-----&#10;MIICpDCCAYwCCQD...&#10;-----END CERTIFICATE-----"
+            style="font-size:12px;resize:vertical"
+            oninput="handleEditCertPaste(this.value)"></textarea>
+        </div>`;
+    } else {
+      const currentUrl = metaUrl || 'https://integrator-9983012.okta.com/app/exk14khn5su5lvzdi698/sso/saml/metadata';
+      fields.innerHTML = `
+        <label class="field-lbl"><span class="field-req">*</span>Metadata URL</label>
+        <input type="url" id="config-edit-meta" class="meta-input" value="${currentUrl}"/>`;
+    }
+    document.getElementById('edit-test-result').style.display = 'none';
+  }
+}
+
+function handleEditCertFile(input) {
+  if (!input.files.length) return;
+  const file = input.files[0];
+  const txt = document.getElementById('edit-cert-upload-text');
+  txt.textContent = '✓ ' + file.name; txt.classList.add('has-file');
+  const reader = new FileReader();
+  reader.onload = e => {
+    const parsed = parseCertExpiry(e.target.result);
+    const expiry = parsed || DEMO_CERT_EXPIRY;
+    certFileName = file.name;
+    const helpEl = document.getElementById('edit-cert-expiry-help');
+    const fmt = expiry.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+    const daysLeft = Math.ceil((expiry - new Date('2026-06-29'))/(1000*60*60*24));
+    helpEl.style.display = 'block';
+    helpEl.className = 'cert-expiry-help ' + (daysLeft <= 30 ? 'warn' : 'ok');
+    helpEl.textContent = `Certificate expires on ${fmt}${daysLeft <= 30 ? ' (' + daysLeft + ' days left) — expiring soon' : ''}.`;
+  };
+  reader.readAsText(file);
+}
+
+function handleEditCertDrop(e) {
+  e.preventDefault();
+  document.getElementById('edit-cert-upload-area').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (!file) return;
+  const input = { files: [file] };
+  handleEditCertFile({ files: [file] });
+}
+
+function handleEditCertPaste(val) {
+  if (!val.includes('BEGIN CERTIFICATE')) return;
+  const parsed = parseCertExpiry(val);
+  const expiry = parsed || DEMO_CERT_EXPIRY;
+  certFileName = 'Pasted certificate';
+  const helpEl = document.getElementById('edit-cert-expiry-help');
+  const fmt = expiry.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  const daysLeft = Math.ceil((expiry - new Date('2026-06-29'))/(1000*60*60*24));
+  helpEl.style.display = 'block';
+  helpEl.className = 'cert-expiry-help ' + (daysLeft <= 30 ? 'warn' : 'ok');
+  helpEl.textContent = `Certificate expires on ${fmt}${daysLeft <= 30 ? ' (' + daysLeft + ' days left) — expiring soon' : ''}.`;
 }
 
 function runEditTest() {
@@ -546,12 +626,77 @@ function toggleNometa() {
   arrow.style.transform = open ? 'rotate(90deg)' : '';
 }
 
+// Parse "Not After" date from a PEM certificate string
+function parseCertExpiry(pem) {
+  // Extract base64 body between headers
+  const b64 = pem.replace(/-----[^\n]+-----/g, '').replace(/\s+/g, '');
+  if (!b64) return null;
+  try {
+    const der = atob(b64);
+    // Search for UTCTime/GeneralizedTime patterns: YYMMDDHHMMSSZ or YYYYMMDDHHMMSSZ
+    // DER tag 0x17 = UTCTime, 0x18 = GeneralizedTime
+    const bytes = new Uint8Array(der.split('').map(c => c.charCodeAt(0)));
+    const dates = [];
+    for (let i = 0; i < bytes.length - 16; i++) {
+      if (bytes[i] === 0x17 || bytes[i] === 0x18) {
+        const len = bytes[i+1];
+        const str = der.slice(i+2, i+2+len);
+        if (/^(\d{12,14})Z$/.test(str)) {
+          const s = str.replace('Z','');
+          let year, rest;
+          if (s.length === 12) { year = parseInt(s.slice(0,2)); year += year < 50 ? 2000 : 1900; rest = s.slice(2); }
+          else { year = parseInt(s.slice(0,4)); rest = s.slice(4); }
+          const d = new Date(Date.UTC(year, parseInt(rest.slice(0,2))-1, parseInt(rest.slice(2,4)),
+            parseInt(rest.slice(4,6)), parseInt(rest.slice(6,8)), parseInt(rest.slice(8,10))));
+          if (!isNaN(d)) dates.push(d);
+        }
+      }
+    }
+    // "Not After" is the second validity date in the cert sequence
+    return dates.length >= 2 ? dates[1] : (dates.length === 1 ? dates[0] : null);
+  } catch(e) { return null; }
+}
+
+function showCertExpiry(expiry) {
+  const helpEl = document.getElementById('cert-expiry-help');
+  const warnBanner = document.getElementById('cert-warn-banner');
+  const warnDate = document.getElementById('cert-warn-date');
+  if (!helpEl || !expiry) return;
+
+  const now = new Date('2026-06-29'); // demo: use current mock date
+  const daysLeft = Math.ceil((expiry - now) / (1000*60*60*24));
+  const fmt = expiry.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+  helpEl.style.display = 'block';
+  if (daysLeft <= 0) {
+    helpEl.className = 'cert-expiry-help warn';
+    helpEl.textContent = `Certificate expired on ${fmt}.`;
+  } else if (daysLeft <= 30) {
+    helpEl.className = 'cert-expiry-help warn';
+    helpEl.textContent = `Certificate expires on ${fmt} (${daysLeft} day${daysLeft===1?'':'s'} left) — expiring soon.`;
+    if (warnBanner) { warnDate.textContent = fmt; warnBanner.classList.add('visible'); }
+  } else {
+    helpEl.className = 'cert-expiry-help ok';
+    helpEl.textContent = `Certificate expires on ${fmt}.`;
+  }
+}
+
+// Demo fallback expiry — within 30 days to trigger warning banner
+const DEMO_CERT_EXPIRY = new Date('2026-07-20T00:00:00Z');
+
 function handleCertFile(input) {
   if (!input.files.length) return;
-  const name = input.files[0].name;
+  const file = input.files[0];
   const txt = document.getElementById('cert-upload-text');
-  txt.textContent = '✓ ' + name;
+  txt.textContent = '✓ ' + file.name;
   txt.classList.add('has-file');
+  const reader = new FileReader();
+  reader.onload = e => {
+    const parsed = parseCertExpiry(e.target.result);
+    showCertExpiry(parsed || DEMO_CERT_EXPIRY);
+    usedCert = true; certFileName = file.name;
+  };
+  reader.readAsText(file);
 }
 
 function handleCertDrop(e) {
@@ -562,6 +707,21 @@ function handleCertDrop(e) {
   const txt = document.getElementById('cert-upload-text');
   txt.textContent = '✓ ' + file.name;
   txt.classList.add('has-file');
+  const reader = new FileReader();
+  reader.onload = e => {
+    const parsed = parseCertExpiry(e.target.result);
+    showCertExpiry(parsed || DEMO_CERT_EXPIRY);
+    usedCert = true; certFileName = file.name;
+  };
+  reader.readAsText(file);
+}
+
+function handleCertPaste(val) {
+  if (val.includes('BEGIN CERTIFICATE')) {
+    const parsed = parseCertExpiry(val);
+    showCertExpiry(parsed || DEMO_CERT_EXPIRY);
+    usedCert = true; certFileName = 'Pasted certificate';
+  }
 }
 
 function doCopy(text, btn) {
@@ -592,6 +752,27 @@ function activateSSO() {
   document.body.appendChild(overlay);
   setTimeout(() => {
     overlay.remove();
+    // Update the auth method row in configured view
+    const row = document.getElementById('config-auth-row');
+    if (row) {
+      if (usedCert) {
+        const expiry = DEMO_CERT_EXPIRY.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+        row.innerHTML = `<div class="config-field" style="flex:2">
+          <div class="config-label">Signing Certificate</div>
+          <div class="config-value" style="display:flex;align-items:center;gap:10px">
+            <svg viewBox="64 64 896 896" width="14" height="14" fill="rgba(0,0,0,.45)"><path d="M832 64H296c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h496v688c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8V96c0-17.7-14.3-32-32-32zM704 192H192c-17.7 0-32 14.3-32 32v530.7c0 8.5 3.4 16.6 9.4 22.6l173.3 173.3c2.2 2.2 4.7 4 7.4 5.5v1.9h4.2c3.5 1.3 7.2 2 11 2H704c17.7 0 32-14.3 32-32V224c0-17.7-14.3-32-32-32zM350 856.2L263.9 770H350v86.2zM664 888H414V746c0-22.1-17.9-40-40-40H232V256h432v632z"></path></svg>
+            <span>${certFileName || 'certificate.pem'}</span>
+            <span style="font-size:12px;color:rgba(0,0,0,.35)">Expires ${expiry}</span>
+          </div>
+        </div>`;
+      } else {
+        const url = metaUrl || 'https://integrator-9983012.okta.com/app/exk14khn5su5lvzdi698/sso/saml/metadata';
+        row.innerHTML = `<div class="config-field" style="flex:2">
+          <div class="config-label">Metadata URL</div>
+          <div class="config-value"><code>${url}</code></div>
+        </div>`;
+      }
+    }
     setView('configured');
   }, 2000);
 }
@@ -606,7 +787,7 @@ function disableSSO() {
   document.body.appendChild(overlay);
   setTimeout(() => {
     overlay.remove();
-    testState = null; metaUrl = '';
+    testState = null; metaUrl = ''; usedCert = false; certFileName = '';
     renderSteps();
     setView('setup');
   }, 1500);

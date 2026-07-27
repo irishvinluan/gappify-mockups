@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Delivery Cycle & Development Pipeline</title>
+<style>
+  :root{
+    --purple-1:#3B1E6B;
+    --purple-2:#6B3FA0;
+    --teal:#1FAE9E;
+    --teal-dark:#127a6f;
+    --ink:#211A2E;
+    --paper:#FBFAF8;
+    --card:#FFFFFF;
+    --line:#E6E1EE;
+    --muted:#6F6683;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Segoe UI", Helvetica, Arial, sans-serif;
+    line-height:1.45;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:0 28px 60px;}
+
+  header{
+    background:linear-gradient(135deg,var(--purple-1),var(--purple-2));
+    color:#fff;
+    padding:44px 28px 34px;
+    margin-bottom:36px;
+  }
+  header .inner{max-width:880px;margin:0 auto;}
+  header h1{
+    margin:0 0 6px;
+    font-size:30px;
+    letter-spacing:0.2px;
+  }
+  header p{
+    margin:0;
+    color:#E4D9F5;
+    font-size:14.5px;
+  }
+
+  .section-label{
+    display:inline-block;
+    background:var(--teal);
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.6px;
+    text-transform:uppercase;
+    padding:4px 10px;
+    border-radius:3px;
+    margin-bottom:10px;
+  }
+  h2.section-title{
+    font-size:22px;
+    margin:0 0 4px;
+  }
+  .section-sub{
+    color:var(--muted);
+    font-size:14px;
+    margin:0 0 24px;
+  }
+
+  /* Delivery cycle stage cards */
+  .stage{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-left:5px solid var(--teal);
+    border-radius:6px;
+    padding:18px 22px;
+    margin-bottom:14px;
+  }
+  .stage.no-gate{border-left-color:#C9C2DA;}
+  .stage-head{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:8px;
+  }
+  .stage-num{
+    font-size:13px;
+    font-weight:700;
+    color:var(--teal-dark);
+    letter-spacing:0.5px;
+  }
+  .stage-name{
+    font-size:17px;
+    font-weight:700;
+    margin:0;
+  }
+  .stage-desc{
+    color:var(--muted);
+    font-size:13.5px;
+    margin:0 0 10px;
+  }
+  .gate-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-top:10px;
+  }
+  .gate-item .k{
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    color:var(--teal-dark);
+    margin-bottom:3px;
+  }
+  .gate-item .v{
+    font-size:13.5px;
+  }
+  .connector{
+    text-align:center;
+    color:#C9C2DA;
+    font-size:18px;
+    margin:2px 0;
+  }
+
+  /* Pipeline section */
+  .pipeline-env{
+    display:flex;
+    gap:8px;
+    margin:18px 0 22px;
+    flex-wrap:wrap;
+  }
+  .env-chip{
+    flex:1;
+    min-width:90px;
+    text-align:center;
+    background:var(--purple-1);
+    color:#fff;
+    font-size:13px;
+    font-weight:700;
+    padding:10px 8px;
+    border-radius:5px;
+    position:relative;
+  }
+  .env-arrow{
+    align-self:center;
+    color:var(--muted);
+    font-size:16px;
+  }
+
+  .rule-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:16px 20px;
+    margin-bottom:14px;
+  }
+  .rule-card h3{
+    font-size:14.5px;
+    margin:0 0 8px;
+    color:var(--purple-1);
+  }
+  .rule-card ul{
+    margin:0;
+    padding-left:18px;
+    font-size:13.5px;
+  }
+  .rule-card li{margin-bottom:5px;}
+
+  /* Train cascade diagram */
+  .train-grid{
+    width:100%;
+    border-collapse:collapse;
+    margin:14px 0 10px;
+    font-size:13px;
+  }
+  .train-grid th{
+    background:var(--purple-1);
+    color:#fff;
+    font-size:11.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.4px;
+    padding:8px 6px;
+    text-align:center;
+  }
+  .train-grid th.step-col{background:transparent;color:var(--muted);}
+  .train-grid td{
+    border:1px solid var(--line);
+    padding:10px 6px;
+    text-align:center;
+    font-size:12.5px;
+    font-weight:600;
+    color:#fff;
+  }
+  .train-grid td.step-cell{
+    color:var(--muted);
+    font-weight:700;
+    font-size:11.5px;
+    background:transparent;
+    border:none;
+    text-align:left;
+    white-space:nowrap;
+  }
+  .train-grid td.empty{
+    background:#F2EFF7;
+    color:transparent;
+  }
+  .train-1{background:var(--teal);}
+  .train-2{background:var(--purple-2);}
+  .train-3{background:#C98A2E;}
+  .train-legend{
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    font-size:12.5px;
+    margin-bottom:4px;
+    color:var(--muted);
+  }
+  .train-legend span{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  .swatch{
+    width:11px;height:11px;border-radius:2px;display:inline-block;
+  }
+
+  /* Continuous coding lane */
+  .coding-lane{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin:12px 0 18px;
+  }
+  .coding-chip{
+    flex:1;
+    min-width:70px;
+    text-align:center;
+    padding:10px 8px;
+    border-radius:5px;
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--purple-1);
+    background:repeating-linear-gradient(
+      45deg,
+      #F2EFF7,
+      #F2EFF7 6px,
+      #E6E1EE 6px,
+      #E6E1EE 12px
+    );
+    border:1px dashed #C9C2DA;
+  }
+  .lane-label{
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
+
+  .bug-flow{
+    display:flex;
+    gap:14px;
+    margin-top:6px;
+    flex-wrap:wrap;
+  }
+  .bug-branch{
+    flex:1;
+    min-width:220px;
+    border-radius:6px;
+    padding:14px 16px;
+    font-size:13.5px;
+  }
+  .bug-branch.hotfix{
+    background:#FDECEC;
+    border:1px solid #F3B9B9;
+  }
+  .bug-branch.deferred{
+    background:#EAF6F4;
+    border:1px solid #B9E0DA;
+  }
+  .bug-branch .tag{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    margin-bottom:6px;
+  }
+  .bug-branch.hotfix .tag{color:#B3261E;}
+  .bug-branch.deferred .tag{color:var(--teal-dark);}
+
+  .signoff-note{
+    font-size:13px;
+    color:var(--muted);
+    margin-top:10px;
+    font-style:italic;
+  }
+
+  .divider{
+    border:none;
+    border-top:1px solid var(--line);
+    margin:40px 0;
+  }
+
+  footer{
+    background:var(--ink);
+    color:#B9B2C9;
+    text-align:center;
+    font-size:12px;
+    padding:18px;
+    margin-top:20px;
+  }
+
+  [contenteditable="true"]:hover{
+    outline:1px dashed #C9C2DA;
+    outline-offset:2px;
+    cursor:text;
+  }
+  [contenteditable="true"]:focus{
+    outline:1px solid var(--teal);
+    outline-offset:2px;
+  }
+
+  @media print{
+    body{background:#fff;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="inner">
+    <h1 contenteditable="true">Delivery Cycle & Development Pipeline</h1>
+    <p contenteditable="true">Engineering & Product reference — stages, gating, and release mechanics</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ============ SECTION 1: DELIVERY CYCLE ============ -->
+  <span class="section-label">Section 1</span>
+  <h2 class="section-title" contenteditable="true">Delivery Cycle</h2>
+  <p class="section-sub" contenteditable="true">How a single feature moves from idea to release-ready.</p>
+
+  <div class="stage no-gate">
+    <div class="stage-head">
+      <span class="stage-num">01</span>
+      <p class="stage-name" contenteditable="true">Product Scoping</p>
+    </div>
+    <p class="stage-desc" contenteditable="true">Problem or request is explored and shaped into a workable idea. Fluid by nature — no fixed gating here, since scope and direction can shift quickly.</p>
+  </div>
+
+  <div class="connector">↓</div>
+
+  <div class="stage">
+    <div class="stage-head">
+      <span class="stage-num">02</span>
+      <p class="stage-name" contenteditable="true">Technical Discussion</p>
+    </div>
+    <div class="gate-row">
+      <div class="gate-item">
+        <div class="k">Output</div>
+        <div class="v" contenteditable="true">Tech approach agreed + high-level estimate in days (e.g. 5 days) + Dev readiness checklist all completed</div>
+      </div>
+      <div class="gate-item">
+        <div class="k">Sign-off</div>
+        <div class="v" contenteditable="true">Eng Director or Tech Lead</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector">↓</div>
+
+  <div class="stage">
+    <div class="stage-head">
+      <span class="stage-num">03</span>
+      <p class="stage-name" contenteditable="true">Development</p>
+    </div>
+    <div class="gate-row">
+      <div class="gate-item">
+        <div class="k">Output (Done)</div>
+        <div class="v" contenteditable="true">Feature demoed working + automation demoed working</div>
+      </div>
+      <div class="gate-item">
+        <div class="k">Sign-off</div>
+        <div class="v" contenteditable="true">PM</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector">↓</div>
+
+  <div class="stage">
+    <div class="stage-head">
+      <span class="stage-num">04</span>
+      <p class="stage-name" contenteditable="true">Review</p>
+    </div>
+    <div class="gate-row">
+      <div class="gate-item">
+        <div class="k">Output</div>
+        <div class="v" contenteditable="true">Feature validated and confirmed working as expected</div>
+      </div>
+      <div class="gate-item">
+        <div class="k">Sign-off</div>
+        <div class="v" contenteditable="true">PM</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector">↓</div>
+
+  <div class="stage">
+    <div class="stage-head">
+      <span class="stage-num">05</span>
+      <p class="stage-name" contenteditable="true">Release</p>
+    </div>
+    <div class="gate-row">
+      <div class="gate-item">
+        <div class="k">Output</div>
+        <div class="v" contenteditable="true">Deployment plan</div>
+      </div>
+      <div class="gate-item">
+        <div class="k">Sign-off</div>
+        <div class="v" contenteditable="true">PM</div>
+      </div>
+    </div>
+    <p class="signoff-note" contenteditable="true">Actual deployment follows the Development Pipeline below.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ============ SECTION 2: DEVELOPMENT PIPELINE ============ -->
+  <span class="section-label">Section 2</span>
+  <h2 class="section-title" contenteditable="true">Development Pipeline</h2>
+  <p class="section-sub" contenteditable="true">How released code actually promotes through environments, on the release train.</p>
+
+  <div class="pipeline-env">
+    <div class="env-chip" style="background:transparent;border:1px dashed #C9C2DA;color:var(--purple-1);" contenteditable="true">Epic Branches</div>
+    <div class="env-arrow">→</div>
+    <div class="env-chip" contenteditable="true">Dev</div>
+    <div class="env-arrow">→</div>
+    <div class="env-chip" contenteditable="true">QA</div>
+    <div class="env-arrow">→</div>
+    <div class="env-chip" contenteditable="true">Staging</div>
+    <div class="env-arrow">→</div>
+    <div class="env-chip" contenteditable="true">UAT</div>
+    <div class="env-arrow">→</div>
+    <div class="env-chip" contenteditable="true">Production</div>
+  </div>
+  <p style="font-size:12.5px; color:var(--muted); margin:-10px 0 18px;" contenteditable="true">Epic Branches is where development work happens — once an epic is done, it merges into Dev.</p>
+  <div class="rule-card">
+    <h3 contenteditable="true">How the train cascade works</h3>
+    <p style="font-size:13.5px; margin:0 0 4px;" contenteditable="true"><b>Epic Branches are continuous and never gated</b> — any epic can be worked on anytime, in parallel, regardless of trains. Once development is done, it merges into Dev.</p>
+    <div class="lane-label" contenteditable="true">Epic Branches (always open, no gate)</div>
+    <div class="coding-lane">
+      <div class="coding-chip" contenteditable="true">A</div>
+      <div class="coding-chip" contenteditable="true">B</div>
+      <div class="coding-chip" contenteditable="true">C</div>
+      <div class="coding-chip" contenteditable="true">D</div>
+      <div class="coding-chip" contenteditable="true">E</div>
+      <div class="coding-chip" contenteditable="true">F</div>
+      <div class="coding-chip" contenteditable="true">G</div>
+    </div>
+    <p style="font-size:13.5px; margin:14px 0 10px;" contenteditable="true"><b>Merging is what waits.</b> An epic only joins the shared branch once its train's turn comes up — a later train can share an environment with an earlier one, but it can only move into the <b>next</b> environment once the earlier train has already moved out of it.</p>
+    <div class="lane-label" contenteditable="true">Merging (gated — FIFO order by train)</div>
+    <div class="train-legend">
+      <span><span class="swatch" style="background:var(--teal);"></span>Train 1 (Epics A, B, C — Aug 10)</span>
+      <span><span class="swatch" style="background:var(--purple-2);"></span>Train 2 (Epics D, E — Aug 15)</span>
+      <span><span class="swatch" style="background:#C98A2E;"></span>Train 3 (Epics F, G — Aug 20)</span>
+    </div>
+    <table class="train-grid">
+      <thead>
+        <tr>
+          <th class="step-col"></th>
+          <th>Dev</th>
+          <th>QA</th>
+          <th>Staging</th>
+          <th>UAT</th>
+          <th>Prod</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="step-cell">Step 1</td>
+          <td class="train-1">A B C</td>
+          <td class="empty">—</td>
+          <td class="empty">—</td>
+          <td class="empty">—</td>
+          <td class="empty">—</td>
+        </tr>
+        <tr>
+          <td class="step-cell">Step 2</td>
+          <td class="train-2">D E</td>
+          <td class="train-1">A B C</td>
+          <td class="empty">—</td>
+          <td class="empty">—</td>
+          <td class="empty">—</td>
+        </tr>
+        <tr>
+          <td class="step-cell">Step 3</td>
+          <td class="train-3">F G</td>
+          <td class="train-2">D E</td>
+          <td class="train-1">A B C</td>
+          <td class="empty">—</td>
+          <td class="empty">—</td>
+        </tr>
+        <tr>
+          <td class="step-cell">Step 4</td>
+          <td class="empty">—</td>
+          <td class="train-3">F G</td>
+          <td class="train-2">D E</td>
+          <td class="train-1">A B C</td>
+          <td class="empty">—</td>
+        </tr>
+        <tr>
+          <td class="step-cell">Step 5</td>
+          <td class="empty">—</td>
+          <td class="empty">—</td>
+          <td class="train-3">F G</td>
+          <td class="train-2">D E</td>
+          <td class="train-1">A B C</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="signoff-note" contenteditable="true">Example: D and E's coding in their own Epic Branches can go alongside A, B, C — but D and E can't be merged into Dev until A, B, C have moved to QA.</p>
+  </div>
+
+  <div class="rule-card">
+    <h3 contenteditable="true">Roles on the train</h3>
+    <div class="bug-flow">
+      <div class="bug-branch deferred">
+        <div class="tag" style="color:var(--purple-1);">Conductor — PM</div>
+        <div contenteditable="true">Decides which train each epic belongs to, in collaboration with the Boarding Officer. Every month, also decides that month's train date — anywhere between the 10th and 20th — and announces it during DSUs.</div>
+      </div>
+      <div class="bug-branch deferred">
+        <div class="tag" style="color:var(--purple-1);">Boarding Officer — Tech Lead</div>
+        <div contenteditable="true">Makes sure only epics assigned to that train actually board it — enforcing what the Conductor decided, and collaborating on which epics fit which train.</div>
+      </div>
+    </div>
+    <p class="signoff-note" contenteditable="true">Passengers = the epics themselves.</p>
+  </div>
+
+  <div class="rule-card">
+    <h3 contenteditable="true">Train cutoff & exceptions</h3>
+    <p style="font-size:13.5px; margin:0 0 10px;" contenteditable="true">PM sets a cutoff for each train — one environment + one date (e.g. Aug 10 train → cutoff: UAT by Aug 3). Every epic is expected to hit that environment by that date on its own.</p>
+    <div class="bug-flow">
+      <div class="bug-branch deferred">
+        <div class="tag" style="color:var(--teal-dark);">Made the cutoff</div>
+        <div contenteditable="true">Epic keeps moving on its own normal timeline — unaffected by any other epic on the same train.</div>
+      </div>
+      <div class="bug-branch hotfix">
+        <div class="tag" style="color:#B3261E;">Won't make the cutoff</div>
+        <div contenteditable="true">Default: epic rides the next train — unless an exception is granted (see below).</div>
+      </div>
+    </div>
+    <p style="font-size:13.5px; margin:14px 0 6px;" contenteditable="true"><b>Exception path:</b></p>
+    <ul style="margin:0; padding-left:18px; font-size:13.5px;">
+      <li contenteditable="true">Anyone can flag that an epic won't make the cutoff — ideally as early as possible, spotted at daily standups</li>
+      <li contenteditable="true">PM + Tech Lead assess risk case-by-case — no fixed criteria, an open judgment call</li>
+      <li contenteditable="true">Low risk → epic is granted its own individual exception date</li>
+      <li contenteditable="true">Risky → default applies, epic rides the next train</li>
+      <li contenteditable="true">No outer limit on how far an exception can stretch — it depends entirely on the risk assessment</li>
+    </ul>
+    <p class="signoff-note" contenteditable="true">The cutoff is per-epic, not per-train — other epics keep their own timeline regardless of what's negotiated for a late one.</p>
+  </div>
+
+  <div class="rule-card">
+    <h3 contenteditable="true">Bug management within the pipeline</h3>
+    <p style="font-size:13.5px; margin:0 0 10px;" contenteditable="true">First question: can it wait for the next train?</p>
+    <p class="signoff-note" contenteditable="true" style="margin:0 0 10px;">PM decides what can and can't wait.</p>
+    <div class="bug-flow">
+      <div class="bug-branch hotfix">
+        <div class="tag">Can't wait — Hotfix Route</div>
+        <div contenteditable="true">Blocks sign-off, customer-facing, or data risk. Fix in place, then backmerge down to every earlier environment still holding that train.</div>
+      </div>
+      <div class="bug-branch deferred">
+        <div class="tag">Can wait — Normal Route</div>
+        <div contenteditable="true">Minor or low-risk. No backmerge — rides the next train naturally.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Gappify Inc.
+</footer>
+
+</body>
+</html>

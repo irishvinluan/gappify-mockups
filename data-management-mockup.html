@@ -127,10 +127,7 @@
                     <p class="text-[12px] font-semibold text-slate-800">Select Table</p>
                     <div class="relative w-80" id="table-combobox">
                       <button type="button" id="table-combobox-trigger" class="w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border-2 border-indigo-500 bg-indigo-50 text-left transition-colors duration-150">
-                        <span>
-                          <span class="block text-[12px] font-bold text-slate-900 font-mono" id="table-combobox-label">ai_analysis</span>
-                          <span class="block text-[11px] text-slate-500 mt-0.5" id="table-combobox-desc">AI-generated accrual analysis results</span>
-                        </span>
+                        <span class="text-[12px] font-bold text-slate-900 font-mono" id="table-combobox-label">ai_analysis</span>
                         <svg class="shrink-0 text-slate-400" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                       </button>
                       <div id="table-combobox-panel" class="hidden absolute z-20 mt-1.5 w-full bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden fade-in">
@@ -223,7 +220,10 @@
       </div>
       <div class="flex items-center justify-end gap-2 pt-1">
         <button id="modal-cancel" type="button" class="px-3 py-1.5 text-xs font-semibold rounded-md text-slate-600 hover:bg-slate-100 transition-colors duration-150">Cancel</button>
-        <button id="modal-confirm-delete" type="button" disabled class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 outline-none whitespace-nowrap bg-red-600 text-white shadow-sm opacity-50 cursor-not-allowed">Permanently Delete</button>
+        <button id="modal-confirm-delete" type="button" disabled class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 outline-none whitespace-nowrap bg-red-600 text-white shadow-sm opacity-50 cursor-not-allowed">
+          <svg id="modal-delete-spinner" class="hidden animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-9-9"></path></svg>
+          <span id="modal-delete-label">Permanently Delete</span>
+        </button>
       </div>
     </div>
   </div>
@@ -377,7 +377,6 @@ const comboboxSearch = document.getElementById("table-combobox-search");
 const comboboxOptions = document.getElementById("table-combobox-options");
 const comboboxEmpty = document.getElementById("table-combobox-empty");
 const comboboxLabel = document.getElementById("table-combobox-label");
-const comboboxDesc = document.getElementById("table-combobox-desc");
 const matchCountEl = document.getElementById("match-count");
 const footerTableName = document.getElementById("footer-table-name");
 
@@ -387,9 +386,7 @@ function updateCounts() {
 
 function selectTable(name) {
   currentTable = name;
-  const def = DATA[name];
   comboboxLabel.textContent = name;
-  comboboxDesc.textContent = def.description || "";
   footerTableName.textContent = name;
   updateCounts();
   closeCombobox();
@@ -404,13 +401,9 @@ function renderComboboxOptions(query) {
 
   comboboxEmpty.classList.toggle("hidden", names.length > 0);
   comboboxOptions.innerHTML = names.map(name => {
-    const def = DATA[name];
     const active = name === currentTable;
     return `<button type="button" data-table="${name}" class="combobox-option w-full text-left px-3 py-2 flex items-center justify-between gap-2 hover:bg-slate-50 ${active ? "bg-indigo-50" : ""}">
-      <span>
-        <span class="block text-[12px] font-bold text-slate-900 font-mono">${name}</span>
-        <span class="block text-[11px] text-slate-500 mt-0.5">${def.description || ""}</span>
-      </span>
+      <span class="text-[12px] font-bold text-slate-900 font-mono">${name}</span>
       ${active ? '<svg class="shrink-0 text-indigo-600" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ""}
     </button>`;
   }).join("");
@@ -448,15 +441,23 @@ document.addEventListener("keydown", (e) => {
 const modal = document.getElementById("confirm-modal");
 const modalConfirmInput = document.getElementById("modal-confirm-input");
 const modalConfirmDelete = document.getElementById("modal-confirm-delete");
+const modalCancelBtn = document.getElementById("modal-cancel");
+const modalDeleteSpinner = document.getElementById("modal-delete-spinner");
+const modalDeleteLabel = document.getElementById("modal-delete-label");
 const modalTableName = document.getElementById("modal-table-name");
 const modalConfirmWord = document.getElementById("modal-confirm-word");
 const modalRecordCount = document.getElementById("modal-record-count");
+let isDeleting = false;
 
 document.getElementById("open-delete-modal").addEventListener("click", () => {
   modalTableName.textContent = currentTable;
   modalConfirmWord.textContent = currentTable;
   modalRecordCount.textContent = matchCountEl.textContent;
   modalConfirmInput.value = "";
+  modalConfirmInput.disabled = false;
+  modalCancelBtn.disabled = false;
+  modalDeleteSpinner.classList.add("hidden");
+  modalDeleteLabel.textContent = "Permanently Delete";
   modalConfirmDelete.disabled = true;
   modalConfirmDelete.classList.add("opacity-50", "cursor-not-allowed");
   modal.classList.remove("hidden");
@@ -467,8 +468,8 @@ function closeModal() {
   modal.classList.add("hidden");
   modal.classList.remove("flex");
 }
-document.getElementById("modal-cancel").addEventListener("click", closeModal);
-modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+modalCancelBtn.addEventListener("click", () => { if (!isDeleting) closeModal(); });
+modal.addEventListener("click", (e) => { if (e.target === modal && !isDeleting) closeModal(); });
 
 modalConfirmInput.addEventListener("input", () => {
   const match = modalConfirmInput.value.trim() === currentTable;
@@ -478,24 +479,36 @@ modalConfirmInput.addEventListener("input", () => {
 });
 
 modalConfirmDelete.addEventListener("click", () => {
-  if (modalConfirmDelete.disabled) return;
+  if (modalConfirmDelete.disabled || isDeleting) return;
   const count = modalRecordCount.textContent;
   const table = currentTable;
-  closeModal();
 
-  auditLog.unshift({
-    timestamp: formatTimestamp(new Date()),
-    table: table,
-    count: DATA[table].recordCount,
-    user: CURRENT_USER
-  });
-  auditPage = 1;
-  renderAuditLog();
+  isDeleting = true;
+  modalConfirmInput.disabled = true;
+  modalCancelBtn.disabled = true;
+  modalConfirmDelete.disabled = true;
+  modalConfirmDelete.classList.add("opacity-80", "cursor-wait");
+  modalDeleteSpinner.classList.remove("hidden");
+  modalDeleteLabel.textContent = "Deleting…";
 
-  const toast = document.getElementById("success-toast");
-  document.getElementById("success-message").textContent = `${count} record(s) deleted from ${table}. Logged to audit trail.`;
-  toast.classList.remove("hidden");
-  setTimeout(() => toast.classList.add("hidden"), 3500);
+  setTimeout(() => {
+    isDeleting = false;
+    closeModal();
+
+    auditLog.unshift({
+      timestamp: formatTimestamp(new Date()),
+      table: table,
+      count: DATA[table].recordCount,
+      user: CURRENT_USER
+    });
+    auditPage = 1;
+    renderAuditLog();
+
+    const toast = document.getElementById("success-toast");
+    document.getElementById("success-message").textContent = `${count} record(s) deleted from ${table}. Logged to audit trail.`;
+    toast.classList.remove("hidden");
+    setTimeout(() => toast.classList.add("hidden"), 3500);
+  }, 1400);
 });
 
 document.getElementById("audit-page-size").addEventListener("change", (e) => {

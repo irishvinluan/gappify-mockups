@@ -127,7 +127,7 @@
                     <p class="text-[12px] font-semibold text-slate-800">Select Table</p>
                     <div class="relative w-80" id="table-combobox">
                       <button type="button" id="table-combobox-trigger" class="w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border-2 border-indigo-500 bg-indigo-50 text-left transition-colors duration-150">
-                        <span class="text-[12px] font-bold text-slate-900 font-mono" id="table-combobox-label">ai_analysis</span>
+                        <span class="text-[12px] font-medium text-slate-400" id="table-combobox-label">Select table&hellip;</span>
                         <svg class="shrink-0 text-slate-400" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                       </button>
                       <div id="table-combobox-panel" class="hidden absolute z-20 mt-1.5 w-full bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden fade-in">
@@ -144,14 +144,14 @@
                   </div>
 
                   <!-- Match summary -->
-                  <div class="flex items-center gap-2 px-4 py-3 rounded-xl border border-red-100 bg-red-50">
+                  <div id="match-summary" class="hidden items-center gap-2 px-4 py-3 rounded-xl border border-red-100 bg-red-50">
                     <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                    <p class="text-[12px] text-red-800"><span id="match-count" class="text-[14px] font-bold">1,284</span> record(s) will be permanently deleted from <span id="footer-table-name" class="font-mono font-semibold">ai_analysis</span>.</p>
+                    <p class="text-[12px] text-red-800"><span id="match-count" class="text-[14px] font-bold">0</span> record(s) will be permanently deleted from <span id="footer-table-name" class="font-mono font-semibold"></span>.</p>
                   </div>
 
                   <!-- Action bar -->
                   <div class="flex items-center justify-end pt-1 border-t border-slate-100 mt-1">
-                    <button id="open-delete-modal" type="button" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 outline-none focus:ring-2 focus:ring-red-500/50 whitespace-nowrap bg-red-600 hover:bg-red-700 text-white shadow-sm hover:shadow hover:-translate-y-[0.5px]">
+                    <button id="open-delete-modal" type="button" disabled class="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 outline-none focus:ring-2 focus:ring-red-500/50 whitespace-nowrap bg-red-600 hover:bg-red-700 text-white shadow-sm hover:shadow hover:-translate-y-[0.5px] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-sm disabled:hover:translate-y-0">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                       Delete Data
                     </button>
@@ -369,7 +369,7 @@ function showTab(tab) {
 tabBtnDelete.addEventListener("click", () => showTab("delete"));
 tabBtnAudit.addEventListener("click", () => showTab("audit"));
 
-let currentTable = "ai_analysis";
+let currentTable = null;
 
 const comboboxTrigger = document.getElementById("table-combobox-trigger");
 const comboboxPanel = document.getElementById("table-combobox-panel");
@@ -377,17 +377,25 @@ const comboboxSearch = document.getElementById("table-combobox-search");
 const comboboxOptions = document.getElementById("table-combobox-options");
 const comboboxEmpty = document.getElementById("table-combobox-empty");
 const comboboxLabel = document.getElementById("table-combobox-label");
+const matchSummary = document.getElementById("match-summary");
 const matchCountEl = document.getElementById("match-count");
 const footerTableName = document.getElementById("footer-table-name");
+const openDeleteModalBtn = document.getElementById("open-delete-modal");
 
 function updateCounts() {
+  if (!currentTable) return;
   matchCountEl.textContent = DATA[currentTable].recordCount.toLocaleString();
 }
 
 function selectTable(name) {
   currentTable = name;
   comboboxLabel.textContent = name;
+  comboboxLabel.classList.remove("font-medium", "text-slate-400");
+  comboboxLabel.classList.add("font-bold", "font-mono", "text-slate-900");
   footerTableName.textContent = name;
+  matchSummary.classList.remove("hidden");
+  matchSummary.classList.add("flex");
+  openDeleteModalBtn.disabled = false;
   updateCounts();
   closeCombobox();
 }

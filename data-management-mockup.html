@@ -176,7 +176,6 @@
                           <tr>
                             <th class="sticky top-0 z-10 bg-slate-50 border-b border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Date</th>
                             <th class="sticky top-0 z-10 bg-slate-50 border-b border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Action</th>
-                            <th class="sticky top-0 z-10 bg-slate-50 border-b border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Total Records Deleted</th>
                             <th class="sticky top-0 z-10 bg-slate-50 border-b border-slate-200 px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">Performed By</th>
                           </tr>
                         </thead>
@@ -281,27 +280,19 @@ function getBreakdown(optionId) {
 
 const CURRENT_USER = "glenn.santos@gappify.com";
 
-function seedBreakdown(aiAnalysis, aiAnalysisInput, journalEntries, withOutreach) {
-  return [
-    { table: "ai_analysis", count: aiAnalysis },
-    { table: "ai_analysis_input", count: aiAnalysisInput },
-    { table: "journal_entries", count: journalEntries, note: withOutreach ? null : "excludes vendor & internal confirmation" }
-  ];
-}
-
 const auditLog = [
-  { timestamp: "Jul 28, 2026, 4:12 PM", action: "Reset AI Accruals Without Outreach", count: 828, breakdown: seedBreakdown(198, 542, 88, false), user: "p.alvarez@gappify.com" },
-  { timestamp: "Jun 30, 2026, 9:05 AM", action: "Reset AI Accruals With Outreach", count: 1014, breakdown: seedBreakdown(231, 609, 174, true), user: "glenn.santos@gappify.com" },
-  { timestamp: "May 31, 2026, 6:47 PM", action: "Reset AI Accruals Without Outreach", count: 745, breakdown: seedBreakdown(176, 498, 71, false), user: "glenn.santos@gappify.com" },
-  { timestamp: "Apr 30, 2026, 2:38 PM", action: "Reset AI Accruals Without Outreach", count: 862, breakdown: seedBreakdown(205, 563, 94, false), user: "p.alvarez@gappify.com" },
-  { timestamp: "Mar 31, 2026, 5:19 PM", action: "Reset AI Accruals With Outreach", count: 858, breakdown: seedBreakdown(189, 517, 152, true), user: "glenn.santos@gappify.com" },
-  { timestamp: "Feb 28, 2026, 9:30 AM", action: "Reset AI Accruals Without Outreach", count: 727, breakdown: seedBreakdown(167, 481, 79, false), user: "p.alvarez@gappify.com" },
-  { timestamp: "Jan 31, 2026, 6:02 PM", action: "Reset AI Accruals Without Outreach", count: 924, breakdown: seedBreakdown(220, 601, 103, false), user: "glenn.santos@gappify.com" },
-  { timestamp: "Dec 30, 2025, 4:57 PM", action: "Reset AI Accruals With Outreach", count: 888, breakdown: seedBreakdown(193, 534, 161, true), user: "p.alvarez@gappify.com" },
-  { timestamp: "Nov 30, 2025, 2:12 PM", action: "Reset AI Accruals Without Outreach", count: 688, breakdown: seedBreakdown(158, 462, 68, false), user: "glenn.santos@gappify.com" },
-  { timestamp: "Oct 31, 2025, 5:24 PM", action: "Reset AI Accruals Without Outreach", count: 886, breakdown: seedBreakdown(211, 578, 97, false), user: "p.alvarez@gappify.com" },
-  { timestamp: "Sep 30, 2025, 3:50 PM", action: "Reset AI Accruals With Outreach", count: 835, breakdown: seedBreakdown(184, 502, 149, true), user: "glenn.santos@gappify.com" },
-  { timestamp: "Aug 31, 2025, 8:15 AM", action: "Reset AI Accruals Without Outreach", count: 743, breakdown: seedBreakdown(172, 489, 82, false), user: "p.alvarez@gappify.com" }
+  { timestamp: "Jul 28, 2026, 4:12 PM", action: "Reset AI Accruals Without Outreach", user: "p.alvarez@gappify.com" },
+  { timestamp: "Jun 30, 2026, 9:05 AM", action: "Reset AI Accruals With Outreach", user: "glenn.santos@gappify.com" },
+  { timestamp: "May 31, 2026, 6:47 PM", action: "Reset AI Accruals Without Outreach", user: "glenn.santos@gappify.com" },
+  { timestamp: "Apr 30, 2026, 2:38 PM", action: "Reset AI Accruals Without Outreach", user: "p.alvarez@gappify.com" },
+  { timestamp: "Mar 31, 2026, 5:19 PM", action: "Reset AI Accruals With Outreach", user: "glenn.santos@gappify.com" },
+  { timestamp: "Feb 28, 2026, 9:30 AM", action: "Reset AI Accruals Without Outreach", user: "p.alvarez@gappify.com" },
+  { timestamp: "Jan 31, 2026, 6:02 PM", action: "Reset AI Accruals Without Outreach", user: "glenn.santos@gappify.com" },
+  { timestamp: "Dec 30, 2025, 4:57 PM", action: "Reset AI Accruals With Outreach", user: "p.alvarez@gappify.com" },
+  { timestamp: "Nov 30, 2025, 2:12 PM", action: "Reset AI Accruals Without Outreach", user: "glenn.santos@gappify.com" },
+  { timestamp: "Oct 31, 2025, 5:24 PM", action: "Reset AI Accruals Without Outreach", user: "p.alvarez@gappify.com" },
+  { timestamp: "Sep 30, 2025, 3:50 PM", action: "Reset AI Accruals With Outreach", user: "glenn.santos@gappify.com" },
+  { timestamp: "Aug 31, 2025, 8:15 AM", action: "Reset AI Accruals Without Outreach", user: "p.alvarez@gappify.com" }
 ];
 
 let auditPageSize = 20;
@@ -313,8 +304,6 @@ function formatTimestamp(date) {
   return `${datePart}, ${timePart}`;
 }
 
-let expandedAuditRows = new Set();
-
 function renderAuditLog() {
   const totalPages = Math.max(Math.ceil(auditLog.length / auditPageSize), 1);
   auditPage = Math.min(Math.max(auditPage, 1), totalPages);
@@ -323,46 +312,11 @@ function renderAuditLog() {
   const pageRows = auditLog.slice(start, start + auditPageSize);
 
   const body = document.getElementById("audit-log-body");
-  body.innerHTML = pageRows.map((entry, i) => {
-    const rowIndex = start + i;
-    const isExpanded = expandedAuditRows.has(rowIndex);
-
-    const mainRow = `<tr class="hover:bg-indigo-50 transition-colors h-10">
+  body.innerHTML = pageRows.map((entry) => `<tr class="hover:bg-indigo-50 transition-colors h-10">
       <td class="px-4 py-0 text-slate-500 tabular-nums whitespace-nowrap text-[11px]">${entry.timestamp}</td>
       <td class="px-4 py-0 text-slate-700 font-medium whitespace-nowrap">${entry.action}</td>
-      <td class="px-4 py-0 text-slate-900 font-medium tabular-nums whitespace-nowrap">
-        <button type="button" class="audit-expand-toggle inline-flex items-center gap-1.5 hover:text-indigo-600" data-row-index="${rowIndex}">
-          <svg class="shrink-0 transition-transform duration-150 ${isExpanded ? "rotate-90" : ""}" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-          ${entry.count.toLocaleString()}
-        </button>
-      </td>
       <td class="px-4 py-0 text-slate-700 whitespace-nowrap">${entry.user}</td>
-    </tr>`;
-
-    const detailRow = isExpanded ? `<tr class="bg-slate-50">
-      <td colspan="4" class="px-4 py-2.5">
-        <div class="flex flex-col gap-1 pl-6 max-w-sm">
-          ${entry.breakdown.map(row => `
-            <div class="flex items-center justify-between text-[11px] text-slate-600">
-              <span class="font-mono">${row.table}${row.note ? ` <span class="text-slate-400 font-sans">(${row.note})</span>` : ""}</span>
-              <span class="font-semibold text-slate-800 tabular-nums">${row.count.toLocaleString()}</span>
-            </div>
-          `).join("")}
-        </div>
-      </td>
-    </tr>` : "";
-
-    return mainRow + detailRow;
-  }).join("");
-
-  document.querySelectorAll(".audit-expand-toggle").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const rowIndex = parseInt(btn.dataset.rowIndex, 10);
-      if (expandedAuditRows.has(rowIndex)) expandedAuditRows.delete(rowIndex);
-      else expandedAuditRows.add(rowIndex);
-      renderAuditLog();
-    });
-  });
+    </tr>`).join("");
 
   document.getElementById("audit-page-info").textContent = auditLog.length === 0
     ? "No records yet"
@@ -513,7 +467,6 @@ modalConfirmInput.addEventListener("input", () => {
 modalConfirmDelete.addEventListener("click", () => {
   if (modalConfirmDelete.disabled || isDeleting) return;
   const optionLabel = RESET_OPTIONS[selectedOption].label;
-  const breakdown = getBreakdown(selectedOption);
 
   isDeleting = true;
   modalConfirmInput.disabled = true;
@@ -530,11 +483,8 @@ modalConfirmDelete.addEventListener("click", () => {
     auditLog.unshift({
       timestamp: formatTimestamp(new Date()),
       action: optionLabel,
-      count: breakdown.reduce((sum, row) => sum + row.count, 0),
-      breakdown: breakdown,
       user: CURRENT_USER
     });
-    expandedAuditRows = new Set([...expandedAuditRows].map(i => i + 1));
     auditPage = 1;
     renderAuditLog();
 

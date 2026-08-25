@@ -14,7 +14,6 @@
   .fade-in { animation: dm-fade .12s ease-out; }
   @keyframes dm-fade { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: translateY(0); } }
   .modal-backdrop { background: rgba(15, 23, 42, 0.45); }
-  input[type="radio"].dm-radio { accent-color: #4f46e5; }
 </style>
 </head>
 <body>
@@ -131,22 +130,23 @@
                         Current Period: <span id="current-period-label" class="font-mono">August 2026</span>
                       </span>
                     </div>
-                    <div class="grid grid-cols-2 gap-3">
-                      <label data-option-card="without_outreach" class="flex flex-col gap-1.5 px-4 py-3 rounded-xl border-2 border-slate-200 hover:border-indigo-300 hover:bg-slate-50 cursor-pointer transition-colors duration-150">
-                        <span class="flex items-center gap-2">
-                          <input type="radio" name="reset-option" value="without_outreach" class="dm-radio">
-                          <span class="text-[12px] font-semibold text-slate-900">Reset AI Accruals Without Outreach</span>
-                        </span>
-                        <span class="text-[11px] text-slate-500 leading-relaxed pl-6">Deletes AI analysis data for the current period. Journal entries created through vendor or internal confirmation outreach are kept.</span>
-                      </label>
-                      <label data-option-card="with_outreach" class="flex flex-col gap-1.5 px-4 py-3 rounded-xl border-2 border-slate-200 hover:border-indigo-300 hover:bg-slate-50 cursor-pointer transition-colors duration-150">
-                        <span class="flex items-center gap-2">
-                          <input type="radio" name="reset-option" value="with_outreach" class="dm-radio">
-                          <span class="text-[12px] font-semibold text-slate-900">Reset AI Accruals With Outreach</span>
-                        </span>
-                        <span class="text-[11px] text-slate-500 leading-relaxed pl-6">Deletes AI analysis data and all journal entries for the current period, including those created through vendor and internal confirmation outreach.</span>
-                      </label>
+                    <div class="relative w-80" id="action-combobox">
+                      <button type="button" id="action-combobox-trigger" class="w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border-2 border-indigo-500 bg-indigo-50 text-left transition-colors duration-150">
+                        <span class="text-[12px] font-medium text-slate-400" id="action-combobox-label">Select an action&hellip;</span>
+                        <svg class="shrink-0 text-slate-400" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      </button>
+                      <div id="action-combobox-panel" class="hidden absolute z-20 mt-1.5 w-full bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden fade-in">
+                        <div class="p-2 border-b border-slate-100">
+                          <div class="relative">
+                            <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input id="action-combobox-search" type="text" placeholder="Search actions&hellip;" class="w-full pl-8 pr-3 py-1.5 text-[12px] rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/30">
+                          </div>
+                        </div>
+                        <div id="action-combobox-options" class="max-h-72 overflow-y-auto py-1"></div>
+                        <div id="action-combobox-empty" class="hidden px-3 py-4 text-[12px] text-slate-500 text-center">No actions match your search.</div>
+                      </div>
                     </div>
+                    <p id="action-help-text" class="hidden text-[11px] text-slate-500 leading-relaxed"></p>
                   </div>
 
                   <!-- Impact summary -->
@@ -259,11 +259,13 @@ const TABLE_COUNTS = {
 const RESET_OPTIONS = {
   without_outreach: {
     label: "Reset AI Accruals Without Outreach",
+    description: "Deletes AI analysis data for the current period. Journal entries created through vendor or internal confirmation outreach are kept.",
     journalEntriesCount: TABLE_COUNTS.journal_entries_excl_outreach,
     journalEntriesNote: "excludes vendor & internal confirmation"
   },
   with_outreach: {
     label: "Reset AI Accruals With Outreach",
+    description: "Deletes AI analysis data and all journal entries for the current period, including those created through vendor and internal confirmation outreach.",
     journalEntriesCount: TABLE_COUNTS.journal_entries_incl_outreach,
     journalEntriesNote: null
   }
@@ -385,6 +387,14 @@ let selectedOption = null;
 const impactSummary = document.getElementById("impact-summary");
 const impactBreakdown = document.getElementById("impact-breakdown");
 const openDeleteModalBtn = document.getElementById("open-delete-modal");
+const actionCombobox = document.getElementById("action-combobox");
+const actionComboboxTrigger = document.getElementById("action-combobox-trigger");
+const actionComboboxPanel = document.getElementById("action-combobox-panel");
+const actionComboboxSearch = document.getElementById("action-combobox-search");
+const actionComboboxOptions = document.getElementById("action-combobox-options");
+const actionComboboxEmpty = document.getElementById("action-combobox-empty");
+const actionComboboxLabel = document.getElementById("action-combobox-label");
+const actionHelpText = document.getElementById("action-help-text");
 
 function renderBreakdownRows(container, breakdown) {
   const total = breakdown.reduce((sum, row) => sum + row.count, 0);
@@ -403,22 +413,71 @@ function renderBreakdownRows(container, breakdown) {
 
 function selectResetOption(optionId) {
   selectedOption = optionId;
+  const opt = RESET_OPTIONS[optionId];
 
-  document.querySelectorAll("[data-option-card]").forEach(card => {
-    const isActive = card.dataset.optionCard === optionId;
-    card.classList.toggle("border-indigo-500", isActive);
-    card.classList.toggle("bg-indigo-50", isActive);
-    card.classList.toggle("border-slate-200", !isActive);
-  });
+  actionComboboxLabel.textContent = opt.label;
+  actionComboboxLabel.classList.remove("font-medium", "text-slate-400");
+  actionComboboxLabel.classList.add("font-semibold", "text-slate-900");
+
+  actionHelpText.textContent = opt.description;
+  actionHelpText.classList.remove("hidden");
 
   renderBreakdownRows(impactBreakdown, getBreakdown(optionId));
   impactSummary.classList.remove("hidden");
   impactSummary.classList.add("flex");
   openDeleteModalBtn.disabled = false;
+  closeActionCombobox();
 }
 
-document.querySelectorAll('input[name="reset-option"]').forEach(radio => {
-  radio.addEventListener("change", (e) => selectResetOption(e.target.value));
+function renderActionComboboxOptions(query) {
+  const q = (query || "").trim().toLowerCase();
+  const ids = Object.keys(RESET_OPTIONS).filter(id => {
+    if (!q) return true;
+    const opt = RESET_OPTIONS[id];
+    return opt.label.toLowerCase().includes(q) || opt.description.toLowerCase().includes(q);
+  });
+
+  actionComboboxEmpty.classList.toggle("hidden", ids.length > 0);
+  actionComboboxOptions.innerHTML = ids.map(id => {
+    const opt = RESET_OPTIONS[id];
+    const active = id === selectedOption;
+    return `<button type="button" data-action="${id}" class="action-combobox-option w-full text-left px-3 py-2 flex items-start justify-between gap-2 hover:bg-slate-50 ${active ? "bg-indigo-50" : ""}">
+      <span>
+        <span class="block text-[12px] font-semibold text-slate-900">${opt.label}</span>
+        <span class="block text-[11px] text-slate-500 mt-0.5 leading-relaxed">${opt.description}</span>
+      </span>
+      ${active ? '<svg class="shrink-0 mt-0.5 text-indigo-600" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ""}
+    </button>`;
+  }).join("");
+
+  actionComboboxOptions.querySelectorAll(".action-combobox-option").forEach(btn => {
+    btn.addEventListener("click", () => selectResetOption(btn.dataset.action));
+  });
+}
+
+function openActionCombobox() {
+  renderActionComboboxOptions(actionComboboxSearch.value);
+  actionComboboxPanel.classList.remove("hidden");
+  actionComboboxSearch.value = "";
+  actionComboboxSearch.focus();
+}
+
+function closeActionCombobox() {
+  actionComboboxPanel.classList.add("hidden");
+}
+
+actionComboboxTrigger.addEventListener("click", () => {
+  actionComboboxPanel.classList.contains("hidden") ? openActionCombobox() : closeActionCombobox();
+});
+
+actionComboboxSearch.addEventListener("input", () => renderActionComboboxOptions(actionComboboxSearch.value));
+
+document.addEventListener("click", (e) => {
+  if (!actionCombobox.contains(e.target)) closeActionCombobox();
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeActionCombobox();
 });
 
 const modal = document.getElementById("confirm-modal");

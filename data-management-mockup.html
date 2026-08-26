@@ -149,13 +149,10 @@
                     <p id="action-help-text" class="hidden text-[11px] text-slate-500 leading-relaxed"></p>
                   </div>
 
-                  <!-- Impact summary -->
-                  <div id="impact-summary" class="hidden flex-col gap-2.5 px-4 py-3 rounded-xl border border-red-100 bg-red-50">
-                    <div class="flex items-center gap-2">
-                      <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                      <p class="text-[12px] font-semibold text-red-800">The following will be permanently deleted for <span class="font-mono">August 2026</span>:</p>
-                    </div>
-                    <div id="impact-breakdown" class="flex flex-col gap-1 pl-6"></div>
+                  <!-- Scope note -->
+                  <div id="impact-summary" class="hidden items-start gap-2 px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-50">
+                    <svg class="shrink-0 mt-0.5 text-slate-400" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    <p class="text-[12px] text-slate-600 leading-relaxed" id="impact-note"></p>
                   </div>
 
                   <!-- Action bar -->
@@ -222,7 +219,7 @@
           <p class="text-[12px] text-slate-500 mt-1">You are about to run <span class="font-semibold text-slate-700" id="modal-option-label">Reset AI Accruals Without Outreach</span> for <span class="font-mono font-semibold text-slate-700" id="modal-period">August 2026</span>. This cannot be undone.</p>
         </div>
       </div>
-      <div id="modal-breakdown" class="flex flex-col gap-1 pl-1"></div>
+      <p class="text-[12px] text-slate-500" id="modal-breakdown"></p>
       <div class="flex flex-col gap-1.5">
         <label class="text-[11px] font-semibold text-slate-700">Type &ldquo;<span class="font-semibold" id="modal-confirm-word">Reset AI Accruals Without Outreach</span>&rdquo; to confirm</label>
         <input id="modal-confirm-input" type="text" placeholder="Type the action name here" class="w-full px-3 py-2 text-[12px] rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-red-500/40 focus:border-red-400">
@@ -249,35 +246,39 @@
 <script>
 const CURRENT_PERIOD = "August 2026";
 
-const TABLE_COUNTS = {
-  ai_analysis: 214,
-  ai_analysis_input: 587,
-  journal_entries_excl_outreach: 96,
-  journal_entries_incl_outreach: 168
-};
-
 const RESET_OPTIONS = {
   without_outreach: {
     label: "Reset AI Accruals Without Outreach",
     description: "Deletes AI analysis data for the current period. Journal entries created through vendor or internal confirmation outreach are kept.",
-    journalEntriesCount: TABLE_COUNTS.journal_entries_excl_outreach,
-    journalEntriesNote: "excludes vendor & internal confirmation"
+    tables: ["ai_analysis", "ai_analysis_input", "journal_entries"],
+    exclusionNote: "Vendor and Internal lines"
   },
   with_outreach: {
     label: "Reset AI Accruals With Outreach",
     description: "Deletes AI analysis data and all journal entries for the current period, including those created through vendor and internal confirmation outreach.",
-    journalEntriesCount: TABLE_COUNTS.journal_entries_incl_outreach,
-    journalEntriesNote: null
+    tables: ["ai_analysis", "ai_analysis_input", "journal_entries"],
+    exclusionNote: null
   }
 };
 
-function getBreakdown(optionId) {
-  const opt = RESET_OPTIONS[optionId];
-  return [
-    { table: "ai_analysis", count: TABLE_COUNTS.ai_analysis },
-    { table: "ai_analysis_input", count: TABLE_COUNTS.ai_analysis_input },
-    { table: "journal_entries", count: opt.journalEntriesCount, note: opt.journalEntriesNote }
-  ];
+const TABLE_LABELS = {
+  ai_analysis: "AI Accruals",
+  ai_analysis_input: "AI Accruals",
+  journal_entries: "Journal Entries"
+};
+
+function renderScopeNote(container, opt, includePeriod) {
+  const labels = [...new Set(opt.tables.map(t => TABLE_LABELS[t] || t))];
+  const spans = labels.map(l => `<span class="font-semibold text-slate-700">${l}</span>`);
+  const list = spans.length > 1
+    ? spans.slice(0, -1).join(", ") + " and " + spans[spans.length - 1]
+    : spans.join("");
+  const exclusion = opt.exclusionNote
+    ? ` (excluding <span class="font-semibold text-slate-700">${opt.exclusionNote}</span>)`
+    : "";
+  container.innerHTML = includePeriod
+    ? `This will delete ${list}${exclusion} data for <span class="font-semibold text-slate-700">${CURRENT_PERIOD}</span> period.`
+    : `This will delete ${list}${exclusion} data.`;
 }
 
 const CURRENT_USER = "glenn.santos@gappify.com";
@@ -385,7 +386,7 @@ tabBtnAudit.addEventListener("click", () => showTab("audit"));
 let selectedOption = null;
 
 const impactSummary = document.getElementById("impact-summary");
-const impactBreakdown = document.getElementById("impact-breakdown");
+const impactNote = document.getElementById("impact-note");
 const openDeleteModalBtn = document.getElementById("open-delete-modal");
 const actionCombobox = document.getElementById("action-combobox");
 const actionComboboxTrigger = document.getElementById("action-combobox-trigger");
@@ -395,21 +396,6 @@ const actionComboboxOptions = document.getElementById("action-combobox-options")
 const actionComboboxEmpty = document.getElementById("action-combobox-empty");
 const actionComboboxLabel = document.getElementById("action-combobox-label");
 const actionHelpText = document.getElementById("action-help-text");
-
-function renderBreakdownRows(container, breakdown) {
-  const total = breakdown.reduce((sum, row) => sum + row.count, 0);
-  container.innerHTML = breakdown.map(row => `
-    <div class="flex items-center justify-between text-[12px] text-red-800">
-      <span class="font-mono">${row.table}${row.note ? ` <span class="text-red-700/70 font-sans">(${row.note})</span>` : ""}</span>
-      <span class="font-semibold tabular-nums">${row.count.toLocaleString()}</span>
-    </div>
-  `).join("") + `
-    <div class="flex items-center justify-between text-[12px] text-red-900 font-bold pt-1 mt-0.5 border-t border-red-200">
-      <span>Total</span>
-      <span class="tabular-nums">${total.toLocaleString()}</span>
-    </div>
-  `;
-}
 
 function selectResetOption(optionId) {
   selectedOption = optionId;
@@ -422,7 +408,7 @@ function selectResetOption(optionId) {
   actionHelpText.textContent = opt.description;
   actionHelpText.classList.remove("hidden");
 
-  renderBreakdownRows(impactBreakdown, getBreakdown(optionId));
+  renderScopeNote(impactNote, opt, true);
   impactSummary.classList.remove("hidden");
   impactSummary.classList.add("flex");
   openDeleteModalBtn.disabled = false;
@@ -497,7 +483,7 @@ document.getElementById("open-delete-modal").addEventListener("click", () => {
   modalOptionLabel.textContent = optionLabel;
   modalPeriod.textContent = CURRENT_PERIOD;
   modalConfirmWord.textContent = optionLabel;
-  renderBreakdownRows(modalBreakdown, getBreakdown(selectedOption));
+  renderScopeNote(modalBreakdown, RESET_OPTIONS[selectedOption], false);
   modalConfirmInput.value = "";
   modalConfirmInput.disabled = false;
   modalCancelBtn.disabled = false;

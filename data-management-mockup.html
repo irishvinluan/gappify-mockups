@@ -250,35 +250,36 @@ const RESET_OPTIONS = {
   without_outreach: {
     label: "Reset AI Accruals Without Outreach",
     description: "Deletes AI analysis data for the current period. Journal entries created through vendor or internal confirmation outreach are kept.",
-    tables: ["ai_analysis", "ai_analysis_input", "journal_entries"],
-    exclusionNote: "Vendor and Internal lines"
+    tables: ["ai_analysis", "ai_analysis_input", "journal_entries"]
   },
   with_outreach: {
     label: "Reset AI Accruals With Outreach",
     description: "Deletes AI analysis data and all journal entries for the current period, including those created through vendor and internal confirmation outreach.",
-    tables: ["ai_analysis", "ai_analysis_input", "journal_entries"],
-    exclusionNote: null
+    tables: ["ai_analysis", "ai_analysis_input", "journal_entries"]
   }
 };
 
 const TABLE_LABELS = {
-  ai_analysis: "AI Accruals",
-  ai_analysis_input: "AI Accruals",
-  journal_entries: "Journal Entries"
+  ai_analysis: { label: "Analysis", url: "https://google.com" },
+  ai_analysis_input: { label: "Analysis", url: "https://google.com" },
+  journal_entries: { label: "JE View", url: "https://google.com" }
 };
 
 function renderScopeNote(container, opt, includePeriod) {
-  const labels = [...new Set(opt.tables.map(t => TABLE_LABELS[t] || t))];
-  const spans = labels.map(l => `<span class="font-semibold text-slate-700">${l}</span>`);
-  const list = spans.length > 1
-    ? spans.slice(0, -1).join(", ") + " and " + spans[spans.length - 1]
-    : spans.join("");
-  const exclusion = opt.exclusionNote
-    ? ` (excluding <span class="font-semibold text-slate-700">${opt.exclusionNote}</span>)`
-    : "";
+  const seen = new Set();
+  const links = [];
+  opt.tables.forEach(t => {
+    const info = TABLE_LABELS[t];
+    if (!info || seen.has(info.label)) return;
+    seen.add(info.label);
+    links.push(`<a href="${info.url}" target="_blank" rel="noopener noreferrer" class="font-semibold text-indigo-600 hover:underline">${info.label}</a>`);
+  });
+  const list = links.length > 1
+    ? links.slice(0, -1).join(", ") + " and " + links[links.length - 1]
+    : links.join("");
   container.innerHTML = includePeriod
-    ? `This will delete ${list}${exclusion} data for <span class="font-semibold text-slate-700">${CURRENT_PERIOD}</span> period.`
-    : `This will delete ${list}${exclusion} data.`;
+    ? `This will delete data from ${list} for <span class="font-semibold text-slate-700">${CURRENT_PERIOD}</span> period.`
+    : `This will delete data from ${list}.`;
 }
 
 const CURRENT_USER = "glenn.santos@gappify.com";

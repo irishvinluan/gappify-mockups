@@ -260,26 +260,20 @@ const RESET_OPTIONS = {
 };
 
 const TABLE_LABELS = {
-  ai_analysis: { label: "Analysis", url: "https://google.com" },
-  ai_analysis_input: { label: "Analysis", url: "https://google.com" },
-  journal_entries: { label: "JE View", url: "https://google.com" }
+  ai_analysis: "Analysis",
+  ai_analysis_input: "Analysis",
+  journal_entries: "JE View"
 };
 
 function renderScopeNote(container, opt, includePeriod) {
-  const seen = new Set();
-  const links = [];
-  opt.tables.forEach(t => {
-    const info = TABLE_LABELS[t];
-    if (!info || seen.has(info.label)) return;
-    seen.add(info.label);
-    links.push(`<a href="${info.url}" target="_blank" rel="noopener noreferrer" class="font-semibold text-indigo-600 hover:underline">${info.label}</a>`);
-  });
-  const list = links.length > 1
-    ? links.slice(0, -1).join(", ") + " and " + links[links.length - 1]
-    : links.join("");
+  const labels = [...new Set(opt.tables.map(t => TABLE_LABELS[t] || t))];
+  const listText = labels.length > 1
+    ? labels.slice(0, -1).join(", ") + " and " + labels[labels.length - 1]
+    : labels.join("");
+  const link = `<a href="https://google.com" target="_blank" rel="noopener noreferrer" class="font-semibold text-indigo-600 hover:underline">${listText}</a>`;
   container.innerHTML = includePeriod
-    ? `This will delete data from ${list} for <span class="font-semibold text-slate-700">${CURRENT_PERIOD}</span> period.`
-    : `This will delete data from ${list}.`;
+    ? `This will delete data from ${link} for <span class="font-semibold text-slate-700">${CURRENT_PERIOD}</span> period.`
+    : `This will delete data from ${link}.`;
 }
 
 const CURRENT_USER = "glenn.santos@gappify.com";

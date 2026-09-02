@@ -24153,7 +24153,30 @@ div:has(> .sidebar.collapsed) .vi-page-title {
 .va-im-file-name { font-size: 11px; font-weight: 500; color: #4338ca; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .va-im-file-change-btn { font-size: 11px; color: #94a3b8; background: none; border: none; cursor: pointer; flex-shrink: 0; }
 .va-im-file-change-btn:hover { color: #6366f1; }
+.va-im-file-error {
+  margin-top: 8px; display: flex; align-items: flex-start; gap: 8px;
+  padding: 10px 12px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px;
+}
+.va-im-file-error-body { flex: 1; min-width: 0; }
+.va-im-file-error-title { font-size: 12px; font-weight: 600; color: #991b1b; margin: 0; }
+.va-im-file-error-title span { font-weight: 700; }
+.va-im-file-error-text { font-size: 11px; color: #b91c1c; margin: 2px 0 0; line-height: 1.5; }
+.va-im-file-error .va-im-file-change-btn { color: #b91c1c; }
+.va-im-file-error .va-im-file-change-btn:hover { color: #7f1d1d; }
+.va-im-spinner {
+  width: 12px; height: 12px; border: 2px solid #c7d2fe; border-top-color: #4f46e5;
+  border-radius: 50%; flex-shrink: 0; animation: va-im-spin .7s linear infinite;
+}
+@keyframes va-im-spin { to { transform: rotate(360deg); } }
+.va-im-file-scanning-text { font-size: 11px; color: #4338ca; }
 .va-im-section-label-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.va-im-section-label-right { display: flex; align-items: center; gap: 14px; }
+.va-im-autosave-pill {
+  display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; color: #059669;
+  transition: color .15s;
+}
+.va-im-autosave-pill--saving { color: #6366f1; }
+.va-im-autosave-pill svg { flex-shrink: 0; }
 .va-im-eyebrow { font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .05em; }
 .va-im-scenario-btn {
   padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 500;
@@ -24177,7 +24200,10 @@ div:has(> .sidebar.collapsed) .vi-page-title {
 .va-im-saved-summary {
   display: flex; align-items: center; justify-content: space-between;
   padding: 12px 14px; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px;
+  cursor: pointer; transition: background .15s, border-color .15s;
 }
+.va-im-saved-summary:hover { background: #d1fae5; border-color: #6ee7b7; }
+.va-im-saved-summary:focus-visible { outline: 2px solid #10b981; outline-offset: 2px; }
 .va-im-saved-summary-left { display: flex; align-items: center; gap: 8px; }
 .va-im-saved-summary-title { font-size: 12px; font-weight: 500; color: #065f46; }
 .va-im-saved-summary-count { font-size: 11px; color: #059669; }
@@ -24199,18 +24225,15 @@ div:has(> .sidebar.collapsed) .vi-page-title {
 .va-im-table th { padding: 8px 12px; text-align: left; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .05em; }
 .va-im-td { padding: 10px 12px; border-top: 1px solid #f1f5f9; vertical-align: top; }
 .va-im-td--muted { color: #64748b; }
-.va-im-td--muted2 { color: #475569; }
 .va-im-row--attention { border-left: 3px solid #fbbf24; }
 .va-im-row--attention:hover, .va-im-table tbody tr:hover { background: #f8fafc; }
 .va-im-row--saved { background: rgba(248,250,252,.6); }
-.va-im-row--saved-full { background: rgba(248,250,252,.4); }
 .va-im-code {
   background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 11px;
   color: #334155; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   white-space: nowrap;
 }
 .va-im-code--muted { color: #94a3b8; }
-.va-im-code--muted2 { color: #64748b; }
 .va-im-select {
   width: 100%; font-size: 11px; color: #334155; border-radius: 6px;
   border: 1px solid #e2e8f0; padding: 6px 8px; background: #fff;
@@ -24237,6 +24260,12 @@ div:has(> .sidebar.collapsed) .vi-page-title {
 .va-im-preview-td--empty { color: #cbd5e1; font-style: italic; }
 .va-im-preview-table tbody tr:last-child .va-im-preview-td { border-bottom: none; }
 .va-im-preview-table tbody tr:hover .va-im-preview-td { background: #f8fafc; }
+.va-im-preview-loading {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 28px 12px; font-size: 12px; color: #64748b;
+}
+#va-preview-table.va-im-preview-fade-in { opacity: 0; }
+#va-preview-table { opacity: 1; transition: opacity .25s ease; }
 .va-im-footer {
   flex-shrink: 0; display: flex; justify-content: flex-end; gap: 8px;
   padding: 14px 20px; border-top: 1px solid #e2e8f0;
@@ -24257,7 +24286,7 @@ div:has(> .sidebar.collapsed) .vi-page-title {
   position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
   background: #1e293b; color: #fff; font-size: 12px; font-weight: 500;
   padding: 10px 16px; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,.2);
-  z-index: 3000; opacity: 0; transition: opacity .3s; white-space: nowrap;
+  z-index: 3000; opacity: 0; transition: opacity .3s; max-width: 360px; text-align: center;
 }
 tr.va-im-updated-row > td { background-color: #eef2ff !important; transition: background-color 1.5s ease; }
 </style>
@@ -24299,26 +24328,56 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
           <span id="va-file-selected-name" class="va-im-file-name"></span>
           <button type="button" onclick="vaResetImport()" class="va-im-file-change-btn">↩ Change</button>
         </div>
+        <div id="va-file-scanning" class="va-im-file-selected va-im-hidden">
+          <span class="va-im-spinner"></span>
+          <span class="va-im-file-scanning-text">Scanning <strong id="va-file-scanning-name"></strong> for viruses…</span>
+        </div>
+        <div id="va-file-error" class="va-im-file-error va-im-hidden">
+          <svg style="color:#dc2626;flex-shrink:0;margin-top:1px" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          <div class="va-im-file-error-body">
+            <p class="va-im-file-error-title">Couldn't upload <span id="va-file-error-name"></span></p>
+            <p class="va-im-file-error-text">This file type isn't supported. Please upload a CSV or Excel file (.csv, .xlsx, .xls).</p>
+          </div>
+          <button type="button" onclick="vaResetImport()" class="va-im-file-change-btn">↩ Try again</button>
+        </div>
+        <div id="va-file-virus" class="va-im-file-error va-im-hidden">
+          <svg style="color:#dc2626;flex-shrink:0;margin-top:1px" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="9.5" y1="9.5" x2="14.5" y2="14.5"/><line x1="14.5" y1="9.5" x2="9.5" y2="14.5"/></svg>
+          <div class="va-im-file-error-body">
+            <p class="va-im-file-error-title">Virus detected in <span id="va-file-virus-name"></span></p>
+            <p class="va-im-file-error-text">This file failed our security scan and was not accepted. Please check the file on your end and try uploading again.</p>
+          </div>
+          <button type="button" onclick="vaResetImport()" class="va-im-file-change-btn">↩ Try again</button>
+        </div>
       </div>
 
       <!-- Step 2: Column Mapping -->
       <div id="va-mapping-section" class="va-im-section-bordered">
         <div class="va-im-section-label-row">
           <p class="va-im-eyebrow">Map columns</p>
+          <div class="va-im-section-label-right">
+            <div id="va-mapping-autosave" class="va-im-autosave-pill va-im-hidden">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>All changes saved</span>
+            </div>
+            <button type="button" id="va-mapping-top-collapse-btn" onclick="vaCollapseMapping()" class="va-im-link-btn va-im-hidden">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+              Collapse
+            </button>
+          </div>
         </div>
 
         <div id="va-mapping-placeholder" class="va-im-placeholder">Upload a file above to map columns</div>
 
-        <div id="va-mapping-saved-summary" class="va-im-hidden va-im-saved-summary">
+        <div id="va-mapping-saved-summary" class="va-im-hidden va-im-saved-summary" onclick="vaExpandMapping()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vaExpandMapping();}">
           <div class="va-im-saved-summary-left">
             <svg style="color:#10b981;flex-shrink:0" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             <span class="va-im-saved-summary-title">Using saved mapping</span>
             <span id="va-mapping-saved-count" class="va-im-saved-summary-count"></span>
           </div>
-          <button type="button" onclick="vaExpandMapping()" class="va-im-link-btn">
+          <span class="va-im-link-btn">
             Review mapping
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
+          </span>
         </div>
 
         <div id="va-mapping-content" class="va-im-hidden">
@@ -24339,7 +24398,6 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
               <tbody id="va-mapping-body"></tbody>
             </table>
           </div>
-          <div id="va-mapping-footer" style="display:flex;justify-content:flex-end;margin-top:12px;"></div>
         </div>
       </div>
 
@@ -24368,6 +24426,8 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
   <div class="va-demo-panel-row">
     <button type="button" id="va-s-first" onclick="vaSetScenario('first')" class="va-im-scenario-btn va-im-scenario-btn--active">First import</button>
     <button type="button" id="va-s-clean" onclick="vaSetScenario('clean')" class="va-im-scenario-btn">Re-import (clean)</button>
+    <button type="button" id="va-s-invalid" onclick="vaSetScenario('invalid')" class="va-im-scenario-btn">Invalid file type</button>
+    <button type="button" id="va-s-virus" onclick="vaSetScenario('virus')" class="va-im-scenario-btn">Virus detected</button>
   </div>
 </div>
 
@@ -24418,16 +24478,36 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
     return { label: f.label, fields: [f.label + ' Debit', f.label + ' Debit ID', f.label + ' Credit', f.label + ' Credit ID'] };
   }));
 
-  function _vaFieldOptionsHtml(selected) {
+  // 'usedFields' are fields already claimed by other rows — they're left out so the same field can't
+  // be mapped twice. The row's own current selection is always kept, even if it's in that list.
+  function _vaFieldOptionsHtml(selected, usedFields) {
+    usedFields = usedFields || [];
     var html = '<option' + (selected === '— Skip this field —' ? ' selected' : '') + '>— Skip this field —</option>';
     _vaFieldGroups.forEach(function(g) {
+      var fields = g.fields.filter(function(f) { return f === selected || usedFields.indexOf(f) === -1; });
+      if (fields.length === 0) return; // every field in this group is already mapped elsewhere
       html += '<optgroup label="' + g.label + '">';
-      html += g.fields.map(function(f) {
+      html += fields.map(function(f) {
         return '<option' + (f === selected ? ' selected' : '') + '>' + f + '</option>';
       }).join('');
       html += '</optgroup>';
     });
     return html;
+  }
+
+  // Fields locked into non-editable "saved" rows (collapsed under the toggle) — still occupy a slot
+  // even though those rows have no live <select> to read from. Tracked so the visible dropdowns can
+  // exclude them too. Empty outside of the "Re-import (clean)" / attention-banner (state C) view.
+  var _vaLockedMappingFields = [];
+
+  // Re-derive which fields are in use across all visible dropdowns and refresh every dropdown's
+  // option list accordingly — called whenever any one selection changes.
+  function _vaRefreshMappingDropdowns() {
+    var selects = Array.prototype.slice.call(document.querySelectorAll('#va-mapping-body select.va-im-select'));
+    var used = selects.map(function(s) { return s.value; }).concat(_vaLockedMappingFields);
+    selects.forEach(function(sel) {
+      sel.innerHTML = _vaFieldOptionsHtml(sel.value, used);
+    });
   }
 
   // Hints are keyed by TARGET FIELD, not by CSV column — so the date-format picker follows
@@ -24486,12 +24566,18 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
     document.getElementById('va-demo-panel').classList.add('va-im-hidden');
   }
   function vaResetImport() {
+    if (_vaAutosaveTimer) { clearTimeout(_vaAutosaveTimer); _vaAutosaveTimer = null; }
     var fileEl = document.getElementById('va-import-file');
     if (fileEl) fileEl.value = '';
     document.getElementById('va-file-selected').classList.add('va-im-hidden');
+    document.getElementById('va-file-scanning').classList.add('va-im-hidden');
+    document.getElementById('va-file-error').classList.add('va-im-hidden');
+    document.getElementById('va-file-virus').classList.add('va-im-hidden');
     document.getElementById('va-mapping-placeholder').classList.remove('va-im-hidden');
     document.getElementById('va-mapping-content').classList.add('va-im-hidden');
     document.getElementById('va-mapping-saved-summary').classList.add('va-im-hidden');
+    document.getElementById('va-mapping-top-collapse-btn').classList.add('va-im-hidden');
+    document.getElementById('va-mapping-autosave').classList.add('va-im-hidden');
     document.getElementById('va-mapping-attention-banner').classList.add('va-im-hidden');
     document.getElementById('va-mapping-subtitle').classList.remove('va-im-hidden');
     document.getElementById('va-preview-placeholder').classList.remove('va-im-hidden');
@@ -24502,18 +24588,30 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
     });
     _vaState.savedMapping = null;
     _vaCurrentCsvCols = _vaCsvCols_first;
+    _vaLockedMappingFields = [];
     _vaSetScenarioBtn('first');
   }
 
   function _vaSetScenarioBtn(active) {
-    ['first', 'clean'].forEach(function(s) {
+    ['first', 'clean', 'invalid', 'virus'].forEach(function(s) {
       var btn = document.getElementById('va-s-' + s);
       if (btn) btn.className = 'va-im-scenario-btn' + (s === active ? ' va-im-scenario-btn--active' : '');
     });
   }
 
+  // Every upload — real or demo — goes through the same two gates: file type check, then a
+  // (simulated) virus scan. Only a file that clears both reaches column mapping.
   function vaSetScenario(scenario) {
     _vaSetScenarioBtn(scenario);
+    if (scenario === 'invalid') {
+      _vaShowFileTypeError('vendor_reach_out_apr_2026.pdf');
+      return;
+    }
+    if (scenario === 'virus') {
+      var badFile = 'vendor_reach_out_apr_2026.csv';
+      _vaShowFileScanning(badFile, function() { _vaShowVirusError(badFile); });
+      return;
+    }
     var filename;
     if (scenario === 'first') {
       _vaState.savedMapping = null;
@@ -24524,15 +24622,70 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
       _vaCurrentCsvCols = _vaCsvCols_clean;
       filename = 'vendor_reach_out_may_2026.csv';
     }
-    _vaRunImportSim(_vaCurrentCsvCols, filename);
+    _vaShowFileScanning(filename, function() { _vaRunImportSim(_vaCurrentCsvCols, filename); });
+  }
+
+  // Shown when the uploaded file isn't a CSV or Excel file — either from the demo control
+  // or a real pick of an unsupported file via the dropzone. Fails before a virus scan even runs.
+  function _vaShowFileTypeError(filename) {
+    if (_vaAutosaveTimer) { clearTimeout(_vaAutosaveTimer); _vaAutosaveTimer = null; }
+    document.getElementById('va-file-selected').classList.add('va-im-hidden');
+    document.getElementById('va-file-scanning').classList.add('va-im-hidden');
+    document.getElementById('va-file-virus').classList.add('va-im-hidden');
+    document.getElementById('va-mapping-placeholder').classList.remove('va-im-hidden');
+    document.getElementById('va-mapping-content').classList.add('va-im-hidden');
+    document.getElementById('va-mapping-saved-summary').classList.add('va-im-hidden');
+    document.getElementById('va-mapping-top-collapse-btn').classList.add('va-im-hidden');
+    document.getElementById('va-mapping-autosave').classList.add('va-im-hidden');
+    document.getElementById('va-mapping-attention-banner').classList.add('va-im-hidden');
+    document.getElementById('va-preview-placeholder').classList.remove('va-im-hidden');
+    document.getElementById('va-preview-content').classList.add('va-im-hidden');
+    document.getElementById('va-import-confirm-btn').disabled = true;
+    document.getElementById('va-file-error-name').textContent = filename;
+    document.getElementById('va-file-error').classList.remove('va-im-hidden');
+  }
+
+  // Brief "scanning" state shown between a valid file type and mapping — stands in for a real,
+  // async virus-scan call. onDone fires once the (simulated) scan completes.
+  function _vaShowFileScanning(filename, onDone) {
+    document.getElementById('va-file-selected').classList.add('va-im-hidden');
+    document.getElementById('va-file-error').classList.add('va-im-hidden');
+    document.getElementById('va-file-virus').classList.add('va-im-hidden');
+    document.getElementById('va-file-scanning-name').textContent = filename;
+    document.getElementById('va-file-scanning').classList.remove('va-im-hidden');
+    setTimeout(onDone, 900);
+  }
+
+  // Shown when the (simulated) virus scan rejects the file — it never reaches column mapping.
+  function _vaShowVirusError(filename) {
+    if (_vaAutosaveTimer) { clearTimeout(_vaAutosaveTimer); _vaAutosaveTimer = null; }
+    document.getElementById('va-file-scanning').classList.add('va-im-hidden');
+    document.getElementById('va-mapping-placeholder').classList.remove('va-im-hidden');
+    document.getElementById('va-mapping-content').classList.add('va-im-hidden');
+    document.getElementById('va-mapping-saved-summary').classList.add('va-im-hidden');
+    document.getElementById('va-mapping-top-collapse-btn').classList.add('va-im-hidden');
+    document.getElementById('va-mapping-autosave').classList.add('va-im-hidden');
+    document.getElementById('va-mapping-attention-banner').classList.add('va-im-hidden');
+    document.getElementById('va-preview-placeholder').classList.remove('va-im-hidden');
+    document.getElementById('va-preview-content').classList.add('va-im-hidden');
+    document.getElementById('va-import-confirm-btn').disabled = true;
+    document.getElementById('va-file-virus-name').textContent = filename;
+    document.getElementById('va-file-virus').classList.remove('va-im-hidden');
   }
 
   function vaSimulateImport(input) {
     if (!input.files || !input.files[0]) return;
-    _vaRunImportSim(_vaCurrentCsvCols, input.files[0].name);
+    var file = input.files[0];
+    _vaSetScenarioBtn(null);
+    if (!/\.(csv|xlsx|xls)$/i.test(file.name)) {
+      _vaShowFileTypeError(file.name);
+      return;
+    }
+    _vaShowFileScanning(file.name, function() { _vaRunImportSim(_vaCurrentCsvCols, file.name); });
   }
 
   function _vaRunImportSim(csvCols, filename) {
+    document.getElementById('va-file-scanning').classList.add('va-im-hidden');
     document.getElementById('va-file-selected').classList.remove('va-im-hidden');
     document.getElementById('va-file-selected-name').textContent = filename;
     document.getElementById('va-mapping-placeholder').classList.add('va-im-hidden');
@@ -24540,13 +24693,16 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
     _vaRenderMappingSection(csvCols, stateInfo);
   }
 
+  // Date format is a per-file value, not part of the column mapping — so a "clean" match on structure
+  // (same columns as a saved mapping) still fully collapses here. It doesn't force a review state on
+  // its own; it only ever surfaces inline when a column is genuinely new/unmapped (state C) or on a
+  // first import (state A), where every row — including date columns — is shown for review anyway.
   function _vaResolveImportState(csvCols) {
     var saved = _vaState.savedMapping;
-    if (!saved) return { state: 'A', newCols: [], hintCols: [] };
+    if (!saved) return { state: 'A', newCols: [] };
     var newCols = csvCols.filter(function(c) { return !(c.csv in saved); });
-    var hintCols = csvCols.filter(function(c) { return _vaHintForField(c.suggested) && (c.csv in saved); });
-    if (newCols.length === 0 && hintCols.length === 0) return { state: 'B', newCols: [], hintCols: [] };
-    return { state: 'C', newCols: newCols, hintCols: hintCols };
+    if (newCols.length === 0) return { state: 'B', newCols: [] };
+    return { state: 'C', newCols: newCols };
   }
 
   function _vaBuildMappingHint(h) {
@@ -24566,15 +24722,15 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
       var fOpts = fmts.map(function(f) { return '<option' + (f === h.defaultFormat ? ' selected' : '') + '>' + f + '</option>'; }).join('');
       return '<div class="va-im-hint-box">' +
         '<div class="va-im-hint-format-picker"><span>Date format used in this column:</span>' +
-        '<select class="va-im-hint-select">' + fOpts + '</select></div>' +
+        '<select class="va-im-hint-select" onchange="vaOnDateFormatChange()">' + fOpts + '</select></div>' +
         '<p class="va-im-hint-box-text">We\'ll read every row in this column using that format and convert it to <strong>YYYY-MM-DD</strong>. Rows that don\'t match will be flagged as errors in Preview.</p>' +
         '</div>';
     }
     return '';
   }
 
-  function _vaBuildMappingRow(col, isAttention) {
-    var opts = _vaFieldOptionsHtml(col.suggested);
+  function _vaBuildMappingRow(col, isAttention, usedFields) {
+    var opts = _vaFieldOptionsHtml(col.suggested, usedFields);
     var hint = _vaBuildMappingHint(_vaHintForField(col.suggested));
     return '<tr' + (isAttention ? ' class="va-im-row--attention"' : '') + '>' +
       '<td class="va-im-td"><code class="va-im-code">' + col.csv + '</code></td>' +
@@ -24584,20 +24740,71 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
   }
 
   // Re-evaluate the date-format (or other) hint whenever the user changes what a column maps to —
-  // the hint follows the selected FIELD, not the file's original column.
+  // the hint follows the selected FIELD, not the file's original column. Also refresh every other
+  // dropdown so a field just picked here disappears from the rest, and one just vacated reappears.
   function vaOnMappingFieldChange(selectEl) {
     var slot = selectEl.parentElement.querySelector('.va-im-hint-slot');
-    if (!slot) return;
-    slot.innerHTML = _vaBuildMappingHint(_vaHintForField(selectEl.value));
+    if (slot) slot.innerHTML = _vaBuildMappingHint(_vaHintForField(selectEl.value));
+    _vaRefreshMappingDropdowns();
+    _vaScheduleAutosave();
   }
 
-  function _vaConfirmMappingBtnHtml() {
-    return '<button type="button" onclick="vaConfirmMapping()" class="va-im-btn va-im-btn--primary">Confirm Mapping' +
-      '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></button>';
+  // Changing the date format itself (inside a hint box) is also a mapping-relevant edit — it
+  // should autosave and refresh the preview the same way changing "Maps to field" does.
+  function vaOnDateFormatChange() {
+    _vaScheduleAutosave();
+  }
+
+  // ─── Autosave — no manual "Confirm"/"Save" step. Every change is persisted a beat after the user
+  // stops editing, mirroring a Docs-style "Saving… / All changes saved" indicator. Reversing a change
+  // just means picking the field again — there's no separate "Cancel" to discard edits.
+  var _vaAutosaveTimer = null;
+
+  function _vaSetAutosavePill(saving) {
+    var pill = document.getElementById('va-mapping-autosave');
+    if (!pill) return;
+    pill.classList.remove('va-im-hidden');
+    if (saving) {
+      pill.classList.add('va-im-autosave-pill--saving');
+      pill.innerHTML = '<span class="va-im-spinner"></span><span>Saving…</span>';
+    } else {
+      pill.classList.remove('va-im-autosave-pill--saving');
+      pill.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>All changes saved</span>';
+    }
+  }
+
+  // Reads whatever is currently on screen — live <select> rows plus any collapsed/locked rows already
+  // in the saved mapping — into _vaState.savedMapping. Matches rows by their CSV column name rather
+  // than position, so it works whether every row is editable (state A) or only some are (state C).
+  function _vaCommitCurrentMapping() {
+    var saved = _vaState.savedMapping || {};
+    var mapping = {};
+    _vaCurrentCsvCols.forEach(function(c) { mapping[c.csv] = saved[c.csv] || c.suggested; });
+    document.querySelectorAll('#va-mapping-body tr').forEach(function(row) {
+      var codeEl = row.querySelector('code');
+      var select = row.querySelector('select');
+      if (codeEl && select) mapping[codeEl.textContent] = select.value;
+    });
+    _vaState.savedMapping = mapping;
+  }
+
+  function _vaScheduleAutosave() {
+    _vaSetAutosavePill(true);
+    var confirmImportBtn = document.getElementById('va-import-confirm-btn');
+    if (confirmImportBtn) confirmImportBtn.disabled = true;
+    if (_vaAutosaveTimer) clearTimeout(_vaAutosaveTimer);
+    _vaAutosaveTimer = setTimeout(function() {
+      _vaAutosaveTimer = null;
+      _vaCommitCurrentMapping();
+      _vaSetAutosavePill(false);
+      document.getElementById('va-preview-placeholder').classList.add('va-im-hidden');
+      document.getElementById('va-preview-content').classList.remove('va-im-hidden');
+      _vaBuildMappingPreview(_vaPreviewSample.headers, _vaPreviewSample.rows);
+    }, 700);
   }
 
   function _vaRenderMappingSection(csvCols, stateInfo) {
-    var state = stateInfo.state, newCols = stateInfo.newCols, hintCols = stateInfo.hintCols;
+    var state = stateInfo.state, newCols = stateInfo.newCols;
     var saved = _vaState.savedMapping || {};
     var placeholder  = document.getElementById('va-mapping-placeholder');
     var savedSummary = document.getElementById('va-mapping-saved-summary');
@@ -24605,12 +24812,15 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
     var banner       = document.getElementById('va-mapping-attention-banner');
     var attList      = document.getElementById('va-attention-list');
     var subtitle     = document.getElementById('va-mapping-subtitle');
-    var footer       = document.getElementById('va-mapping-footer');
 
+    if (_vaAutosaveTimer) { clearTimeout(_vaAutosaveTimer); _vaAutosaveTimer = null; }
     placeholder.classList.add('va-im-hidden');
+    document.getElementById('va-mapping-top-collapse-btn').classList.add('va-im-hidden');
 
     if (state === 'B') {
+      _vaLockedMappingFields = [];
       content.classList.add('va-im-hidden');
+      document.getElementById('va-mapping-autosave').classList.add('va-im-hidden');
       savedSummary.classList.remove('va-im-hidden');
       document.getElementById('va-mapping-saved-count').textContent =
         '· ' + csvCols.length + ' column' + (csvCols.length !== 1 ? 's' : '') + ' matched';
@@ -24627,27 +24837,30 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
     });
 
     if (state === 'A') {
+      _vaLockedMappingFields = [];
       banner.classList.add('va-im-hidden');
       subtitle.classList.remove('va-im-hidden');
-      footer.innerHTML = _vaConfirmMappingBtnHtml();
+      var allSuggested = csvCols.map(function(c) { return c.suggested; });
       document.getElementById('va-mapping-body').innerHTML =
-        csvCols.map(function(c) { return _vaBuildMappingRow(c, false); }).join('');
+        csvCols.map(function(c) { return _vaBuildMappingRow(c, false, allSuggested); }).join('');
     } else {
       banner.classList.remove('va-im-hidden');
       var items = [];
       if (newCols.length > 0) items.push(newCols.length + ' new column' + (newCols.length !== 1 ? 's' : '') + ' not seen in your previous import');
-      if (hintCols.length > 0) items.push(hintCols.length + ' column' + (hintCols.length !== 1 ? 's' : '') + ' with a format hint to confirm');
       attList.innerHTML = items.map(function(i) { return '<li>' + i + '</li>'; }).join('');
       subtitle.classList.add('va-im-hidden');
-      footer.innerHTML = _vaConfirmMappingBtnHtml();
 
       var attentionKeys = {};
-      newCols.concat(hintCols).forEach(function(c) { attentionKeys[c.csv] = true; });
+      newCols.forEach(function(c) { attentionKeys[c.csv] = true; });
       var attentionRows = csvCols.filter(function(c) { return attentionKeys[c.csv]; });
       var savedRows     = csvCols.filter(function(c) { return !attentionKeys[c.csv]; });
 
+      // Saved rows are locked (no live dropdown), but still occupy their mapped field.
+      _vaLockedMappingFields = savedRows.map(function(c) { return saved[c.csv] || c.suggested; });
+      var attentionUsed = attentionRows.map(function(c) { return c.suggested; }).concat(_vaLockedMappingFields);
+
       document.getElementById('va-mapping-body').innerHTML =
-        attentionRows.map(function(c) { return _vaBuildMappingRow(c, true); }).join('');
+        attentionRows.map(function(c) { return _vaBuildMappingRow(c, true, attentionUsed); }).join('');
 
       if (savedRows.length > 0) {
         var table = document.getElementById('va-mapping-table');
@@ -24675,9 +24888,13 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
       }
     }
 
-    document.getElementById('va-preview-placeholder').classList.remove('va-im-hidden');
-    document.getElementById('va-preview-content').classList.add('va-im-hidden');
-    document.getElementById('va-import-confirm-btn').disabled = true;
+    // Nothing to manually confirm — the initial (suggested or previously-saved) mapping is already
+    // valid, so persist it and populate the preview immediately.
+    _vaCommitCurrentMapping();
+    _vaSetAutosavePill(false);
+    document.getElementById('va-preview-placeholder').classList.add('va-im-hidden');
+    document.getElementById('va-preview-content').classList.remove('va-im-hidden');
+    _vaBuildMappingPreview(_vaPreviewSample.headers, _vaPreviewSample.rows);
   }
 
   function vaToggleSavedRows() {
@@ -24688,12 +24905,15 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
     if (chevron) chevron.style.transform = hidden ? '' : 'rotate(90deg)';
   }
 
+  // "Review mapping" opens the saved mapping as fully editable rows (same dropdowns, field-uniqueness,
+  // and date-format hints as a first-time mapping) instead of a read-only list. Rows are pre-filled
+  // with the current mapping, already "saved" — editing one triggers the same autosave cycle as
+  // everywhere else, so there's nothing to explicitly commit here.
   function vaExpandMapping() {
     var savedSummary = document.getElementById('va-mapping-saved-summary');
     var content  = document.getElementById('va-mapping-content');
     var banner   = document.getElementById('va-mapping-attention-banner');
     var subtitle = document.getElementById('va-mapping-subtitle');
-    var footer   = document.getElementById('va-mapping-footer');
     var saved    = _vaState.savedMapping || {};
 
     savedSummary.classList.add('va-im-hidden');
@@ -24705,53 +24925,53 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
       var el = document.getElementById(id); if (el) el.remove();
     });
 
-    document.getElementById('va-mapping-body').innerHTML = _vaCurrentCsvCols.map(function(c) {
-      var mappedTo = saved[c.csv] || c.suggested;
-      return '<tr class="va-im-row--saved-full">' +
-        '<td class="va-im-td"><code class="va-im-code va-im-code--muted2">' + c.csv + '</code></td>' +
-        '<td class="va-im-td va-im-td--muted2">' + mappedTo + '</td>' +
-        '</tr>';
+    var currentCols = _vaCurrentCsvCols.map(function(c) {
+      return { csv: c.csv, suggested: saved[c.csv] || c.suggested };
+    });
+    _vaLockedMappingFields = [];
+    var usedFields = currentCols.map(function(c) { return c.suggested; });
+
+    document.getElementById('va-mapping-body').innerHTML = currentCols.map(function(c) {
+      return _vaBuildMappingRow(c, false, usedFields);
     }).join('');
 
-    footer.innerHTML =
-      '<button type="button" onclick="vaCollapseMapping()" class="va-im-link-btn">' +
-      '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>Collapse</button>';
+    _vaSetAutosavePill(false);
+
+    // Stays visible at the top of a long list so collapsing never requires scrolling all the way down.
+    document.getElementById('va-mapping-top-collapse-btn').classList.remove('va-im-hidden');
   }
 
   function vaCollapseMapping() {
+    if (_vaAutosaveTimer) { clearTimeout(_vaAutosaveTimer); _vaAutosaveTimer = null; }
     document.getElementById('va-mapping-content').classList.add('va-im-hidden');
+    document.getElementById('va-mapping-autosave').classList.add('va-im-hidden');
     document.getElementById('va-mapping-saved-summary').classList.remove('va-im-hidden');
-    document.getElementById('va-mapping-footer').innerHTML = _vaConfirmMappingBtnHtml();
+    document.getElementById('va-mapping-top-collapse-btn').classList.add('va-im-hidden');
   }
 
+  // Briefly shows a "Refreshing preview…" state before swapping in the new rows, so it's clear the
+  // preview actually reflects whatever mapping was just confirmed/saved — not stale, leftover data.
   function _vaBuildMappingPreview(headers, rows) {
     var container = document.getElementById('va-preview-table');
     if (!container) return;
-    var ths = headers.map(function(h) { return '<th class="va-im-preview-th">' + h + '</th>'; }).join('');
-    var trs = rows.map(function(row) {
-      var tds = row.map(function(cell) {
-        var empty = !cell || cell === '—';
-        return '<td class="va-im-preview-td' + (empty ? ' va-im-preview-td--empty' : '') + '">' + (cell || '—') + '</td>';
+    container.innerHTML = '<div class="va-im-preview-loading"><span class="va-im-spinner"></span>Refreshing preview…</div>';
+    setTimeout(function() {
+      var ths = headers.map(function(h) { return '<th class="va-im-preview-th">' + h + '</th>'; }).join('');
+      var trs = rows.map(function(row) {
+        var tds = row.map(function(cell) {
+          var empty = !cell || cell === '—';
+          return '<td class="va-im-preview-td' + (empty ? ' va-im-preview-td--empty' : '') + '">' + (cell || '—') + '</td>';
+        }).join('');
+        return '<tr>' + tds + '</tr>';
       }).join('');
-      return '<tr>' + tds + '</tr>';
-    }).join('');
-    container.innerHTML = '<table class="va-im-preview-table"><thead><tr>' + ths + '</tr></thead><tbody>' + trs + '</tbody></table>';
-    var confirmBtn = document.getElementById('va-import-confirm-btn');
-    if (confirmBtn) confirmBtn.disabled = false;
+      container.classList.add('va-im-preview-fade-in');
+      container.innerHTML = '<table class="va-im-preview-table"><thead><tr>' + ths + '</tr></thead><tbody>' + trs + '</tbody></table>';
+      requestAnimationFrame(function() { container.classList.remove('va-im-preview-fade-in'); });
+      var confirmBtn = document.getElementById('va-import-confirm-btn');
+      if (confirmBtn) confirmBtn.disabled = false;
+    }, 500);
   }
 
-  function vaConfirmMapping() {
-    var mapping = {};
-    var rows = document.querySelectorAll('#va-mapping-body tr');
-    _vaCurrentCsvCols.forEach(function(col, i) {
-      var select = rows[i] && rows[i].querySelector('select');
-      mapping[col.csv] = select ? select.value : col.suggested;
-    });
-    _vaState.savedMapping = mapping;
-    document.getElementById('va-preview-placeholder').classList.add('va-im-hidden');
-    document.getElementById('va-preview-content').classList.remove('va-im-hidden');
-    _vaBuildMappingPreview(_vaPreviewSample.headers, _vaPreviewSample.rows);
-  }
 
   function _vaCellText(row, selector) {
     var el = row.querySelector(selector);
@@ -24910,9 +25130,8 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
   }
 
   function vaConfirmImport() {
-    var updatedCount = 0;
-    _vaVendorUpdates.forEach(function(v) { if (_vaUpdateVendorRow(v)) updatedCount++; });
-    showVaToast(updatedCount + ' vendor line' + (updatedCount === 1 ? '' : 's') + ' updated in Accrual Manager');
+    _vaVendorUpdates.forEach(function(v) { _vaUpdateVendorRow(v); });
+    showVaToast('Your import is being processed in the background. We’ll email you once it’s done.');
     vaCloseModal();
   }
 
@@ -24921,8 +25140,8 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
   window.vaResetImport = vaResetImport;
   window.vaSetScenario = vaSetScenario;
   window.vaSimulateImport = vaSimulateImport;
-  window.vaConfirmMapping = vaConfirmMapping;
   window.vaOnMappingFieldChange = vaOnMappingFieldChange;
+  window.vaOnDateFormatChange = vaOnDateFormatChange;
   window.vaConfirmImport = vaConfirmImport;
   window.vaExportCurrentData = vaExportCurrentData;
   window.vaToggleSavedRows = vaToggleSavedRows;

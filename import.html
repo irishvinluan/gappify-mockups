@@ -24176,6 +24176,7 @@ div:has(> .sidebar.collapsed) .vi-page-title {
   transition: color .15s;
 }
 .va-im-autosave-pill--saving { color: #6366f1; }
+.va-im-autosave-pill--error { color: #dc2626; }
 .va-im-autosave-pill svg { flex-shrink: 0; }
 .va-im-eyebrow { font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .05em; }
 .va-im-scenario-btn {
@@ -24239,6 +24240,24 @@ div:has(> .sidebar.collapsed) .vi-page-title {
   border: 1px solid #e2e8f0; padding: 6px 8px; background: #fff;
 }
 .va-im-select:focus { outline: none; border-color: #818cf8; }
+.va-im-select--duplicate { border-color: #ef4444; }
+.va-im-select--duplicate:focus { border-color: #ef4444; }
+.va-im-duplicate-warning {
+  display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 11px; color: #b91c1c;
+}
+.va-im-duplicate-warning svg { flex-shrink: 0; color: #ef4444; }
+.va-im-td--duplicate { color: #b91c1c !important; font-weight: 600; }
+.va-im-required-pill {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500;
+  color: #92400e; background: #fffbeb; border: 1px solid #fde68a; padding: 6px 10px;
+  border-radius: 999px; margin-bottom: 12px;
+}
+.va-im-required-pill svg { flex-shrink: 0; color: #f59e0b; }
+.va-im-locked-note {
+  display: flex; align-items: center; gap: 6px; margin-top: 6px; padding: 8px 10px;
+  background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 11px; color: #475569;
+}
+.va-im-locked-note svg { flex-shrink: 0; color: #64748b; }
 .va-im-hint-box { margin-top: 6px; padding: 8px 10px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; }
 .va-im-hint-box-title { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; font-size: 11px; font-weight: 600; color: #92400e; }
 .va-im-hint-box-text { font-size: 11px; color: #b45309; line-height: 1.5; margin: 0; }
@@ -24388,6 +24407,10 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
             </div>
             <ul id="va-attention-list" class="va-im-attention-list"></ul>
           </div>
+          <div id="va-required-fields-notice" class="va-im-hidden va-im-required-pill">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="va-required-fields-notice-text"></span>
+          </div>
           <p id="va-mapping-subtitle" class="va-im-subtitle">We've suggested matches based on your column names. Adjust any that look off.</p>
           <div class="va-im-table-wrap">
             <table id="va-mapping-table" class="va-im-table">
@@ -24478,16 +24501,13 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
     return { label: f.label, fields: [f.label + ' Debit', f.label + ' Debit ID', f.label + ' Credit', f.label + ' Credit ID'] };
   }));
 
-  // 'usedFields' are fields already claimed by other rows — they're left out so the same field can't
-  // be mapped twice. The row's own current selection is always kept, even if it's in that list.
-  function _vaFieldOptionsHtml(selected, usedFields) {
-    usedFields = usedFields || [];
+  // Every field is always available in every row's dropdown — the same field can be mapped more
+  // than once (no cross-row exclusion).
+  function _vaFieldOptionsHtml(selected) {
     var html = '<option' + (selected === '— Skip this field —' ? ' selected' : '') + '>— Skip this field —</option>';
     _vaFieldGroups.forEach(function(g) {
-      var fields = g.fields.filter(function(f) { return f === selected || usedFields.indexOf(f) === -1; });
-      if (fields.length === 0) return; // every field in this group is already mapped elsewhere
       html += '<optgroup label="' + g.label + '">';
-      html += fields.map(function(f) {
+      html += g.fields.map(function(f) {
         return '<option' + (f === selected ? ' selected' : '') + '>' + f + '</option>';
       }).join('');
       html += '</optgroup>';
@@ -24495,26 +24515,12 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
     return html;
   }
 
-  // Fields locked into non-editable "saved" rows (collapsed under the toggle) — still occupy a slot
-  // even though those rows have no live <select> to read from. Tracked so the visible dropdowns can
-  // exclude them too. Empty outside of the "Re-import (clean)" / attention-banner (state C) view.
-  var _vaLockedMappingFields = [];
-
-  // Re-derive which fields are in use across all visible dropdowns and refresh every dropdown's
-  // option list accordingly — called whenever any one selection changes.
-  function _vaRefreshMappingDropdowns() {
-    var selects = Array.prototype.slice.call(document.querySelectorAll('#va-mapping-body select.va-im-select'));
-    var used = selects.map(function(s) { return s.value; }).concat(_vaLockedMappingFields);
-    selects.forEach(function(sel) {
-      sel.innerHTML = _vaFieldOptionsHtml(sel.value, used);
-    });
-  }
-
   // Hints are keyed by TARGET FIELD, not by CSV column — so the date-format picker follows
   // whatever field the user has selected in "Maps to field", not just the file's original header.
   var _vaFieldHints = {
     'Service Start': { type: 'date-format', defaultFormat: 'MM/DD/YYYY' },
-    'Service End':   { type: 'date-format', defaultFormat: 'MM/DD/YYYY' }
+    'Service End':   { type: 'date-format', defaultFormat: 'MM/DD/YYYY' },
+    'Vendor':        { type: 'locked-field', message: 'Vendor will be skipped during import and will not be updated.' }
   };
   function _vaHintForField(fieldName) {
     return _vaFieldHints[fieldName] || null;
@@ -24588,7 +24594,6 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
     });
     _vaState.savedMapping = null;
     _vaCurrentCsvCols = _vaCsvCols_first;
-    _vaLockedMappingFields = [];
     _vaSetScenarioBtn('first');
   }
 
@@ -24726,26 +24731,32 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
         '<p class="va-im-hint-box-text">We\'ll read every row in this column using that format and convert it to <strong>YYYY-MM-DD</strong>. Rows that don\'t match will be flagged as errors in Preview.</p>' +
         '</div>';
     }
+    if (h.type === 'locked-field') {
+      // Informational, not an error — selecting it doesn't block anything, it just has no effect.
+      return '<div class="va-im-locked-note">' +
+        '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>' +
+        '<span>' + h.message + '</span>' +
+        '</div>';
+    }
     return '';
   }
 
-  function _vaBuildMappingRow(col, isAttention, usedFields) {
-    var opts = _vaFieldOptionsHtml(col.suggested, usedFields);
+  function _vaBuildMappingRow(col, isAttention) {
+    var opts = _vaFieldOptionsHtml(col.suggested);
     var hint = _vaBuildMappingHint(_vaHintForField(col.suggested));
     return '<tr' + (isAttention ? ' class="va-im-row--attention"' : '') + '>' +
       '<td class="va-im-td"><code class="va-im-code">' + col.csv + '</code></td>' +
       '<td class="va-im-td"><select class="va-im-select" onchange="vaOnMappingFieldChange(this)">' + opts + '</select>' +
-      '<div class="va-im-hint-slot">' + hint + '</div></td>' +
+      '<div class="va-im-hint-slot">' + hint + '</div>' +
+      '<div class="va-im-duplicate-slot"></div></td>' +
       '</tr>';
   }
 
   // Re-evaluate the date-format (or other) hint whenever the user changes what a column maps to —
-  // the hint follows the selected FIELD, not the file's original column. Also refresh every other
-  // dropdown so a field just picked here disappears from the rest, and one just vacated reappears.
+  // the hint follows the selected FIELD, not the file's original column.
   function vaOnMappingFieldChange(selectEl) {
     var slot = selectEl.parentElement.querySelector('.va-im-hint-slot');
     if (slot) slot.innerHTML = _vaBuildMappingHint(_vaHintForField(selectEl.value));
-    _vaRefreshMappingDropdowns();
     _vaScheduleAutosave();
   }
 
@@ -24760,15 +24771,18 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
   // just means picking the field again — there's no separate "Cancel" to discard edits.
   var _vaAutosaveTimer = null;
 
-  function _vaSetAutosavePill(saving) {
+  // status: 'saving' | 'saved' | 'duplicate'
+  function _vaSetAutosavePill(status) {
     var pill = document.getElementById('va-mapping-autosave');
     if (!pill) return;
-    pill.classList.remove('va-im-hidden');
-    if (saving) {
+    pill.classList.remove('va-im-hidden', 'va-im-autosave-pill--saving', 'va-im-autosave-pill--error');
+    if (status === 'saving') {
       pill.classList.add('va-im-autosave-pill--saving');
       pill.innerHTML = '<span class="va-im-spinner"></span><span>Saving…</span>';
+    } else if (status === 'issue') {
+      pill.classList.add('va-im-autosave-pill--error');
+      pill.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>Fix mapping issues</span>';
     } else {
-      pill.classList.remove('va-im-autosave-pill--saving');
       pill.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>All changes saved</span>';
     }
   }
@@ -24788,18 +24802,98 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
     _vaState.savedMapping = mapping;
   }
 
+  // ─── Duplicate field detection — a field can be picked in any row now (no more dropdown exclusion),
+  // so more than one CSV column can end up mapped to the same field. "Skip this field" never counts,
+  // no matter how many rows use it.
+  function _vaFindDuplicateFields() {
+    var saved = _vaState.savedMapping || {};
+    var counts = {};
+    Object.keys(saved).forEach(function(csv) {
+      var field = saved[csv];
+      if (!field || field === '— Skip this field —') return;
+      counts[field] = (counts[field] || 0) + 1;
+    });
+    var duplicates = {};
+    Object.keys(counts).forEach(function(f) { if (counts[f] > 1) duplicates[f] = true; });
+    return duplicates;
+  }
+
+  // ─── Required-field detection — Source System ID and Type must each be mapped by at least one
+  // column, or the import has no way to match/classify a line.
+  var _vaRequiredFields = ['Source System ID', 'Type'];
+
+  function _vaFindMissingRequiredFields() {
+    var saved = _vaState.savedMapping || {};
+    var mappedFields = {};
+    Object.keys(saved).forEach(function(csv) {
+      var field = saved[csv];
+      if (field && field !== '— Skip this field —') mappedFields[field] = true;
+    });
+    return _vaRequiredFields.filter(function(f) { return !mappedFields[f]; });
+  }
+
+  function _vaMappingHasBlockingIssues() {
+    return Object.keys(_vaFindDuplicateFields()).length > 0 || _vaFindMissingRequiredFields().length > 0;
+  }
+
+  function _vaDuplicateWarningHtml(field) {
+    return '<div class="va-im-duplicate-warning">' +
+      '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
+      '<span>"' + field + '" is already mapped to another column.</span>' +
+      '</div>';
+  }
+
+  // Highlights every row (editable or collapsed/locked) whose mapped field is used elsewhere too,
+  // and shows/hides the "required fields" pill above the table. Returns whether any blocking issue
+  // exists (duplicate or missing-required), so callers can gate the pill / Confirm Import on it.
+  function _vaApplyMappingValidation() {
+    var duplicates = _vaFindDuplicateFields();
+    document.querySelectorAll('#va-mapping-body select.va-im-select').forEach(function(sel) {
+      var isDup = !!duplicates[sel.value];
+      sel.classList.toggle('va-im-select--duplicate', isDup);
+      var slot = sel.parentElement.querySelector('.va-im-duplicate-slot');
+      if (slot) slot.innerHTML = isDup ? _vaDuplicateWarningHtml(sel.value) : '';
+    });
+    document.querySelectorAll('#va-mapping-saved-body tr').forEach(function(row) {
+      var mappedCell = row.querySelectorAll('td')[1];
+      if (mappedCell) mappedCell.classList.toggle('va-im-td--duplicate', !!duplicates[mappedCell.textContent]);
+    });
+
+    var missingRequired = _vaFindMissingRequiredFields();
+    var notice = document.getElementById('va-required-fields-notice');
+    if (notice) {
+      if (missingRequired.length > 0) {
+        notice.classList.remove('va-im-hidden');
+        document.getElementById('va-required-fields-notice-text').textContent =
+          missingRequired.join(' and ') + (missingRequired.length > 1 ? ' are required' : ' is required') +
+          ' — map ' + (missingRequired.length > 1 ? 'them' : 'it') + ' to a column before you can import.';
+      } else {
+        notice.classList.add('va-im-hidden');
+      }
+    }
+
+    return Object.keys(duplicates).length > 0 || missingRequired.length > 0;
+  }
+
+  // Commits the mapping, re-validates it, and refreshes the pill + preview to match — shared by the
+  // autosave debounce and every "just built these rows" render path.
+  function _vaCommitAndRefresh() {
+    _vaCommitCurrentMapping();
+    var hasIssues = _vaApplyMappingValidation();
+    _vaSetAutosavePill(hasIssues ? 'issue' : 'saved');
+    document.getElementById('va-preview-placeholder').classList.add('va-im-hidden');
+    document.getElementById('va-preview-content').classList.remove('va-im-hidden');
+    _vaBuildMappingPreview(_vaPreviewSample.headers, _vaPreviewSample.rows);
+  }
+
   function _vaScheduleAutosave() {
-    _vaSetAutosavePill(true);
+    _vaSetAutosavePill('saving');
     var confirmImportBtn = document.getElementById('va-import-confirm-btn');
     if (confirmImportBtn) confirmImportBtn.disabled = true;
     if (_vaAutosaveTimer) clearTimeout(_vaAutosaveTimer);
     _vaAutosaveTimer = setTimeout(function() {
       _vaAutosaveTimer = null;
-      _vaCommitCurrentMapping();
-      _vaSetAutosavePill(false);
-      document.getElementById('va-preview-placeholder').classList.add('va-im-hidden');
-      document.getElementById('va-preview-content').classList.remove('va-im-hidden');
-      _vaBuildMappingPreview(_vaPreviewSample.headers, _vaPreviewSample.rows);
+      _vaCommitAndRefresh();
     }, 700);
   }
 
@@ -24818,7 +24912,6 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
     document.getElementById('va-mapping-top-collapse-btn').classList.add('va-im-hidden');
 
     if (state === 'B') {
-      _vaLockedMappingFields = [];
       content.classList.add('va-im-hidden');
       document.getElementById('va-mapping-autosave').classList.add('va-im-hidden');
       savedSummary.classList.remove('va-im-hidden');
@@ -24837,12 +24930,10 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
     });
 
     if (state === 'A') {
-      _vaLockedMappingFields = [];
       banner.classList.add('va-im-hidden');
       subtitle.classList.remove('va-im-hidden');
-      var allSuggested = csvCols.map(function(c) { return c.suggested; });
       document.getElementById('va-mapping-body').innerHTML =
-        csvCols.map(function(c) { return _vaBuildMappingRow(c, false, allSuggested); }).join('');
+        csvCols.map(function(c) { return _vaBuildMappingRow(c, false); }).join('');
     } else {
       banner.classList.remove('va-im-hidden');
       var items = [];
@@ -24855,12 +24946,8 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
       var attentionRows = csvCols.filter(function(c) { return attentionKeys[c.csv]; });
       var savedRows     = csvCols.filter(function(c) { return !attentionKeys[c.csv]; });
 
-      // Saved rows are locked (no live dropdown), but still occupy their mapped field.
-      _vaLockedMappingFields = savedRows.map(function(c) { return saved[c.csv] || c.suggested; });
-      var attentionUsed = attentionRows.map(function(c) { return c.suggested; }).concat(_vaLockedMappingFields);
-
       document.getElementById('va-mapping-body').innerHTML =
-        attentionRows.map(function(c) { return _vaBuildMappingRow(c, true, attentionUsed); }).join('');
+        attentionRows.map(function(c) { return _vaBuildMappingRow(c, true); }).join('');
 
       if (savedRows.length > 0) {
         var table = document.getElementById('va-mapping-table');
@@ -24890,11 +24977,7 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
 
     // Nothing to manually confirm — the initial (suggested or previously-saved) mapping is already
     // valid, so persist it and populate the preview immediately.
-    _vaCommitCurrentMapping();
-    _vaSetAutosavePill(false);
-    document.getElementById('va-preview-placeholder').classList.add('va-im-hidden');
-    document.getElementById('va-preview-content').classList.remove('va-im-hidden');
-    _vaBuildMappingPreview(_vaPreviewSample.headers, _vaPreviewSample.rows);
+    _vaCommitAndRefresh();
   }
 
   function vaToggleSavedRows() {
@@ -24928,14 +25011,14 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
     var currentCols = _vaCurrentCsvCols.map(function(c) {
       return { csv: c.csv, suggested: saved[c.csv] || c.suggested };
     });
-    _vaLockedMappingFields = [];
-    var usedFields = currentCols.map(function(c) { return c.suggested; });
 
     document.getElementById('va-mapping-body').innerHTML = currentCols.map(function(c) {
-      return _vaBuildMappingRow(c, false, usedFields);
+      return _vaBuildMappingRow(c, false);
     }).join('');
 
-    _vaSetAutosavePill(false);
+    // Nothing changed by opening it — just reflect whatever was already saved, issues included.
+    var hasIssues = _vaApplyMappingValidation();
+    _vaSetAutosavePill(hasIssues ? 'issue' : 'saved');
 
     // Stays visible at the top of a long list so collapsing never requires scrolling all the way down.
     document.getElementById('va-mapping-top-collapse-btn').classList.remove('va-im-hidden');
@@ -24967,8 +25050,10 @@ CC ap-team@adecco.com;finance@adecco.com</div></div></div></div><div id="va-impo
       container.classList.add('va-im-preview-fade-in');
       container.innerHTML = '<table class="va-im-preview-table"><thead><tr>' + ths + '</tr></thead><tbody>' + trs + '</tbody></table>';
       requestAnimationFrame(function() { container.classList.remove('va-im-preview-fade-in'); });
+      // Re-check at the moment Confirm Import would be re-enabled — a duplicate mapping or a missing
+      // required field keeps it disabled even after the preview finishes refreshing.
       var confirmBtn = document.getElementById('va-import-confirm-btn');
-      if (confirmBtn) confirmBtn.disabled = false;
+      if (confirmBtn) confirmBtn.disabled = _vaMappingHasBlockingIssues();
     }, 500);
   }
 

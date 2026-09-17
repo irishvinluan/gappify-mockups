@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connected Apps — Slack Integration Mockup</title>
+<style>
+  :root{
+    --gappify-indigo-50:#eef2ff;
+    --gappify-indigo-100:#e0e7ff;
+    --gappify-indigo-200:#c7d2fe;
+    --gappify-indigo-500:#6366f1;
+    --gappify-indigo-600:#4f46e5;
+    --gappify-indigo-700:#4338ca;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    padding:0;
+    height:100%;
+    background:#f1f5f9;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:#0f172a;
+  }
+  .container{
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+  }
+
+  /* ---------- Top nav ---------- */
+  .global-nav{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:16px;
+    padding:0 24px;
+    background:#fff;
+    border-bottom:1px solid #e2e8f1;
+    height:52px;
+    flex-shrink:0;
+  }
+  .global-nav-left{display:flex;align-items:center;gap:12px;min-width:0;}
+  .global-nav-logo{display:inline-flex;align-items:center;}
+  .global-nav-logo img{display:block;height:20px;}
+  .global-nav-separator{width:1px;height:20px;background:#e2e8f0;}
+  .global-nav-module{display:flex;align-items:center;gap:8px;}
+  .global-nav-module-icon img{height:22px;max-width:140px;object-fit:contain;display:block;}
+  .global-nav-module-labels{display:flex;align-items:flex-start;gap:4px;}
+  .global-nav-module-title{font-size:13px;font-weight:600;color:#442dd7;white-space:nowrap;}
+  .global-nav-beta-badge{
+    display:inline-flex;align-items:center;margin-top:-7px;margin-left:-2px;
+    padding:2px 4px;border-radius:4px;font-size:7px;font-weight:700;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--gappify-indigo-600);background:#e0e7ff;border:1px solid #c7d2fe;
+  }
+  .global-nav-links{display:flex;align-items:center;justify-content:center;gap:3px;}
+  .global-nav-link{
+    position:relative;display:inline-flex;align-items:center;padding:16px 12px 14px;
+    font-size:12px;font-weight:600;color:#46566c;text-decoration:none;white-space:nowrap;
+  }
+  .global-nav-link:hover{color:#725bb4;}
+  .global-nav-link--active{color:#4f39f6;}
+  .global-nav-link--active::after{
+    content:"";display:block;position:absolute;left:50%;bottom:-1px;transform:translateX(-50%);
+    width:100%;border-bottom:2px solid #4f39f6;
+  }
+  .global-nav-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px;}
+  .avatar-pill{
+    width:28px;height:28px;border-radius:50%;border:none;
+    background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;
+    font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;
+  }
+
+  /* ---------- Settings shell ---------- */
+  .settings-page-shell{position:relative;display:flex;flex:1;min-height:0;overflow:hidden;}
+
+  .settings-sidebar-v2{width:224px;flex-shrink:0;background:#fff;border-right:1px solid #e2e8f0;overflow-y:auto;}
+  .settings-sidebar-header-v2{padding:16px 16px 0;}
+  .settings-sidebar-title-v2{font-size:16px;font-weight:700;color:#0f172a;margin:0 0 12px;}
+  .settings-menu-v2{list-style:none;margin:0;padding:0 16px 16px;}
+  .settings-menu-v2 li{margin:0 0 2px;}
+  .settings-menu-item,.settings-submenu-title{
+    box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;
+    padding:6px 12px;border-radius:8px;border-inline-start:2px solid transparent;
+    font-size:12px;font-weight:500;color:#475569;cursor:pointer;text-decoration:none;
+  }
+  .settings-menu-item:hover,.settings-submenu-title:hover{background:#f8fafc;color:#0f172a;}
+  .settings-menu-item.selected{
+    background:#eef2ff;color:#4338ca;font-weight:600;
+    border-inline-start:2px solid #6366f1;border-radius:0 8px 8px 0;
+  }
+  .settings-submenu-arrow{color:#94a3b8;font-size:10px;transition:transform .15s ease;}
+  .settings-submenu.open > .settings-submenu-title .settings-submenu-arrow{transform:rotate(90deg);}
+  .settings-submenu-list{list-style:none;margin:2px 0 0 12px;padding-left:8px;border-left:1px solid #e2e8f0;}
+  .settings-submenu-list .settings-menu-item{color:#64748b;}
+  .settings-submenu-list{display:none;}
+  .settings-submenu.open > .settings-submenu-list{display:block;}
+
+  .settings-page-shell-content{flex:1;display:flex;flex-direction:column;min-width:0;min-height:0;overflow:auto;padding:16px 24px 24px;}
+  .settings-page-shell-title-row-v2{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .settings-page-shell-title-v2{font-size:16px;font-weight:700;color:#0f172a;margin:0;}
+  .settings-page-shell-box{
+    flex:1;display:flex;flex-direction:column;min-height:0;background:#fff;
+    border-radius:12px;border:1px solid #e2e8f0;padding:24px;overflow:auto;
+  }
+
+  /* ---------- Connected Apps ---------- */
+  .connected-apps-container{flex:1;display:flex;flex-direction:column;}
+  .connected-apps-subtitle{color:rgba(0,0,0,.45);margin:0 0 24px;font-size:13px;}
+  .connected-apps-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:16px;
+  }
+  .connected-apps-card{
+    background:#fff;border:1px solid #f0f0f0;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.04);
+  }
+  .connected-apps-card-body{padding:16px;}
+  .connected-apps-card-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;}
+  .connected-apps-card-icon{width:32px;height:32px;border-radius:6px;object-fit:contain;flex-shrink:0;}
+  .connected-apps-card-title-group{display:flex;flex-direction:column;gap:2px;}
+  .connected-apps-card-title{font-size:12px;font-weight:700;color:#262626;}
+  .connected-apps-card-description{font-size:12px;color:#8c8c8c;}
+  .connected-apps-card-status-group{display:flex;flex-direction:column;gap:4px;margin-bottom:16px;}
+  .connected-apps-status{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;}
+  .connected-apps-status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#bfbfbf;}
+  .connected-apps-status-label{color:#64748b;}
+  .connected-apps-status--connected .connected-apps-status-dot{background:#52c41a;}
+  .connected-apps-status--connected .connected-apps-status-label{color:#389e0d;}
+  .connected-apps-status--not-connected .connected-apps-status-dot{background:#bfbfbf;}
+  .connected-apps-status--not-connected .connected-apps-status-label{color:#8c8c8c;}
+  .connected-apps-card-footer{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+
+  /* Base metrics lifted from the app's actual antd button/input output
+     (height 32, padding 0 15, radius 6, font 14 for buttons; padding 4 11,
+     radius 6, font 14 for inputs) so Configure feels native, not bespoke. */
+  .btn{
+    appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    height:32px;border-radius:6px;border:1px solid transparent;padding:0 15px;
+    font-family:inherit;font-size:14px;font-weight:400;cursor:pointer;white-space:nowrap;
+  }
+  .btn-primary{background:var(--gappify-indigo-600);border-color:var(--gappify-indigo-600);color:#fff;}
+  .btn-primary:hover{background:var(--gappify-indigo-700);border-color:var(--gappify-indigo-700);}
+  .btn-default{background:#fff;border-color:#d9d9d9;color:rgba(0,0,0,.85);}
+  .btn-default:hover{color:var(--gappify-indigo-600);border-color:var(--gappify-indigo-600);}
+  .btn-danger-tint{background:#fff1f0;border-color:#fff1f0;color:#cf1322;}
+  .btn-danger-tint:hover{background:#ffd8d4;border-color:#ffd8d4;}
+  /* Matches antd's real disabled button (rgba(0,0,0,.04) fill, .25 text,
+     #d9d9d9 border) instead of a faded tint of whatever color it was. */
+  .btn:disabled{cursor:not-allowed;border-color:#d9d9d9!important;color:rgba(0,0,0,.25)!important;background:rgba(0,0,0,.04)!important;}
+
+  .connected-apps-connected-detail{font-size:12px;color:#8c8c8c;}
+  .connected-apps-connected-detail strong{color:#262626;font-weight:600;}
+
+  /* ---------- Connected Apps card action buttons ---------- */
+  /* Matches the real "Configure Jira" reference (accrual-cloud.vercel.app):
+     outlined slate default + rectangular red-50/red-700 danger, not the
+     antd-derived pill/tint versions used elsewhere in this mockup. */
+  :root{
+    --slate-900:#0f172a; --slate-700:#334155; --slate-600:#475569;
+    --slate-500:#64748b; --slate-400:#94a3b8; --slate-300:#cbd5e1;
+    --slate-200:#e2e8f0; --slate-100:#f1f5f9; --slate-50:#f8fafc;
+  }
+  .card-status-row{display:flex;align-items:center;gap:8px;}
+  .card-status-dot{width:8px;height:8px;border-radius:50%;background:#10b981;flex-shrink:0;}
+  .card-status-text{font-size:12px;font-weight:600;color:var(--slate-700);}
+  .card-btn-outline{
+    display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:6px;
+    border:1px solid var(--slate-200);background:#fff;font-size:12px;font-weight:600;
+    color:var(--slate-600);cursor:pointer;white-space:nowrap;transition:all .15s;
+  }
+  .card-btn-outline:hover{background:var(--gappify-indigo-50);border-color:#a5b4fc;color:var(--gappify-indigo-600);}
+  .card-btn-danger{
+    display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:6px;
+    border:1px solid #fecaca;background:#fef2f2;color:#b91c1c;font-size:12px;font-weight:600;
+    cursor:pointer;white-space:nowrap;transition:all .15s;
+  }
+  .card-btn-danger:hover{background:#fee2e2;}
+
+  /* ---------- Configure Slack modal ----------
+     Rebuilt to match the real "Configure Jira" modal reference exactly:
+     white rounded-xl card, slate borders/text, indigo-600 accent, 12/14px
+     type — same modal chrome as Jira's, populated with Slack's own settings
+     (Workspace, Delivery Channel, Test Notification) instead of Jira's
+     scope/field-mapping, so Configure never leaves Connected Apps. */
+  .scfg-overlay{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;}
+  .scfg-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.4);backdrop-filter:blur(1px);}
+  .scfg-modal{
+    position:relative;z-index:9999;background:#fff;width:100%;max-width:672px;max-height:85vh;
+    border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,.25);border:1px solid var(--slate-200);
+    display:flex;flex-direction:column;overflow:hidden;
+  }
+  .scfg-header{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--slate-200);}
+  .scfg-header-icon{width:22px;height:22px;flex-shrink:0;}
+  .scfg-header-title{font-size:14px;font-weight:700;color:var(--slate-900);flex:1;margin:0;}
+  .scfg-close{background:none;border:none;color:var(--slate-400);cursor:pointer;padding:2px;border-radius:4px;display:flex;}
+  .scfg-close:hover{color:var(--gappify-indigo-500);}
+
+  .scfg-body{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:24px;}
+  .scfg-section{display:flex;flex-direction:column;gap:12px;}
+  .scfg-section-title{font-size:12px;font-weight:700;color:var(--slate-900);margin:0;}
+  .scfg-section-desc{font-size:11px;color:var(--slate-500);margin:0;}
+  .scfg-field{display:flex;flex-direction:column;gap:6px;}
+  .scfg-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--slate-600);}
+
+  .scfg-workspace-row{display:flex;align-items:center;gap:8px;}
+  .scfg-status-dot{width:8px;height:8px;border-radius:50%;background:#10b981;flex-shrink:0;}
+  .scfg-status-text{font-size:12px;font-weight:600;color:var(--slate-700);}
+  .config-team-badge{font-size:11px;font-family:ui-monospace,SFMono-Regular,monospace;color:var(--slate-500);border:1px solid var(--slate-200);border-radius:4px;padding:2px 6px;background:var(--slate-50);}
+
+  .scfg-outline-btn{
+    display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:6px;
+    border:1px solid var(--slate-200);background:#fff;font-size:12px;font-weight:600;
+    color:var(--slate-600);cursor:pointer;white-space:nowrap;transition:all .15s;
+  }
+  .scfg-outline-btn:hover{background:var(--gappify-indigo-50);border-color:#a5b4fc;color:var(--gappify-indigo-600);}
+  .scfg-outline-btn:disabled{cursor:not-allowed;opacity:.5;}
+  .scfg-outline-btn:disabled:hover{background:#fff;border-color:var(--slate-200);color:var(--slate-600);}
+
+  .scfg-segment{display:flex;gap:6px;}
+  .scfg-segment-btn{flex:1;text-align:center;padding:8px 10px;border-radius:6px;border:1px solid var(--slate-200);background:#fff;font-size:12px;font-weight:600;color:var(--slate-600);cursor:pointer;transition:all .15s;}
+  .scfg-segment-btn:hover{border-color:#a5b4fc;}
+  .scfg-segment-btn.active{background:var(--gappify-indigo-50);border-color:#a5b4fc;color:var(--gappify-indigo-700);}
+
+  .scfg-user-picker{position:relative;}
+  .scfg-chip-box{width:100%;display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-height:36px;padding:6px 8px;border:1px solid var(--slate-200);border-radius:6px;background:#fff;cursor:text;transition:all .15s;}
+  .scfg-chip-box:focus-within{border-color:#818cf8;box-shadow:0 0 0 3px rgba(99,102,241,.15);}
+  .scfg-chip{display:inline-flex;align-items:center;gap:4px;padding:2px 4px 2px 8px;border-radius:4px;font-size:11px;font-weight:500;white-space:nowrap;background:var(--gappify-indigo-50);color:var(--gappify-indigo-700);border:1px solid var(--gappify-indigo-200);}
+  .scfg-chip button{background:none;border:none;color:inherit;cursor:pointer;display:flex;padding:0;font-size:12px;line-height:1;}
+  .scfg-chip button:hover{color:#ef4444;}
+  .scfg-chip-input{flex:1;min-width:120px;border:none;outline:none;font-size:12px;background:transparent;color:var(--slate-700);font-family:inherit;}
+  .scfg-user-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--slate-200);border-radius:8px;box-shadow:0 10px 15px -3px rgba(0,0,0,.1);max-height:200px;overflow-y:auto;z-index:10;}
+  .scfg-user-option{display:flex;align-items:center;gap:8px;padding:8px 12px;font-size:12px;color:var(--slate-700);cursor:pointer;}
+  .scfg-user-option:hover{background:var(--slate-50);}
+
+  .scfg-footer{flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--slate-200);}
+  .scfg-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:32px;padding:0 12px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;white-space:nowrap;transition:all .15s;border:1px solid transparent;}
+  .scfg-btn-cancel{background:#fff;border-color:var(--slate-300);color:var(--slate-700);}
+  .scfg-btn-cancel:hover{background:var(--slate-100);}
+  .scfg-btn-save{background:var(--gappify-indigo-600);border-color:var(--gappify-indigo-600);color:#fff;}
+  .scfg-btn-save:hover{background:var(--gappify-indigo-700);}
+
+  /* ---------- Member directory modal ---------- */
+  /* Stacks on top of the Configure Slack modal (z-index 9998/9999) since it
+     opens from a button inside that modal — a lower z-index here would
+     render it invisibly behind the modal that spawned it. Styled to match
+     that same slate/indigo modal language rather than the older antd-ish
+     look this used before the Configure redesign. */
+  .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.4);backdrop-filter:blur(1px);display:flex;align-items:center;justify-content:center;z-index:10000;}
+  .modal-box{
+    background:#fff;border-radius:12px;width:420px;max-width:90vw;max-height:80vh;
+    border:1px solid var(--slate-200);box-shadow:0 25px 50px -12px rgba(0,0,0,.25);
+    display:flex;flex-direction:column;overflow:hidden;
+  }
+  .modal-header{
+    flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
+    padding:16px 20px;border-bottom:1px solid var(--slate-200);
+    font-size:14px;font-weight:700;color:var(--slate-900);
+  }
+  .modal-close{background:none;border:none;color:var(--slate-400);cursor:pointer;padding:2px;border-radius:4px;display:flex;}
+  .modal-close:hover{color:var(--gappify-indigo-500);}
+  .modal-body{padding:8px 20px 20px;overflow-y:auto;}
+  .modal-table{width:100%;border-collapse:collapse;font-size:12px;}
+  .modal-table th{text-align:left;color:var(--slate-500);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:10px 4px 8px;border-bottom:1px solid var(--slate-200);}
+  .modal-table td{padding:10px 4px;border-bottom:1px solid var(--slate-100);color:var(--slate-700);}
+  .modal-table tr:last-child td{border-bottom:none;}
+
+  /* ---------- Sync loading state + toast ---------- */
+  @keyframes scfg-spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+  .sync-icon.spin{animation:scfg-spin .8s linear infinite;}
+  .js-sync-directory-btn:disabled{cursor:not-allowed;opacity:.7;}
+
+  .toast-container{position:fixed;top:20px;right:20px;z-index:10050;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+  .toast{
+    display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--slate-200);
+    border-radius:8px;padding:10px 14px;font-size:13px;font-weight:500;color:var(--slate-700);
+    box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);
+    opacity:0;transform:translateY(-8px);transition:opacity .2s ease,transform .2s ease;
+  }
+  .toast.show{opacity:1;transform:translateY(0);}
+  .toast-icon{color:#10b981;flex-shrink:0;display:flex;}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ================= TOP NAV ================= -->
+  <header class="global-nav">
+    <div class="global-nav-left">
+      <a href="#" class="global-nav-logo" aria-label="Gappify home">
+        <img alt="Gappify" src="data:image/svg+xml,%3csvg%20version=&#39;1.1&#39;%20id=&#39;Layer_1&#39;%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20x=&#39;0&#39;%20y=&#39;0&#39;%20viewBox=&#39;0%200%20280%2052&#39;%20style=&#39;enable-background:new%200%200%20280%2052&#39;%20xml:space=&#39;preserve&#39;%3e%3cstyle%3e.st35{fill:%23222630}%3c/style%3e%3cpath%20class=&#39;st35&#39;%20d=&#39;M5.9%2051C3%2051%20.6%2048.6.6%2045.7V6.3C.6%203.4%203%201%205.9%201H14c2.9%200%205.2%202.4%205.2%205.3v7.8h-5.5V5.5H6v40.9h8.4V30.6h-3.8V26h8.8v19.7c0%202.9-2.3%205.3-5.2%205.3H5.9zM60.2%2050.5V30.8h-7.4v19.7h-5.5V6.8c0-2.9%202.4-5.3%205.3-5.3h7.8c2.9%200%205.3%202.4%205.3%205.3v43.8l-5.5-.1zm0-44.5h-7.4v20.3h7.4V6zM94.1%2050.5v-49h12.3c2.9%200%205.3%202.4%205.3%205.3v22.9c0%202.9-2.4%205.3-5.3%205.3h-6.8v15.7l-5.5-.2zm12.1-44.4h-6.7v24h6.7v-24zM139.8%2050.5v-49h12.3c2.9%200%205.3%202.4%205.3%205.3v22.9c0%202.9-2.4%205.3-5.3%205.3h-6.8v15.7l-5.5-.2zm12.1-44.4h-6.7v24h6.7v-24zM185.5%2050.5v-49h5.5v49.1l-5.5-.1zM219.5%2050.5v-49H235V6h-10.1v20h8.5v4.6h-8.5v20l-5.4-.1zM266.5%2050.5c-2.9%200-5.3-2.4-5.3-5.3v-8.4h5.5V46h7.2V29.7h-7.4c-2.9%200-5.3-2.3-5.3-5.2v-23h5.5V25h7.2V1.5h5.5v43.8c0%202.9-2.4%205.3-5.3%205.3h-7.6z&#39;/%3e%3c/svg%3e">
+      </a>
+      <div class="global-nav-separator" aria-hidden="true"></div>
+      <div class="global-nav-module" aria-label="Vendor Accruals">
+        <span class="global-nav-module-icon" aria-hidden="true">
+          <img alt="" src="data:image/png;base64,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">
+        </span>
+        <div class="global-nav-module-labels">
+          <span class="global-nav-module-title">Vendor Accruals</span>
+          <span class="global-nav-beta-badge">BETA</span>
+        </div>
+      </div>
+    </div>
+    <nav class="global-nav-links" aria-label="Vendor accruals modules">
+      <a class="global-nav-link" href="#">Accrual Manager</a>
+      <a class="global-nav-link" href="#">Journals</a>
+      <a class="global-nav-link" href="#">Insights</a>
+    </nav>
+    <div class="global-nav-actions">
+      <button type="button" class="avatar-pill" aria-haspopup="menu">IA</button>
+    </div>
+  </header>
+
+  <!-- ================= SETTINGS SHELL ================= -->
+  <div class="settings-page-shell">
+
+    <aside class="settings-sidebar-v2">
+      <div class="settings-sidebar-header-v2">
+        <p class="settings-sidebar-title-v2">Settings</p>
+      </div>
+      <ul class="settings-menu-v2">
+        <li><a class="settings-menu-item" href="#">Company Settings</a></li>
+
+        <li class="settings-submenu">
+          <div class="settings-submenu-title" onclick="this.parentElement.classList.toggle('open')">
+            <span>User Management</span>
+            <span class="settings-submenu-arrow">&#8250;</span>
+          </div>
+          <ul class="settings-submenu-list">
+            <li><a class="settings-menu-item" href="#">Users</a></li>
+            <li><a class="settings-menu-item" href="#">SSO</a></li>
+            <li><a class="settings-menu-item" href="#">Login Audit Trail</a></li>
+          </ul>
+        </li>
+
+        <li><a class="settings-menu-item" href="#">Period Management</a></li>
+        <li><a class="settings-menu-item" href="#">Schedule Manager</a></li>
+        <li><a class="settings-menu-item" href="#">Emails &amp; Forms</a></li>
+
+        <li class="settings-submenu open">
+          <div class="settings-submenu-title" onclick="this.parentElement.classList.toggle('open')">
+            <span>Integrations</span>
+            <span class="settings-submenu-arrow">&#8250;</span>
+          </div>
+          <ul class="settings-submenu-list">
+            <li><a class="settings-menu-item selected" href="#">Connected Apps</a></li>
+            <li><a class="settings-menu-item" href="#">API Keys</a></li>
+            <li><a class="settings-menu-item" href="#">Logs</a></li>
+            <li><a class="settings-menu-item" href="#">API Field Manager</a></li>
+            <li><a class="settings-menu-item" href="#">API Error Notification</a></li>
+            <li><a class="settings-menu-item" href="#">Source Data</a></li>
+          </ul>
+        </li>
+
+        <li><a class="settings-menu-item" href="#">Data Management</a></li>
+      </ul>
+    </aside>
+
+    <div class="settings-page-shell-content">
+
+      <div class="settings-page-shell-title-row-v2">
+        <p class="settings-page-shell-title-v2">Connected Apps</p>
+      </div>
+
+      <div class="settings-page-shell-box">
+        <div class="connected-apps-container">
+          <div class="connected-apps-grid">
+
+            <!-- ===== Jira card (existing) ===== -->
+            <div class="connected-apps-card">
+              <div class="connected-apps-card-body">
+                <div class="connected-apps-card-header">
+                  <svg class="connected-apps-card-icon" viewBox="0 0 32 32" aria-hidden="true">
+                    <rect width="32" height="32" rx="6" fill="#2684FF"/>
+                    <path d="M16.4 8h-1.1a3.9 3.9 0 0 0 3.9 3.9h1.6v1.5a3.9 3.9 0 0 0 3.9 3.9V8.9A.9.9 0 0 0 23.8 8h-7.4z" fill="#fff"/>
+                    <path d="M12.5 11.9h-1a3.9 3.9 0 0 0 3.9 3.9h1.6v1.5a3.9 3.9 0 0 0 3.9 3.9v-8.4a.9.9 0 0 0-.9-.9h-7.5z" fill="#fff" opacity=".8"/>
+                    <path d="M8.6 15.8h-1a3.9 3.9 0 0 0 3.9 3.9h1.6v1.5a3.9 3.9 0 0 0 3.9 3.9v-8.4a.9.9 0 0 0-.9-.9H8.6z" fill="#fff" opacity=".6"/>
+                  </svg>
+                  <div class="connected-apps-card-title-group">
+                    <span class="connected-apps-card-title">Jira</span>
+                    <span class="connected-apps-card-description">Sync data from Jira into Gappify.</span>
+                  </div>
+                </div>
+                <div class="connected-apps-card-status-group">
+                  <div class="connected-apps-status connected-apps-status--not-connected">
+                    <span class="connected-apps-status-dot" aria-hidden="true"></span>
+                    <span class="connected-apps-status-label">Not Connected</span>
+                  </div>
+                  <span class="connected-apps-card-description">Connect to start syncing data from Jira</span>
+                </div>
+                <div class="connected-apps-card-footer">
+                  <button type="button" class="btn btn-primary">Connect to Jira</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ===== Slack card (new) ===== -->
+            <div class="connected-apps-card" id="slack-card">
+              <div class="connected-apps-card-body">
+                <div class="connected-apps-card-header">
+                  <svg class="connected-apps-card-icon" viewBox="0 0 122.8 122.8" aria-hidden="true">
+                    <path d="M25.8 77.6a12.9 12.9 0 1 1-12.9-12.9h12.9zM32.3 77.6a12.9 12.9 0 1 1 25.8 0v32.3a12.9 12.9 0 1 1-25.8 0z" fill="#e01e5a"/>
+                    <path d="M45.2 25.8a12.9 12.9 0 1 1 12.9-12.9v12.9zM45.2 32.3a12.9 12.9 0 1 1 0 25.8H12.9a12.9 12.9 0 1 1 0-25.8z" fill="#36c5f0"/>
+                    <path d="M97 45.2a12.9 12.9 0 1 1 12.9 12.9H97zM90.5 45.2a12.9 12.9 0 1 1-25.8 0V12.9a12.9 12.9 0 1 1 25.8 0z" fill="#2eb67d"/>
+                    <path d="M77.6 97a12.9 12.9 0 1 1-12.9 12.9V97zM77.6 90.5a12.9 12.9 0 1 1 0-25.8h32.3a12.9 12.9 0 1 1 0 25.8z" fill="#ecb22e"/>
+                  </svg>
+                  <div class="connected-apps-card-title-group">
+                    <span class="connected-apps-card-title">Slack</span>
+                    <span class="connected-apps-card-description">Send accrual notifications and alerts to Slack.</span>
+                  </div>
+                </div>
+
+                <!-- Not connected state -->
+                <div id="slack-not-connected">
+                  <div class="connected-apps-card-status-group">
+                    <div class="connected-apps-status connected-apps-status--not-connected">
+                      <span class="connected-apps-status-dot" aria-hidden="true"></span>
+                      <span class="connected-apps-status-label">Not Connected</span>
+                    </div>
+                    <span class="connected-apps-card-description">Connect a workspace to start sending notifications to Slack</span>
+                  </div>
+                  <div class="connected-apps-card-footer">
+                    <button type="button" class="btn btn-primary" onclick="connectSlack()">Connect to Slack</button>
+                  </div>
+                </div>
+
+                <!-- Connected state (hidden by default) -->
+                <div id="slack-connected" style="display:none;">
+                  <div class="card-status-row" style="margin-bottom:16px;">
+                    <span class="card-status-dot" aria-hidden="true"></span>
+                    <span class="card-status-text">Connected — Gappify Demo Team</span>
+                  </div>
+                  <div class="connected-apps-card-footer">
+                    <button type="button" class="card-btn-outline" onclick="openConfigureSlack()">Configure</button>
+                    <button type="button" class="card-btn-danger" onclick="disconnectSlack()">Disconnect</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Configure Slack modal (opened from the card's Configure button — matches
+     the Configure Jira modal pattern: no separate settings-page navigation). -->
+<div id="configure-slack-modal" class="scfg-overlay" style="display:none;">
+  <div class="scfg-backdrop" onclick="closeConfigureSlack()"></div>
+  <div class="scfg-modal">
+    <div class="scfg-header">
+      <svg class="scfg-header-icon" viewBox="0 0 122.8 122.8" aria-hidden="true">
+        <path d="M25.8 77.6a12.9 12.9 0 1 1-12.9-12.9h12.9zM32.3 77.6a12.9 12.9 0 1 1 25.8 0v32.3a12.9 12.9 0 1 1-25.8 0z" fill="#e01e5a"/>
+        <path d="M45.2 25.8a12.9 12.9 0 1 1 12.9-12.9v12.9zM45.2 32.3a12.9 12.9 0 1 1 0 25.8H12.9a12.9 12.9 0 1 1 0-25.8z" fill="#36c5f0"/>
+        <path d="M97 45.2a12.9 12.9 0 1 1 12.9 12.9H97zM90.5 45.2a12.9 12.9 0 1 1-25.8 0V12.9a12.9 12.9 0 1 1 25.8 0z" fill="#2eb67d"/>
+        <path d="M77.6 97a12.9 12.9 0 1 1-12.9 12.9V97zM77.6 90.5a12.9 12.9 0 1 1 0-25.8h32.3a12.9 12.9 0 1 1 0 25.8z" fill="#ecb22e"/>
+      </svg>
+      <h2 class="scfg-header-title">Configure Slack</h2>
+      <button type="button" class="scfg-close" onclick="closeConfigureSlack()" aria-label="Close">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <div class="scfg-body">
+      <!-- Workspace -->
+      <div class="scfg-section">
+        <div>
+          <p class="scfg-section-title">Workspace</p>
+          <p class="scfg-section-desc">Connected Slack workspace.</p>
+        </div>
+        <div class="scfg-workspace-row">
+          <span class="scfg-status-dot" aria-hidden="true"></span>
+          <span class="scfg-status-text">Connected — Gappify Demo Team</span>
+          <span class="config-team-badge" style="margin-left:auto;">T0DEMO1234</span>
+        </div>
+        <div class="scfg-field">
+          <span class="scfg-label">Member Directory</span>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+            <span style="font-size:12px;color:var(--slate-500);" class="member-directory-summary-text">5 members in directory &middot; 5 with email</span>
+            <div style="display:flex;gap:8px;">
+              <button type="button" class="scfg-outline-btn" onclick="openMemberDirectory()">View directory</button>
+              <button type="button" class="scfg-outline-btn js-sync-directory-btn" onclick="syncMemberDirectory()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sync-icon"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                <span class="sync-label">Sync directory</span>
+              </button>
+            </div>
+          </div>
+          <p class="scfg-section-desc" style="margin:0;">This is a snapshot of your Slack Workspace and doesn't update automatically. If new members were added in Slack, click Sync member directory to refresh the list.</p>
+        </div>
+      </div>
+
+      <!-- Delivery channel -->
+      <div class="scfg-section">
+        <div>
+          <p class="scfg-section-title">Delivery Channel</p>
+          <p class="scfg-section-desc">Choose how accrual confirmation notifications are delivered.</p>
+        </div>
+        <div class="scfg-segment">
+          <button type="button" class="scfg-segment-btn active" data-value="email" onclick="selectDeliveryChannel('email')">Email only</button>
+          <button type="button" class="scfg-segment-btn" data-value="slack" onclick="selectDeliveryChannel('slack')">Slack only</button>
+          <button type="button" class="scfg-segment-btn" data-value="both" onclick="selectDeliveryChannel('both')">Email + Slack</button>
+        </div>
+        <p class="scfg-section-desc" id="delivery-helper-text" style="margin:0;">Notifications are sent by email only; no Slack messages are sent.</p>
+      </div>
+
+      <!-- Test notification -->
+      <div class="scfg-section">
+        <div>
+          <p class="scfg-section-title">Test Notification</p>
+          <p class="scfg-section-desc">Send a one-time direct message to verify the integration is working.</p>
+        </div>
+        <div class="scfg-field">
+          <span class="scfg-label">Recipients</span>
+          <div class="scfg-user-picker">
+            <div class="scfg-chip-box" onclick="document.getElementById('user-search').focus()">
+              <span id="scfg-recipient-chips" style="display:contents;"></span>
+              <input type="text" id="user-search" class="scfg-chip-input" placeholder="Search people to DM&hellip;" oninput="filterUsers()" onfocus="toggleUserDropdown(true)" onclick="event.stopPropagation()">
+            </div>
+            <div id="user-dropdown" class="scfg-user-dropdown" style="display:none;"></div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;">
+          <button type="button" class="scfg-outline-btn" id="send-test-btn" disabled onclick="sendTestNotification()">Send test notification</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="scfg-footer">
+      <button type="button" class="scfg-btn scfg-btn-cancel" onclick="closeConfigureSlack()">Cancel</button>
+      <button type="button" class="scfg-btn scfg-btn-save" onclick="closeConfigureSlack()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Member directory modal (opened from inside Configure Slack — see the
+     z-index note above for why it needs to outrank that modal). -->
+<div id="member-directory-modal" class="modal-overlay" style="display:none;" onclick="if(event.target===this)closeMemberDirectory()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span>Member directory</span>
+      <button type="button" class="modal-close" onclick="closeMemberDirectory()" aria-label="Close">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;">
+        <span style="font-size:12px;color:var(--slate-500);" class="member-directory-summary-text">5 members in directory &middot; 5 with email</span>
+        <button type="button" class="scfg-outline-btn js-sync-directory-btn" onclick="syncMemberDirectory()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sync-icon"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+          <span class="sync-label">Sync directory</span>
+        </button>
+      </div>
+      <table class="modal-table">
+        <thead><tr><th>Name</th><th>Email</th></tr></thead>
+        <tbody id="member-directory-table-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  function connectSlack(){
+    document.getElementById('slack-not-connected').style.display = 'none';
+    document.getElementById('slack-connected').style.display = 'block';
+  }
+  function disconnectSlack(){
+    document.getElementById('slack-connected').style.display = 'none';
+    document.getElementById('slack-not-connected').style.display = 'block';
+  }
+
+  /* ---------- Configure Slack modal ---------- */
+  function openConfigureSlack(){
+    document.getElementById('configure-slack-modal').style.display = 'flex';
+  }
+  function closeConfigureSlack(){
+    document.getElementById('configure-slack-modal').style.display = 'none';
+    toggleUserDropdown(false);
+  }
+
+  /* ---------- Delivery channel (segmented control) ---------- */
+  const DELIVERY_COPY = {
+    email: 'Notifications are sent by email only; no Slack messages are sent.',
+    slack: 'Notifications are sent by Slack only; no emails are sent.',
+    both: 'Notifications are sent by both email and Slack.'
+  };
+  function selectDeliveryChannel(value){
+    document.querySelectorAll('.scfg-segment-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.value === value);
+    });
+    document.getElementById('delivery-helper-text').textContent = DELIVERY_COPY[value];
+  }
+
+  /* ---------- Member directory ---------- */
+  const DEMO_MEMBERS = [
+    {name:'Alex Rivera', email:'alex.rivera@company.com'},
+    {name:'Jamie Chen', email:'jamie.chen@company.com'},
+    {name:'Morgan Lee', email:'morgan.lee@company.com'},
+    {name:'Taylor Brooks', email:'taylor.brooks@company.com'},
+    {name:'Sam Patel', email:'sam.patel@company.com'}
+  ];
+
+  function renderMemberDirectoryTable(){
+    document.getElementById('member-directory-table-body').innerHTML =
+      DEMO_MEMBERS.map(m => `<tr><td>${m.name}</td><td>${m.email}</td></tr>`).join('');
+  }
+  function updateMemberDirectorySummary(){
+    const text = DEMO_MEMBERS.length + ' members in directory · ' + DEMO_MEMBERS.length + ' with email';
+    document.querySelectorAll('.member-directory-summary-text').forEach(el => { el.textContent = text; });
+  }
+  function openMemberDirectory(){
+    renderMemberDirectoryTable();
+    document.getElementById('member-directory-modal').style.display = 'flex';
+  }
+  function closeMemberDirectory(){
+    document.getElementById('member-directory-modal').style.display = 'none';
+  }
+
+  let syncInProgress = false;
+  function syncMemberDirectory(){
+    if (syncInProgress) return;
+    syncInProgress = true;
+    const btns = document.querySelectorAll('.js-sync-directory-btn');
+    btns.forEach(btn => {
+      btn.disabled = true;
+      btn.querySelector('.sync-icon').classList.add('spin');
+      btn.querySelector('.sync-label').textContent = 'Syncing…';
+    });
+    setTimeout(() => {
+      updateMemberDirectorySummary();
+      renderMemberDirectoryTable();
+      btns.forEach(btn => {
+        btn.disabled = false;
+        btn.querySelector('.sync-icon').classList.remove('spin');
+        btn.querySelector('.sync-label').textContent = 'Sync directory';
+      });
+      syncInProgress = false;
+      showToast('Member directory synced successfully.');
+    }, 1100);
+  }
+
+  /* ---------- Toast ---------- */
+  function showToast(message){
+    let container = document.getElementById('toast-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'toast-container';
+      container.className = 'toast-container';
+      document.body.appendChild(container);
+    }
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = '<span class="toast-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><span>' + message + '</span>';
+    container.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 200);
+    }, 2600);
+  }
+
+  /* ---------- Test notification recipients ---------- */
+  let selectedTestUsers = [];
+
+  function toggleUserDropdown(open){
+    const dd = document.getElementById('user-dropdown');
+    if (open === false) { dd.style.display = 'none'; return; }
+    renderUserDropdown();
+    dd.style.display = 'block';
+  }
+  function filterUsers(){ renderUserDropdown(); }
+  function renderUserDropdown(){
+    const query = document.getElementById('user-search').value.toLowerCase();
+    const dd = document.getElementById('user-dropdown');
+    const matches = DEMO_MEMBERS.filter(u => !selectedTestUsers.includes(u.email) && u.name.toLowerCase().includes(query));
+    if (matches.length === 0) {
+      dd.innerHTML = '<div class="scfg-user-option" style="color:var(--slate-400);cursor:default;">No matches</div>';
+      return;
+    }
+    dd.innerHTML = matches.map(u =>
+      `<div class="scfg-user-option" onclick="toggleTestUser('${u.email}')">${u.name} <span style="color:var(--slate-400);">(${u.email})</span></div>`
+    ).join('');
+  }
+  function toggleTestUser(email){
+    if (selectedTestUsers.includes(email)) {
+      selectedTestUsers = selectedTestUsers.filter(e => e !== email);
+    } else {
+      selectedTestUsers.push(email);
+      document.getElementById('user-search').value = '';
+    }
+    renderTestRecipients();
+    renderUserDropdown();
+  }
+  function renderTestRecipients(){
+    const chipsEl = document.getElementById('scfg-recipient-chips');
+    const sendBtn = document.getElementById('send-test-btn');
+    sendBtn.disabled = selectedTestUsers.length === 0;
+    chipsEl.innerHTML = selectedTestUsers.map(email => {
+      const user = DEMO_MEMBERS.find(u => u.email === email);
+      return `<span class="scfg-chip">${user.name}<button type="button" onclick="toggleTestUser('${email}')">&times;</button></span>`;
+    }).join('');
+  }
+  function sendTestNotification(){
+    alert('Test notification sent to ' + selectedTestUsers.length + ' user(s).');
+  }
+
+  document.addEventListener('click', function(e){
+    const picker = document.querySelector('.scfg-user-picker');
+    if (picker && !picker.contains(e.target)) {
+      toggleUserDropdown(false);
+    }
+  });
+</script>
+
+</body>
+</html>

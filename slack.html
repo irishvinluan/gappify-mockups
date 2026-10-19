@@ -19,7 +19,7 @@
     padding:0;
     height:100%;
     background:#f1f5f9;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-family:-apple-system,BlinkMacSystemFont,Inter,"Segoe UI",sans-serif;
     color:#0f172a;
   }
   .container{
@@ -97,12 +97,14 @@
   .settings-submenu.open > .settings-submenu-list{display:block;}
 
   .settings-page-shell-content{flex:1;display:flex;flex-direction:column;min-width:0;min-height:0;overflow:auto;padding:16px 24px 24px;}
-  .settings-page-shell-title-row-v2{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-  .settings-page-shell-title-v2{font-size:16px;font-weight:700;color:#0f172a;margin:0;}
+  .settings-page-shell-title-row-v2{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;}
+  .settings-page-shell-title-v2{font-size:16px;font-weight:700;line-height:1.5;color:#0f172a;margin:0;}
   .settings-page-shell-box{
     flex:1;display:flex;flex-direction:column;min-height:0;background:#fff;
     border-radius:12px;border:1px solid #e2e8f0;padding:24px;overflow:auto;
   }
+  .settings-page-shell-box--flush{padding:0;overflow:hidden;}
+  .shell-view{flex:1;display:flex;flex-direction:column;min-height:0;}
 
   /* ---------- Connected Apps ---------- */
   .connected-apps-container{flex:1;display:flex;flex-direction:column;}
@@ -204,6 +206,12 @@
   .scfg-workspace-row{display:flex;align-items:center;gap:8px;}
   .scfg-status-dot{width:8px;height:8px;border-radius:50%;background:#10b981;flex-shrink:0;}
   .scfg-status-text{font-size:12px;font-weight:600;color:var(--slate-700);}
+  .scfg-status-dot--warn{background:#f59e0b;}
+  .scfg-copy-btn{
+    display:flex;padding:4px;border:0;border-radius:4px;background:transparent;color:var(--slate-400);cursor:pointer;
+    transition:color .15s,background-color .15s;
+  }
+  .scfg-copy-btn:hover{color:var(--gappify-indigo-600);background:var(--gappify-indigo-50);}
   .config-team-badge{font-size:11px;font-family:ui-monospace,SFMono-Regular,monospace;color:var(--slate-500);border:1px solid var(--slate-200);border-radius:4px;padding:2px 6px;background:var(--slate-50);}
 
   .scfg-outline-btn{
@@ -220,16 +228,15 @@
   .scfg-segment-btn:hover{border-color:#a5b4fc;}
   .scfg-segment-btn.active{background:var(--gappify-indigo-50);border-color:#a5b4fc;color:var(--gappify-indigo-700);}
 
-  .scfg-user-picker{position:relative;}
-  .scfg-chip-box{width:100%;display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-height:36px;padding:6px 8px;border:1px solid var(--slate-200);border-radius:6px;background:#fff;cursor:text;transition:all .15s;}
-  .scfg-chip-box:focus-within{border-color:#818cf8;box-shadow:0 0 0 3px rgba(99,102,241,.15);}
-  .scfg-chip{display:inline-flex;align-items:center;gap:4px;padding:2px 4px 2px 8px;border-radius:4px;font-size:11px;font-weight:500;white-space:nowrap;background:var(--gappify-indigo-50);color:var(--gappify-indigo-700);border:1px solid var(--gappify-indigo-200);}
-  .scfg-chip button{background:none;border:none;color:inherit;cursor:pointer;display:flex;padding:0;font-size:12px;line-height:1;}
-  .scfg-chip button:hover{color:#ef4444;}
-  .scfg-chip-input{flex:1;min-width:120px;border:none;outline:none;font-size:12px;background:transparent;color:var(--slate-700);font-family:inherit;}
-  .scfg-user-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--slate-200);border-radius:8px;box-shadow:0 10px 15px -3px rgba(0,0,0,.1);max-height:200px;overflow-y:auto;z-index:10;}
-  .scfg-user-option{display:flex;align-items:center;gap:8px;padding:8px 12px;font-size:12px;color:var(--slate-700);cursor:pointer;}
-  .scfg-user-option:hover{background:var(--slate-50);}
+  .scfg-email-field{display:flex;flex-direction:column;gap:6px;}
+  .scfg-text-input{
+    width:100%;height:36px;padding:6px 8px;border:1px solid var(--slate-200);border-radius:6px;background:#fff;
+    font-size:12px;font-family:inherit;color:var(--slate-700);transition:all .15s;
+  }
+  .scfg-text-input::placeholder{color:var(--slate-400);}
+  .scfg-text-input:hover{border-color:#a5b4fc;}
+  .scfg-text-input:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(99,102,241,.15);}
+  .scfg-field-error{margin:0;font-size:11px;color:#ef4444;}
 
   .scfg-footer{flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--slate-200);}
   .scfg-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:32px;padding:0 12px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;white-space:nowrap;transition:all .15s;border:1px solid transparent;}
@@ -237,6 +244,26 @@
   .scfg-btn-cancel:hover{background:var(--slate-100);}
   .scfg-btn-save{background:var(--gappify-indigo-600);border-color:var(--gappify-indigo-600);color:#fff;}
   .scfg-btn-save:hover{background:var(--gappify-indigo-700);}
+
+  /* ---------- Disconnect confirmation ----------
+     Same confirm dialog as the reference's "Disconnect Jira?" (400px card,
+     13px semibold title, 12px body, Cancel + red Disconnect), reworded for
+     Slack. Red uses that build's oklch red-600/700. */
+  .dc-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;}
+  .dc-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.4);backdrop-filter:blur(1px);}
+  .dc-modal{
+    position:relative;z-index:10;width:400px;max-width:calc(100vw - 32px);background:#fff;border-radius:12px;
+    border:1px solid var(--slate-200);box-shadow:0 25px 50px -12px rgba(0,0,0,.25);overflow:hidden;
+  }
+  .dc-body{padding:20px 20px 16px;}
+  .dc-title{margin:0 0 6px;font-size:13px;font-weight:600;line-height:1.5;color:var(--slate-900);}
+  .dc-message{margin:0;font-size:12px;line-height:1.625;color:var(--slate-600);}
+  .dc-actions{padding:0 20px 20px;display:flex;align-items:center;justify-content:flex-end;gap:8px;}
+  .dc-btn{height:32px;padding:0 16px;border-radius:8px;font:inherit;font-size:12px;cursor:pointer;transition:background-color .15s cubic-bezier(.4,0,.2,1);}
+  .dc-btn-cancel{border:1px solid var(--slate-200);background:transparent;font-weight:500;color:var(--slate-600);}
+  .dc-btn-cancel:hover{background:var(--slate-50);}
+  .dc-btn-confirm{border:0;background:oklch(57.7% .245 27.325);font-weight:600;color:#fff;}
+  .dc-btn-confirm:hover{background:oklch(50.5% .213 27.518);}
 
   /* ---------- Member directory modal ---------- */
   /* Stacks on top of the Configure Slack modal (z-index 9998/9999) since it
@@ -277,6 +304,96 @@
   }
   .toast.show{opacity:1;transform:translateY(0);}
   .toast-icon{color:#10b981;flex-shrink:0;display:flex;}
+
+  /* ---------- Emails & Forms view ----------
+     Mirrors the reference page (accrual-cloud.vercel.app, Tailwind v4.2.2)
+     rule-for-rule. Colors use that build's own oklch palette rather than the
+     hex values used elsewhere in this mock — v4's indigo-600 is noticeably
+     more saturated than v3's #4f46e5 — and line-height 1.5 / block svgs
+     reproduce Tailwind's preflight so row and button heights match. */
+  #view-emails-forms{
+    --ef-slate-50:oklch(98.4% .003 247.858);
+    --ef-slate-100:oklch(96.8% .007 247.896);
+    --ef-slate-200:oklch(92.9% .013 255.508);
+    --ef-slate-400:oklch(70.4% .04 256.788);
+    --ef-slate-500:oklch(55.4% .046 257.417);
+    --ef-slate-600:oklch(44.6% .043 257.281);
+    --ef-slate-700:oklch(37.2% .044 257.287);
+    --ef-slate-800:oklch(27.9% .041 260.031);
+    --ef-indigo-50:oklch(96.2% .018 272.314);
+    --ef-indigo-100:oklch(93% .034 272.788);
+    --ef-indigo-300:oklch(78.5% .115 274.713);
+    --ef-indigo-500:oklch(58.5% .233 277.117);
+    --ef-indigo-600:oklch(51.1% .262 276.966);
+    --ef-indigo-700:oklch(45.7% .24 277.023);
+    --ef-teal-100:oklch(95.3% .051 180.801);
+    --ef-teal-700:oklch(51.1% .096 186.391);
+    line-height:1.5;
+  }
+  #view-emails-forms svg{display:block;vertical-align:middle;}
+  #view-emails-forms button{font:inherit;color:inherit;background:transparent;border:0 solid;border-radius:0;padding:0;cursor:pointer;}
+
+  .ef-body{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .ef-tabs{flex-shrink:0;display:flex;align-items:center;gap:4px;padding:12px 20px 0;border-bottom:1px solid var(--ef-slate-200);}
+  #view-emails-forms .ef-tab{
+    padding:8px 12px;font-size:12px;font-weight:600;border-bottom:2px solid transparent;
+    color:var(--ef-slate-500);transition:color .15s cubic-bezier(.4,0,.2,1),border-color .15s cubic-bezier(.4,0,.2,1);
+  }
+  #view-emails-forms .ef-tab:hover{color:var(--ef-slate-800);}
+  #view-emails-forms .ef-tab.active{color:var(--ef-indigo-600);border-bottom-color:var(--ef-indigo-600);}
+  .ef-panel{flex:1;min-height:0;overflow:hidden;}
+  .ef-panel-inner{padding:24px;display:flex;flex-direction:column;gap:16px;height:100%;overflow-y:auto;}
+  .ef-toolbar{display:flex;align-items:center;justify-content:flex-end;gap:8px;}
+
+  /* Outlined secondary button — same recipe as the reference's Configure /
+     Sync Now buttons (slate-200 border, slate-600 text, indigo hover), sized
+     to h-8 so it lines up with Add New. */
+  #view-emails-forms .ef-secondary-btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;height:32px;padding:6px 12px;
+    font-size:12px;line-height:calc(1 / .75);font-weight:600;white-space:nowrap;border-radius:6px;outline:none;
+    border:1px solid var(--ef-slate-200);background:#fff;color:var(--ef-slate-600);
+    transition:all .2s cubic-bezier(.4,0,.2,1);
+  }
+  #view-emails-forms .ef-secondary-btn:hover{background:var(--ef-indigo-50);border-color:var(--ef-indigo-300);color:var(--ef-indigo-600);}
+  #view-emails-forms .ef-secondary-btn:focus{box-shadow:0 0 0 2px #625fff80;}
+
+  #view-emails-forms .ef-add-btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;height:32px;padding:6px 12px;
+    font-size:12px;line-height:calc(1 / .75);font-weight:600;white-space:nowrap;border-radius:6px;outline:none;
+    background:var(--ef-indigo-600);color:#fff;
+    box-shadow:0 1px 3px 0 #0000001a,0 1px 2px -1px #0000001a;
+    transition:all .2s cubic-bezier(.4,0,.2,1);
+  }
+  #view-emails-forms .ef-add-btn:hover{background:var(--ef-indigo-700);transform:translateY(-.5px);}
+  #view-emails-forms .ef-add-btn:focus{box-shadow:0 0 0 2px #625fff80,0 1px 3px 0 #0000001a,0 1px 2px -1px #0000001a;}
+  .ef-add-btn-icon{display:flex;align-items:center;justify-content:center;}
+
+  .ef-table-wrap{border-radius:12px;border:1px solid var(--ef-slate-200);overflow:hidden;}
+  .ef-table{width:100%;text-align:left;border-collapse:separate;border-spacing:0;}
+  .ef-table th{
+    padding:10px 16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;text-align:left;
+    color:var(--ef-slate-500);background:var(--ef-slate-50);border-bottom:1px solid var(--ef-slate-200);
+  }
+  .ef-table td{padding:12px 16px;font-size:12px;color:var(--ef-slate-700);border-bottom:1px solid var(--ef-slate-100);}
+  .ef-table tbody tr:last-child td{border-bottom:0;}
+  .ef-table tbody tr{transition:background-color .15s cubic-bezier(.4,0,.2,1);}
+  .ef-table tbody tr:hover{background:var(--ef-indigo-50);}
+  .ef-table td.ef-name{font-weight:500;color:var(--ef-slate-800);}
+  /* The reference's Type and Action cells carry no text-size class, so they
+     inherit the 16px page size — that is what makes its rows 49px tall. */
+  .ef-table td.ef-plain{font-size:16px;color:inherit;}
+  .ef-table td.ef-empty{text-align:center;color:var(--ef-slate-400);padding:32px 16px;}
+  .ef-table tbody tr.ef-empty-row:hover{background:transparent;}
+
+  .ef-badge{display:inline-flex;align-items:center;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:500;white-space:nowrap;}
+  .ef-badge--vendor{background:var(--ef-indigo-100);color:var(--ef-indigo-700);}
+  .ef-badge--internal{background:var(--ef-teal-100);color:var(--ef-teal-700);}
+
+  #view-emails-forms .ef-icon-btn{
+    padding:4px;border-radius:4px;color:var(--ef-slate-400);
+    transition:color .15s cubic-bezier(.4,0,.2,1),background-color .15s cubic-bezier(.4,0,.2,1);
+  }
+  #view-emails-forms .ef-icon-btn:hover{color:var(--ef-indigo-600);background:var(--ef-indigo-50);}
 </style>
 </head>
 <body>
@@ -334,7 +451,7 @@
 
         <li><a class="settings-menu-item" href="#">Period Management</a></li>
         <li><a class="settings-menu-item" href="#">Schedule Manager</a></li>
-        <li><a class="settings-menu-item" href="#">Emails &amp; Forms</a></li>
+        <li><a class="settings-menu-item" href="#" id="nav-emails-forms" onclick="navigateTo('emails-forms');return false;">Emails &amp; Forms</a></li>
 
         <li class="settings-submenu open">
           <div class="settings-submenu-title" onclick="this.parentElement.classList.toggle('open')">
@@ -342,7 +459,7 @@
             <span class="settings-submenu-arrow">&#8250;</span>
           </div>
           <ul class="settings-submenu-list">
-            <li><a class="settings-menu-item selected" href="#">Connected Apps</a></li>
+            <li><a class="settings-menu-item selected" href="#" id="nav-connected-apps" onclick="navigateTo('connected-apps');return false;">Connected Apps</a></li>
             <li><a class="settings-menu-item" href="#">API Keys</a></li>
             <li><a class="settings-menu-item" href="#">Logs</a></li>
             <li><a class="settings-menu-item" href="#">API Field Manager</a></li>
@@ -357,6 +474,8 @@
 
     <div class="settings-page-shell-content">
 
+      <!-- ===================== VIEW: Connected Apps ===================== -->
+      <div id="view-connected-apps" class="shell-view">
       <div class="settings-page-shell-title-row-v2">
         <p class="settings-page-shell-title-v2">Connected Apps</p>
       </div>
@@ -431,7 +550,7 @@
                   </div>
                   <div class="connected-apps-card-footer">
                     <button type="button" class="card-btn-outline" onclick="openConfigureSlack()">Configure</button>
-                    <button type="button" class="card-btn-danger" onclick="disconnectSlack()">Disconnect</button>
+                    <button type="button" class="card-btn-danger" onclick="openDisconnectSlack()">Disconnect</button>
                   </div>
                 </div>
               </div>
@@ -440,7 +559,89 @@
           </div>
         </div>
       </div>
+      </div>
 
+      <!-- ===================== VIEW: Emails & Forms ===================== -->
+      <div id="view-emails-forms" class="shell-view" style="display:none;">
+        <div class="settings-page-shell-title-row-v2">
+          <h1 class="settings-page-shell-title-v2">Emails &amp; Forms</h1>
+        </div>
+
+        <div class="settings-page-shell-box settings-page-shell-box--flush">
+          <div class="ef-body">
+            <div class="ef-tabs">
+              <button type="button" class="ef-tab active" data-tab="vendor" onclick="selectEmailsFormsTab('vendor')">Vendor Accruals</button>
+              <button type="button" class="ef-tab" data-tab="softwarecap" onclick="selectEmailsFormsTab('softwarecap')">Software Cap</button>
+            </div>
+
+            <div class="ef-panel">
+              <div class="ef-panel-inner">
+                <div class="ef-toolbar">
+                  <button type="button" class="ef-secondary-btn" onclick="openConfigureSlack('notification-settings')">Notification Settings</button>
+                  <button type="button" class="ef-add-btn">
+                    <span class="ef-add-btn-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>Add New
+                  </button>
+                </div>
+
+                <div class="ef-table-wrap">
+                  <table class="ef-table">
+                    <thead>
+                      <tr>
+                        <th>Template Name</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Active</th>
+                        <th>Last Updated</th>
+                        <th>Last Updated By</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="ef-rows-vendor">
+                      <tr>
+                        <td class="ef-name">Standard Vendor Confirmation</td>
+                        <td class="ef-plain"><span class="ef-badge ef-badge--vendor">Vendor</span></td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Jul 18, 2026</td>
+                        <td>glenn@gappify.com</td>
+                        <td class="ef-plain"><button type="button" title="Edit" class="ef-icon-btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button></td>
+                      </tr>
+                      <tr>
+                        <td class="ef-name">Internal Business Partner Confirmation</td>
+                        <td class="ef-plain"><span class="ef-badge ef-badge--internal">Internal</span></td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Jul 15, 2026</td>
+                        <td>p.alvarez@gappify.com</td>
+                        <td class="ef-plain"><button type="button" title="Edit" class="ef-icon-btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button></td>
+                      </tr>
+                    </tbody>
+                    <tbody id="ef-rows-softwarecap" style="display:none;">
+                      <tr class="ef-empty-row"><td class="ef-empty" colspan="7">No templates yet.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Disconnect Slack confirmation (opened from the card's Disconnect button) -->
+<div id="disconnect-slack-modal" class="dc-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="dc-title">
+  <div class="dc-backdrop" onclick="closeDisconnectSlack()"></div>
+  <div class="dc-modal">
+    <div class="dc-body">
+      <p id="dc-title" class="dc-title">Disconnect Slack?</p>
+      <p class="dc-message">This will stop sending accrual notifications to Slack until reconnected.</p>
+    </div>
+    <div class="dc-actions">
+      <button type="button" class="dc-btn dc-btn-cancel" onclick="closeDisconnectSlack()">Cancel</button>
+      <button type="button" class="dc-btn dc-btn-confirm" onclick="confirmDisconnectSlack()">Disconnect</button>
     </div>
   </div>
 </div>
@@ -451,21 +652,21 @@
   <div class="scfg-backdrop" onclick="closeConfigureSlack()"></div>
   <div class="scfg-modal">
     <div class="scfg-header">
-      <svg class="scfg-header-icon" viewBox="0 0 122.8 122.8" aria-hidden="true">
+      <svg id="scfg-header-icon" class="scfg-header-icon" viewBox="0 0 122.8 122.8" aria-hidden="true">
         <path d="M25.8 77.6a12.9 12.9 0 1 1-12.9-12.9h12.9zM32.3 77.6a12.9 12.9 0 1 1 25.8 0v32.3a12.9 12.9 0 1 1-25.8 0z" fill="#e01e5a"/>
         <path d="M45.2 25.8a12.9 12.9 0 1 1 12.9-12.9v12.9zM45.2 32.3a12.9 12.9 0 1 1 0 25.8H12.9a12.9 12.9 0 1 1 0-25.8z" fill="#36c5f0"/>
         <path d="M97 45.2a12.9 12.9 0 1 1 12.9 12.9H97zM90.5 45.2a12.9 12.9 0 1 1-25.8 0V12.9a12.9 12.9 0 1 1 25.8 0z" fill="#2eb67d"/>
         <path d="M77.6 97a12.9 12.9 0 1 1-12.9 12.9V97zM77.6 90.5a12.9 12.9 0 1 1 0-25.8h32.3a12.9 12.9 0 1 1 0 25.8z" fill="#ecb22e"/>
       </svg>
-      <h2 class="scfg-header-title">Configure Slack</h2>
+      <h2 id="scfg-header-title" class="scfg-header-title">Configure Slack</h2>
       <button type="button" class="scfg-close" onclick="closeConfigureSlack()" aria-label="Close">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
     </div>
 
     <div class="scfg-body">
-      <!-- Workspace -->
-      <div class="scfg-section">
+      <!-- Workspace (hidden when the modal is opened as Notification Settings) -->
+      <div id="scfg-workspace-section" class="scfg-section">
         <div>
           <p class="scfg-section-title">Workspace</p>
           <p class="scfg-section-desc">Connected Slack workspace.</p>
@@ -475,24 +676,29 @@
           <span class="scfg-status-text">Connected — Gappify Demo Team</span>
           <span class="config-team-badge" style="margin-left:auto;">T0DEMO1234</span>
         </div>
+
+        <!-- Current user's Slack ID. Preview the not-a-member state with
+             slack.html?slackUser=notMember -->
         <div class="scfg-field">
-          <span class="scfg-label">Member Directory</span>
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-            <span style="font-size:12px;color:var(--slate-500);" class="member-directory-summary-text">5 members in directory &middot; 5 with email</span>
-            <div style="display:flex;gap:8px;">
-              <button type="button" class="scfg-outline-btn" onclick="openMemberDirectory()">View directory</button>
-              <button type="button" class="scfg-outline-btn js-sync-directory-btn" onclick="syncMemberDirectory()">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sync-icon"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-                <span class="sync-label">Sync directory</span>
-              </button>
-            </div>
+          <span class="scfg-label">Your Slack ID</span>
+          <div id="scfg-userid-member" class="scfg-workspace-row">
+            <span id="scfg-user-id" class="config-team-badge">U0DEMO5678</span>
+            <button type="button" class="scfg-copy-btn" title="Copy Slack ID" aria-label="Copy Slack ID" onclick="copySlackUserId()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
           </div>
-          <p class="scfg-section-desc" style="margin:0;">This is a snapshot of your Slack Workspace and doesn't update automatically. If new members were added in Slack, click Sync member directory to refresh the list.</p>
+          <div id="scfg-userid-missing" style="display:none;">
+            <div class="scfg-workspace-row">
+              <span class="scfg-status-dot scfg-status-dot--warn" aria-hidden="true"></span>
+              <span class="scfg-status-text">You're not a member of this Slack workspace</span>
+            </div>
+            <p class="scfg-section-desc" style="margin:4px 0 0 16px;">We couldn't match your Gappify email to a Slack account. Ask a workspace admin to invite you, or check that your Slack email matches.</p>
+          </div>
         </div>
       </div>
 
-      <!-- Delivery channel -->
-      <div class="scfg-section">
+      <!-- Delivery channel (Notification Settings only) -->
+      <div id="scfg-delivery-section" class="scfg-section">
         <div>
           <p class="scfg-section-title">Delivery Channel</p>
           <p class="scfg-section-desc">Choose how accrual confirmation notifications are delivered.</p>
@@ -505,20 +711,18 @@
         <p class="scfg-section-desc" id="delivery-helper-text" style="margin:0;">Notifications are sent by email only; no Slack messages are sent.</p>
       </div>
 
-      <!-- Test notification -->
-      <div class="scfg-section">
+      <!-- Test notification (Notification Settings only) -->
+      <div id="scfg-test-section" class="scfg-section">
         <div>
           <p class="scfg-section-title">Test Notification</p>
           <p class="scfg-section-desc">Send a one-time direct message to verify the integration is working.</p>
         </div>
         <div class="scfg-field">
           <span class="scfg-label">Recipients</span>
-          <div class="scfg-user-picker">
-            <div class="scfg-chip-box" onclick="document.getElementById('user-search').focus()">
-              <span id="scfg-recipient-chips" style="display:contents;"></span>
-              <input type="text" id="user-search" class="scfg-chip-input" placeholder="Search people to DM&hellip;" oninput="filterUsers()" onfocus="toggleUserDropdown(true)" onclick="event.stopPropagation()">
-            </div>
-            <div id="user-dropdown" class="scfg-user-dropdown" style="display:none;"></div>
+          <div class="scfg-email-field">
+            <input type="text" id="scfg-email-input" class="scfg-text-input" placeholder="name@company.com, name2@company.com" autocomplete="off" spellcheck="false" oninput="updateEmailRecipients()">
+            <p class="scfg-section-desc" style="margin:0;">Enter one or more email addresses, separated by commas.</p>
+            <p id="scfg-email-error" class="scfg-field-error" style="display:none;"></p>
           </div>
         </div>
         <div style="display:flex;justify-content:flex-end;">
@@ -565,18 +769,51 @@
     document.getElementById('slack-not-connected').style.display = 'none';
     document.getElementById('slack-connected').style.display = 'block';
   }
+  function openDisconnectSlack(){
+    document.getElementById('disconnect-slack-modal').style.display = 'flex';
+  }
+  function closeDisconnectSlack(){
+    document.getElementById('disconnect-slack-modal').style.display = 'none';
+  }
+  function confirmDisconnectSlack(){
+    closeDisconnectSlack();
+    disconnectSlack();
+  }
   function disconnectSlack(){
     document.getElementById('slack-connected').style.display = 'none';
     document.getElementById('slack-not-connected').style.display = 'block';
   }
 
+  /* ---------- Settings view navigation ---------- */
+  function navigateTo(view){
+    document.getElementById('view-connected-apps').style.display = view === 'connected-apps' ? 'flex' : 'none';
+    document.getElementById('view-emails-forms').style.display = view === 'emails-forms' ? 'flex' : 'none';
+    document.getElementById('nav-connected-apps').classList.toggle('selected', view === 'connected-apps');
+    document.getElementById('nav-emails-forms').classList.toggle('selected', view === 'emails-forms');
+  }
+
+  /* ---------- Emails & Forms tabs ---------- */
+  function selectEmailsFormsTab(tab){
+    document.querySelectorAll('.ef-tab').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+    document.getElementById('ef-rows-vendor').style.display = tab === 'vendor' ? '' : 'none';
+    document.getElementById('ef-rows-softwarecap').style.display = tab === 'softwarecap' ? '' : 'none';
+  }
+
   /* ---------- Configure Slack modal ---------- */
-  function openConfigureSlack(){
+  /* One modal, two variants: "Configure Slack" (Connected Apps) shows the
+     workspace; "Notification Settings" (Emails & Forms) shows delivery + test. */
+  function openConfigureSlack(context){
+    const fromNotificationSettings = context === 'notification-settings';
+    document.getElementById('scfg-header-icon').style.display = fromNotificationSettings ? 'none' : '';
+    document.getElementById('scfg-header-title').textContent = fromNotificationSettings ? 'Notification Settings' : 'Configure Slack';
+    document.getElementById('scfg-workspace-section').style.display = fromNotificationSettings ? 'none' : '';
+    document.getElementById('scfg-delivery-section').style.display = fromNotificationSettings ? '' : 'none';
+    document.getElementById('scfg-test-section').style.display = fromNotificationSettings ? '' : 'none';
+    if (fromNotificationSettings) updateEmailRecipients();
     document.getElementById('configure-slack-modal').style.display = 'flex';
   }
   function closeConfigureSlack(){
     document.getElementById('configure-slack-modal').style.display = 'none';
-    toggleUserDropdown(false);
   }
 
   /* ---------- Delivery channel (segmented control) ---------- */
@@ -660,57 +897,66 @@
     }, 2600);
   }
 
-  /* ---------- Test notification recipients ---------- */
-  let selectedTestUsers = [];
-
-  function toggleUserDropdown(open){
-    const dd = document.getElementById('user-dropdown');
-    if (open === false) { dd.style.display = 'none'; return; }
-    renderUserDropdown();
-    dd.style.display = 'block';
+  /* ---------- Current user's Slack ID (Configure Slack) ---------- */
+  // The mock has no real lookup; ?slackUser=notMember previews the
+  // "current user isn't in the workspace" state.
+  function renderSlackUserId(){
+    const isMember = new URLSearchParams(location.search).get('slackUser') !== 'notMember';
+    document.getElementById('scfg-userid-member').style.display = isMember ? '' : 'none';
+    document.getElementById('scfg-userid-missing').style.display = isMember ? 'none' : '';
   }
-  function filterUsers(){ renderUserDropdown(); }
-  function renderUserDropdown(){
-    const query = document.getElementById('user-search').value.toLowerCase();
-    const dd = document.getElementById('user-dropdown');
-    const matches = DEMO_MEMBERS.filter(u => !selectedTestUsers.includes(u.email) && u.name.toLowerCase().includes(query));
-    if (matches.length === 0) {
-      dd.innerHTML = '<div class="scfg-user-option" style="color:var(--slate-400);cursor:default;">No matches</div>';
-      return;
-    }
-    dd.innerHTML = matches.map(u =>
-      `<div class="scfg-user-option" onclick="toggleTestUser('${u.email}')">${u.name} <span style="color:var(--slate-400);">(${u.email})</span></div>`
-    ).join('');
-  }
-  function toggleTestUser(email){
-    if (selectedTestUsers.includes(email)) {
-      selectedTestUsers = selectedTestUsers.filter(e => e !== email);
+  function copySlackUserId(){
+    const id = document.getElementById('scfg-user-id').textContent;
+    const fallbackCopy = () => {
+      const field = document.createElement('textarea');
+      field.value = id;
+      field.style.cssText = 'position:fixed;opacity:0;';
+      document.body.appendChild(field);
+      field.select();
+      const ok = document.execCommand('copy');
+      field.remove();
+      return ok;
+    };
+    const notify = ok => { if (ok) showToast('Slack ID copied.'); };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(id).then(() => notify(true), () => notify(fallbackCopy()));
     } else {
-      selectedTestUsers.push(email);
-      document.getElementById('user-search').value = '';
+      notify(fallbackCopy());
     }
-    renderTestRecipients();
-    renderUserDropdown();
   }
-  function renderTestRecipients(){
-    const chipsEl = document.getElementById('scfg-recipient-chips');
-    const sendBtn = document.getElementById('send-test-btn');
-    sendBtn.disabled = selectedTestUsers.length === 0;
-    chipsEl.innerHTML = selectedTestUsers.map(email => {
-      const user = DEMO_MEMBERS.find(u => u.email === email);
-      return `<span class="scfg-chip">${user.name}<button type="button" onclick="toggleTestUser('${email}')">&times;</button></span>`;
-    }).join('');
-  }
-  function sendTestNotification(){
-    alert('Test notification sent to ' + selectedTestUsers.length + ' user(s).');
-  }
+  renderSlackUserId();
 
-  document.addEventListener('click', function(e){
-    const picker = document.querySelector('.scfg-user-picker');
-    if (picker && !picker.contains(e.target)) {
-      toggleUserDropdown(false);
-    }
-  });
+  /* ---------- Test notification: comma-separated email recipients ---------- */
+  function sendTestNotification(){
+    const count = uniqueValidEmails().length;
+    showToast('Test notification sent to ' + count + (count === 1 ? ' recipient.' : ' recipients.'));
+  }
+  const EMAIL_PATTERN = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/;
+  function parseRecipientEmails(){
+    // A single trailing comma is allowed (the user is mid-typing); an empty
+    // entry anywhere else, like "a@x.com,,b@x.com", is a formatting issue.
+    const raw = document.getElementById('scfg-email-input').value.trim().replace(/,\s*$/, '');
+    const parts = raw === '' ? [] : raw.split(',').map(s => s.trim());
+    const items = parts.filter(Boolean);
+    return {
+      valid: items.filter(e => EMAIL_PATTERN.test(e)),
+      invalid: items.filter(e => !EMAIL_PATTERN.test(e)),
+      hasEmptyEntry: parts.some(p => p === '')
+    };
+  }
+  function uniqueValidEmails(){
+    return [...new Set(parseRecipientEmails().valid.map(e => e.toLowerCase()))];
+  }
+  function updateEmailRecipients(){
+    const { valid, invalid, hasEmptyEntry } = parseRecipientEmails();
+    const problems = [];
+    if (invalid.length) problems.push('Check the format of: ' + invalid.join(', '));
+    if (hasEmptyEntry) problems.push('Remove the extra comma between addresses.');
+    const error = document.getElementById('scfg-email-error');
+    error.style.display = problems.length ? 'block' : 'none';
+    error.textContent = problems.join(' ');
+    document.getElementById('send-test-btn').disabled = valid.length === 0 || problems.length > 0;
+  }
 </script>
 
 </body>

@@ -177,12 +177,20 @@
   }
   .card-btn-danger:hover{background:#fee2e2;}
 
-  /* ---------- Configure Slack modal ----------
-     Rebuilt to match the real "Configure Jira" modal reference exactly:
-     white rounded-xl card, slate borders/text, indigo-600 accent, 12/14px
-     type — same modal chrome as Jira's, populated with Slack's own settings
-     (Workspace, Delivery Channel, Test Notification) instead of Jira's
-     scope/field-mapping, so Configure never leaves Connected Apps. */
+  .card-status-dot--warn{background:#f59e0b;}
+  .card-userid-row{display:flex;align-items:center;gap:8px;}
+  .card-userid-label{font-size:12px;color:var(--slate-500);}
+  .card-id-badge{font-size:11px;font-family:ui-monospace,SFMono-Regular,monospace;color:var(--slate-500);border:1px solid var(--slate-200);border-radius:4px;padding:2px 6px;background:var(--slate-50);}
+  .card-copy-btn{
+    display:flex;padding:4px;border:0;border-radius:4px;background:transparent;color:var(--slate-400);cursor:pointer;
+    transition:color .15s,background-color .15s;
+  }
+  .card-copy-btn:hover{color:var(--gappify-indigo-600);background:var(--gappify-indigo-50);}
+  .card-status-help{margin:4px 0 0 16px;font-size:12px;color:#8c8c8c;}
+
+  /* ---------- Notification Settings modal ----------
+     Same modal chrome as the reference's "Configure Jira" modal: white
+     rounded-xl card, slate borders/text, indigo-600 accent, 12/14px type. */
   .scfg-overlay{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;}
   .scfg-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.4);backdrop-filter:blur(1px);}
   .scfg-modal{
@@ -191,7 +199,6 @@
     display:flex;flex-direction:column;overflow:hidden;
   }
   .scfg-header{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--slate-200);}
-  .scfg-header-icon{width:22px;height:22px;flex-shrink:0;}
   .scfg-header-title{font-size:14px;font-weight:700;color:var(--slate-900);flex:1;margin:0;}
   .scfg-close{background:none;border:none;color:var(--slate-400);cursor:pointer;padding:2px;border-radius:4px;display:flex;}
   .scfg-close:hover{color:var(--gappify-indigo-500);}
@@ -200,43 +207,11 @@
   .scfg-section{display:flex;flex-direction:column;gap:12px;}
   .scfg-section-title{font-size:12px;font-weight:700;color:var(--slate-900);margin:0;}
   .scfg-section-desc{font-size:11px;color:var(--slate-500);margin:0;}
-  .scfg-field{display:flex;flex-direction:column;gap:6px;}
-  .scfg-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--slate-600);}
-
-  .scfg-workspace-row{display:flex;align-items:center;gap:8px;}
-  .scfg-status-dot{width:8px;height:8px;border-radius:50%;background:#10b981;flex-shrink:0;}
-  .scfg-status-text{font-size:12px;font-weight:600;color:var(--slate-700);}
-  .scfg-status-dot--warn{background:#f59e0b;}
-  .scfg-copy-btn{
-    display:flex;padding:4px;border:0;border-radius:4px;background:transparent;color:var(--slate-400);cursor:pointer;
-    transition:color .15s,background-color .15s;
-  }
-  .scfg-copy-btn:hover{color:var(--gappify-indigo-600);background:var(--gappify-indigo-50);}
-  .config-team-badge{font-size:11px;font-family:ui-monospace,SFMono-Regular,monospace;color:var(--slate-500);border:1px solid var(--slate-200);border-radius:4px;padding:2px 6px;background:var(--slate-50);}
-
-  .scfg-outline-btn{
-    display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:6px;
-    border:1px solid var(--slate-200);background:#fff;font-size:12px;font-weight:600;
-    color:var(--slate-600);cursor:pointer;white-space:nowrap;transition:all .15s;
-  }
-  .scfg-outline-btn:hover{background:var(--gappify-indigo-50);border-color:#a5b4fc;color:var(--gappify-indigo-600);}
-  .scfg-outline-btn:disabled{cursor:not-allowed;opacity:.5;}
-  .scfg-outline-btn:disabled:hover{background:#fff;border-color:var(--slate-200);color:var(--slate-600);}
 
   .scfg-segment{display:flex;gap:6px;}
   .scfg-segment-btn{flex:1;text-align:center;padding:8px 10px;border-radius:6px;border:1px solid var(--slate-200);background:#fff;font-size:12px;font-weight:600;color:var(--slate-600);cursor:pointer;transition:all .15s;}
   .scfg-segment-btn:hover{border-color:#a5b4fc;}
   .scfg-segment-btn.active{background:var(--gappify-indigo-50);border-color:#a5b4fc;color:var(--gappify-indigo-700);}
-
-  .scfg-email-field{display:flex;flex-direction:column;gap:6px;}
-  .scfg-text-input{
-    width:100%;height:36px;padding:6px 8px;border:1px solid var(--slate-200);border-radius:6px;background:#fff;
-    font-size:12px;font-family:inherit;color:var(--slate-700);transition:all .15s;
-  }
-  .scfg-text-input::placeholder{color:var(--slate-400);}
-  .scfg-text-input:hover{border-color:#a5b4fc;}
-  .scfg-text-input:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(99,102,241,.15);}
-  .scfg-field-error{margin:0;font-size:11px;color:#ef4444;}
 
   .scfg-footer{flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--slate-200);}
   .scfg-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:32px;padding:0 12px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;white-space:nowrap;transition:all .15s;border:1px solid transparent;}
@@ -265,36 +240,7 @@
   .dc-btn-confirm{border:0;background:oklch(57.7% .245 27.325);font-weight:600;color:#fff;}
   .dc-btn-confirm:hover{background:oklch(50.5% .213 27.518);}
 
-  /* ---------- Member directory modal ---------- */
-  /* Stacks on top of the Configure Slack modal (z-index 9998/9999) since it
-     opens from a button inside that modal — a lower z-index here would
-     render it invisibly behind the modal that spawned it. Styled to match
-     that same slate/indigo modal language rather than the older antd-ish
-     look this used before the Configure redesign. */
-  .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.4);backdrop-filter:blur(1px);display:flex;align-items:center;justify-content:center;z-index:10000;}
-  .modal-box{
-    background:#fff;border-radius:12px;width:420px;max-width:90vw;max-height:80vh;
-    border:1px solid var(--slate-200);box-shadow:0 25px 50px -12px rgba(0,0,0,.25);
-    display:flex;flex-direction:column;overflow:hidden;
-  }
-  .modal-header{
-    flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
-    padding:16px 20px;border-bottom:1px solid var(--slate-200);
-    font-size:14px;font-weight:700;color:var(--slate-900);
-  }
-  .modal-close{background:none;border:none;color:var(--slate-400);cursor:pointer;padding:2px;border-radius:4px;display:flex;}
-  .modal-close:hover{color:var(--gappify-indigo-500);}
-  .modal-body{padding:8px 20px 20px;overflow-y:auto;}
-  .modal-table{width:100%;border-collapse:collapse;font-size:12px;}
-  .modal-table th{text-align:left;color:var(--slate-500);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:10px 4px 8px;border-bottom:1px solid var(--slate-200);}
-  .modal-table td{padding:10px 4px;border-bottom:1px solid var(--slate-100);color:var(--slate-700);}
-  .modal-table tr:last-child td{border-bottom:none;}
-
-  /* ---------- Sync loading state + toast ---------- */
-  @keyframes scfg-spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-  .sync-icon.spin{animation:scfg-spin .8s linear infinite;}
-  .js-sync-directory-btn:disabled{cursor:not-allowed;opacity:.7;}
-
+  /* ---------- Toast ---------- */
   .toast-container{position:fixed;top:20px;right:20px;z-index:10050;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
   .toast{
     display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--slate-200);
@@ -544,12 +490,29 @@
 
                 <!-- Connected state (hidden by default) -->
                 <div id="slack-connected" style="display:none;">
-                  <div class="card-status-row" style="margin-bottom:16px;">
+                  <div class="card-status-row" style="margin-bottom:8px;">
                     <span class="card-status-dot" aria-hidden="true"></span>
                     <span class="card-status-text">Connected — Gappify Demo Team</span>
                   </div>
+
+                  <!-- Current user's Slack ID. Preview the not-a-member state with
+                       slack.html?slackUser=notMember -->
+                  <div id="slack-userid-member" class="card-userid-row" style="margin-bottom:16px;">
+                    <span class="card-userid-label">Your Slack ID</span>
+                    <span id="slack-user-id" class="card-id-badge">U0DEMO5678</span>
+                    <button type="button" class="card-copy-btn" title="Copy Slack ID" aria-label="Copy Slack ID" onclick="copySlackUserId()">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </button>
+                  </div>
+                  <div id="slack-userid-missing" style="display:none;margin-bottom:16px;">
+                    <div class="card-status-row">
+                      <span class="card-status-dot card-status-dot--warn" aria-hidden="true"></span>
+                      <span class="card-status-text">You're not a member of this Slack workspace</span>
+                    </div>
+                    <p class="card-status-help">We couldn't match your Gappify email to a Slack account. Ask a workspace admin to invite you, or check that your Slack email matches.</p>
+                  </div>
+
                   <div class="connected-apps-card-footer">
-                    <button type="button" class="card-btn-outline" onclick="openConfigureSlack()">Configure</button>
                     <button type="button" class="card-btn-danger" onclick="openDisconnectSlack()">Disconnect</button>
                   </div>
                 </div>
@@ -577,7 +540,7 @@
             <div class="ef-panel">
               <div class="ef-panel-inner">
                 <div class="ef-toolbar">
-                  <button type="button" class="ef-secondary-btn" onclick="openConfigureSlack('notification-settings')">Notification Settings</button>
+                  <button type="button" class="ef-secondary-btn" onclick="openNotificationSettings()">Notification Settings</button>
                   <button type="button" class="ef-add-btn">
                     <span class="ef-add-btn-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>Add New
                   </button>
@@ -646,59 +609,20 @@
   </div>
 </div>
 
-<!-- Configure Slack modal (opened from the card's Configure button — matches
-     the Configure Jira modal pattern: no separate settings-page navigation). -->
-<div id="configure-slack-modal" class="scfg-overlay" style="display:none;">
-  <div class="scfg-backdrop" onclick="closeConfigureSlack()"></div>
+<!-- Notification Settings modal (opened from Emails & Forms). Same modal
+     chrome as the reference's Configure Jira modal. -->
+<div id="notification-settings-modal" class="scfg-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="scfg-header-title">
+  <div class="scfg-backdrop" onclick="closeNotificationSettings()"></div>
   <div class="scfg-modal">
     <div class="scfg-header">
-      <svg id="scfg-header-icon" class="scfg-header-icon" viewBox="0 0 122.8 122.8" aria-hidden="true">
-        <path d="M25.8 77.6a12.9 12.9 0 1 1-12.9-12.9h12.9zM32.3 77.6a12.9 12.9 0 1 1 25.8 0v32.3a12.9 12.9 0 1 1-25.8 0z" fill="#e01e5a"/>
-        <path d="M45.2 25.8a12.9 12.9 0 1 1 12.9-12.9v12.9zM45.2 32.3a12.9 12.9 0 1 1 0 25.8H12.9a12.9 12.9 0 1 1 0-25.8z" fill="#36c5f0"/>
-        <path d="M97 45.2a12.9 12.9 0 1 1 12.9 12.9H97zM90.5 45.2a12.9 12.9 0 1 1-25.8 0V12.9a12.9 12.9 0 1 1 25.8 0z" fill="#2eb67d"/>
-        <path d="M77.6 97a12.9 12.9 0 1 1-12.9 12.9V97zM77.6 90.5a12.9 12.9 0 1 1 0-25.8h32.3a12.9 12.9 0 1 1 0 25.8z" fill="#ecb22e"/>
-      </svg>
-      <h2 id="scfg-header-title" class="scfg-header-title">Configure Slack</h2>
-      <button type="button" class="scfg-close" onclick="closeConfigureSlack()" aria-label="Close">
+      <h2 id="scfg-header-title" class="scfg-header-title">Notification Settings</h2>
+      <button type="button" class="scfg-close" onclick="closeNotificationSettings()" aria-label="Close">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
     </div>
 
     <div class="scfg-body">
-      <!-- Workspace (hidden when the modal is opened as Notification Settings) -->
-      <div id="scfg-workspace-section" class="scfg-section">
-        <div>
-          <p class="scfg-section-title">Workspace</p>
-          <p class="scfg-section-desc">Connected Slack workspace.</p>
-        </div>
-        <div class="scfg-workspace-row">
-          <span class="scfg-status-dot" aria-hidden="true"></span>
-          <span class="scfg-status-text">Connected — Gappify Demo Team</span>
-          <span class="config-team-badge" style="margin-left:auto;">T0DEMO1234</span>
-        </div>
-
-        <!-- Current user's Slack ID. Preview the not-a-member state with
-             slack.html?slackUser=notMember -->
-        <div class="scfg-field">
-          <span class="scfg-label">Your Slack ID</span>
-          <div id="scfg-userid-member" class="scfg-workspace-row">
-            <span id="scfg-user-id" class="config-team-badge">U0DEMO5678</span>
-            <button type="button" class="scfg-copy-btn" title="Copy Slack ID" aria-label="Copy Slack ID" onclick="copySlackUserId()">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            </button>
-          </div>
-          <div id="scfg-userid-missing" style="display:none;">
-            <div class="scfg-workspace-row">
-              <span class="scfg-status-dot scfg-status-dot--warn" aria-hidden="true"></span>
-              <span class="scfg-status-text">You're not a member of this Slack workspace</span>
-            </div>
-            <p class="scfg-section-desc" style="margin:4px 0 0 16px;">We couldn't match your Gappify email to a Slack account. Ask a workspace admin to invite you, or check that your Slack email matches.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Delivery channel (Notification Settings only) -->
-      <div id="scfg-delivery-section" class="scfg-section">
+      <div class="scfg-section">
         <div>
           <p class="scfg-section-title">Delivery Channel</p>
           <p class="scfg-section-desc">Choose how accrual confirmation notifications are delivered.</p>
@@ -710,56 +634,11 @@
         </div>
         <p class="scfg-section-desc" id="delivery-helper-text" style="margin:0;">Notifications are sent by email only; no Slack messages are sent.</p>
       </div>
-
-      <!-- Test notification (Notification Settings only) -->
-      <div id="scfg-test-section" class="scfg-section">
-        <div>
-          <p class="scfg-section-title">Test Notification</p>
-          <p class="scfg-section-desc">Send a one-time direct message to verify the integration is working.</p>
-        </div>
-        <div class="scfg-field">
-          <span class="scfg-label">Recipients</span>
-          <div class="scfg-email-field">
-            <input type="text" id="scfg-email-input" class="scfg-text-input" placeholder="name@company.com, name2@company.com" autocomplete="off" spellcheck="false" oninput="updateEmailRecipients()">
-            <p class="scfg-section-desc" style="margin:0;">Enter one or more email addresses, separated by commas.</p>
-            <p id="scfg-email-error" class="scfg-field-error" style="display:none;"></p>
-          </div>
-        </div>
-        <div style="display:flex;justify-content:flex-end;">
-          <button type="button" class="scfg-outline-btn" id="send-test-btn" disabled onclick="sendTestNotification()">Send test notification</button>
-        </div>
-      </div>
     </div>
 
     <div class="scfg-footer">
-      <button type="button" class="scfg-btn scfg-btn-cancel" onclick="closeConfigureSlack()">Cancel</button>
-      <button type="button" class="scfg-btn scfg-btn-save" onclick="closeConfigureSlack()">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- Member directory modal (opened from inside Configure Slack — see the
-     z-index note above for why it needs to outrank that modal). -->
-<div id="member-directory-modal" class="modal-overlay" style="display:none;" onclick="if(event.target===this)closeMemberDirectory()">
-  <div class="modal-box">
-    <div class="modal-header">
-      <span>Member directory</span>
-      <button type="button" class="modal-close" onclick="closeMemberDirectory()" aria-label="Close">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;">
-        <span style="font-size:12px;color:var(--slate-500);" class="member-directory-summary-text">5 members in directory &middot; 5 with email</span>
-        <button type="button" class="scfg-outline-btn js-sync-directory-btn" onclick="syncMemberDirectory()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sync-icon"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-          <span class="sync-label">Sync directory</span>
-        </button>
-      </div>
-      <table class="modal-table">
-        <thead><tr><th>Name</th><th>Email</th></tr></thead>
-        <tbody id="member-directory-table-body"></tbody>
-      </table>
+      <button type="button" class="scfg-btn scfg-btn-cancel" onclick="closeNotificationSettings()">Cancel</button>
+      <button type="button" class="scfg-btn scfg-btn-save" onclick="closeNotificationSettings()">Save</button>
     </div>
   </div>
 </div>
@@ -799,21 +678,12 @@
     document.getElementById('ef-rows-softwarecap').style.display = tab === 'softwarecap' ? '' : 'none';
   }
 
-  /* ---------- Configure Slack modal ---------- */
-  /* One modal, two variants: "Configure Slack" (Connected Apps) shows the
-     workspace; "Notification Settings" (Emails & Forms) shows delivery + test. */
-  function openConfigureSlack(context){
-    const fromNotificationSettings = context === 'notification-settings';
-    document.getElementById('scfg-header-icon').style.display = fromNotificationSettings ? 'none' : '';
-    document.getElementById('scfg-header-title').textContent = fromNotificationSettings ? 'Notification Settings' : 'Configure Slack';
-    document.getElementById('scfg-workspace-section').style.display = fromNotificationSettings ? 'none' : '';
-    document.getElementById('scfg-delivery-section').style.display = fromNotificationSettings ? '' : 'none';
-    document.getElementById('scfg-test-section').style.display = fromNotificationSettings ? '' : 'none';
-    if (fromNotificationSettings) updateEmailRecipients();
-    document.getElementById('configure-slack-modal').style.display = 'flex';
+  /* ---------- Notification Settings modal ---------- */
+  function openNotificationSettings(){
+    document.getElementById('notification-settings-modal').style.display = 'flex';
   }
-  function closeConfigureSlack(){
-    document.getElementById('configure-slack-modal').style.display = 'none';
+  function closeNotificationSettings(){
+    document.getElementById('notification-settings-modal').style.display = 'none';
   }
 
   /* ---------- Delivery channel (segmented control) ---------- */
@@ -827,54 +697,6 @@
       btn.classList.toggle('active', btn.dataset.value === value);
     });
     document.getElementById('delivery-helper-text').textContent = DELIVERY_COPY[value];
-  }
-
-  /* ---------- Member directory ---------- */
-  const DEMO_MEMBERS = [
-    {name:'Alex Rivera', email:'alex.rivera@company.com'},
-    {name:'Jamie Chen', email:'jamie.chen@company.com'},
-    {name:'Morgan Lee', email:'morgan.lee@company.com'},
-    {name:'Taylor Brooks', email:'taylor.brooks@company.com'},
-    {name:'Sam Patel', email:'sam.patel@company.com'}
-  ];
-
-  function renderMemberDirectoryTable(){
-    document.getElementById('member-directory-table-body').innerHTML =
-      DEMO_MEMBERS.map(m => `<tr><td>${m.name}</td><td>${m.email}</td></tr>`).join('');
-  }
-  function updateMemberDirectorySummary(){
-    const text = DEMO_MEMBERS.length + ' members in directory · ' + DEMO_MEMBERS.length + ' with email';
-    document.querySelectorAll('.member-directory-summary-text').forEach(el => { el.textContent = text; });
-  }
-  function openMemberDirectory(){
-    renderMemberDirectoryTable();
-    document.getElementById('member-directory-modal').style.display = 'flex';
-  }
-  function closeMemberDirectory(){
-    document.getElementById('member-directory-modal').style.display = 'none';
-  }
-
-  let syncInProgress = false;
-  function syncMemberDirectory(){
-    if (syncInProgress) return;
-    syncInProgress = true;
-    const btns = document.querySelectorAll('.js-sync-directory-btn');
-    btns.forEach(btn => {
-      btn.disabled = true;
-      btn.querySelector('.sync-icon').classList.add('spin');
-      btn.querySelector('.sync-label').textContent = 'Syncing…';
-    });
-    setTimeout(() => {
-      updateMemberDirectorySummary();
-      renderMemberDirectoryTable();
-      btns.forEach(btn => {
-        btn.disabled = false;
-        btn.querySelector('.sync-icon').classList.remove('spin');
-        btn.querySelector('.sync-label').textContent = 'Sync directory';
-      });
-      syncInProgress = false;
-      showToast('Member directory synced successfully.');
-    }, 1100);
   }
 
   /* ---------- Toast ---------- */
@@ -897,16 +719,16 @@
     }, 2600);
   }
 
-  /* ---------- Current user's Slack ID (Configure Slack) ---------- */
+  /* ---------- Current user's Slack ID (Slack tile) ---------- */
   // The mock has no real lookup; ?slackUser=notMember previews the
   // "current user isn't in the workspace" state.
   function renderSlackUserId(){
     const isMember = new URLSearchParams(location.search).get('slackUser') !== 'notMember';
-    document.getElementById('scfg-userid-member').style.display = isMember ? '' : 'none';
-    document.getElementById('scfg-userid-missing').style.display = isMember ? 'none' : '';
+    document.getElementById('slack-userid-member').style.display = isMember ? '' : 'none';
+    document.getElementById('slack-userid-missing').style.display = isMember ? 'none' : '';
   }
   function copySlackUserId(){
-    const id = document.getElementById('scfg-user-id').textContent;
+    const id = document.getElementById('slack-user-id').textContent;
     const fallbackCopy = () => {
       const field = document.createElement('textarea');
       field.value = id;
@@ -925,38 +747,6 @@
     }
   }
   renderSlackUserId();
-
-  /* ---------- Test notification: comma-separated email recipients ---------- */
-  function sendTestNotification(){
-    const count = uniqueValidEmails().length;
-    showToast('Test notification sent to ' + count + (count === 1 ? ' recipient.' : ' recipients.'));
-  }
-  const EMAIL_PATTERN = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/;
-  function parseRecipientEmails(){
-    // A single trailing comma is allowed (the user is mid-typing); an empty
-    // entry anywhere else, like "a@x.com,,b@x.com", is a formatting issue.
-    const raw = document.getElementById('scfg-email-input').value.trim().replace(/,\s*$/, '');
-    const parts = raw === '' ? [] : raw.split(',').map(s => s.trim());
-    const items = parts.filter(Boolean);
-    return {
-      valid: items.filter(e => EMAIL_PATTERN.test(e)),
-      invalid: items.filter(e => !EMAIL_PATTERN.test(e)),
-      hasEmptyEntry: parts.some(p => p === '')
-    };
-  }
-  function uniqueValidEmails(){
-    return [...new Set(parseRecipientEmails().valid.map(e => e.toLowerCase()))];
-  }
-  function updateEmailRecipients(){
-    const { valid, invalid, hasEmptyEntry } = parseRecipientEmails();
-    const problems = [];
-    if (invalid.length) problems.push('Check the format of: ' + invalid.join(', '));
-    if (hasEmptyEntry) problems.push('Remove the extra comma between addresses.');
-    const error = document.getElementById('scfg-email-error');
-    error.style.display = problems.length ? 'block' : 'none';
-    error.textContent = problems.join(' ');
-    document.getElementById('send-test-btn').disabled = valid.length === 0 || problems.length > 0;
-  }
 </script>
 
 </body>

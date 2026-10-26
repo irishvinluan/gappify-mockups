@@ -211,6 +211,10 @@
   .scfg-segment{display:flex;gap:6px;}
   .scfg-segment-btn{flex:1;text-align:center;padding:8px 10px;border-radius:6px;border:1px solid var(--slate-200);background:#fff;font-size:12px;font-weight:600;color:var(--slate-600);cursor:pointer;transition:all .15s;}
   .scfg-segment-btn:hover{border-color:#a5b4fc;}
+  .scfg-segment-btn:disabled{opacity:.5;cursor:not-allowed;}
+  .scfg-segment-btn:disabled:hover{border-color:var(--slate-200);}
+  .scfg-note{display:flex;align-items:flex-start;gap:8px;margin:0;font-size:11px;line-height:1.5;color:var(--slate-600);}
+  .scfg-note::before{content:"";flex-shrink:0;width:6px;height:6px;margin-top:5px;border-radius:50%;background:#f59e0b;}
   .scfg-segment-btn.active{background:var(--gappify-indigo-50);border-color:#a5b4fc;color:var(--gappify-indigo-700);}
 
   .scfg-footer{flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--slate-200);}
@@ -632,6 +636,7 @@
           <button type="button" class="scfg-segment-btn" data-value="slack" onclick="selectDeliveryChannel('slack')">Slack only</button>
           <button type="button" class="scfg-segment-btn" data-value="both" onclick="selectDeliveryChannel('both')">Email + Slack</button>
         </div>
+        <p id="scfg-slack-note" class="scfg-note" style="display:none;">Slack isn't connected yet. Connect Slack in Connected Apps to deliver notifications to Slack.</p>
         <p class="scfg-section-desc" id="delivery-helper-text" style="margin:0;">Notifications are sent by email only; no Slack messages are sent.</p>
       </div>
     </div>
@@ -644,7 +649,12 @@
 </div>
 
 <script>
+  // Whether Slack is connected on the Connected Apps tile; Notification
+  // Settings reads this to decide if the Slack delivery options are available.
+  let slackConnected = false;
+
   function connectSlack(){
+    slackConnected = true;
     document.getElementById('slack-not-connected').style.display = 'none';
     document.getElementById('slack-connected').style.display = 'block';
   }
@@ -659,6 +669,7 @@
     disconnectSlack();
   }
   function disconnectSlack(){
+    slackConnected = false;
     document.getElementById('slack-connected').style.display = 'none';
     document.getElementById('slack-not-connected').style.display = 'block';
   }
@@ -680,7 +691,17 @@
 
   /* ---------- Notification Settings modal ---------- */
   function openNotificationSettings(){
+    applySlackAvailability();
     document.getElementById('notification-settings-modal').style.display = 'flex';
+  }
+  // Slack delivery needs a connected workspace: without one, only "Email only"
+  // is selectable (and is forced), with a note explaining why.
+  function applySlackAvailability(){
+    document.querySelectorAll('.scfg-segment-btn').forEach(btn => {
+      if (btn.dataset.value !== 'email') btn.disabled = !slackConnected;
+    });
+    document.getElementById('scfg-slack-note').style.display = slackConnected ? 'none' : '';
+    if (!slackConnected) selectDeliveryChannel('email');
   }
   function closeNotificationSettings(){
     document.getElementById('notification-settings-modal').style.display = 'none';

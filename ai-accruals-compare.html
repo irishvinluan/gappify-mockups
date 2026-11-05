@@ -27061,11 +27061,16 @@ div:has(> .sidebar.collapsed) .vi-page-title {
     {vendor:'KPMG AG', sub:'Gappify GmbH', gl:'6400 - Professional Fees', dept:'Finance', ccy:'EUR', ac:14000, ai:null},
     {vendor:'Slack Technologies', sub:'Gappify Inc', gl:'6310 - Software Subscriptions', dept:'IT', ccy:'USD', ac:2100, ai:2100}
   ];
-  ROWS.forEach(function(r){ r.diff = (r.ai||0) - (r.ac||0); });
+  // Round to whole numbers first so Difference always equals the displayed AI − AC
+  ROWS.forEach(function(r){
+    if (r.ac!==null) r.ac = Math.round(r.ac);
+    if (r.ai!==null) r.ai = Math.round(r.ai);
+    r.diff = (r.ai||0) - (r.ac||0);
+  });
   ROWS.sort(function(a,b){ return Math.abs(b.diff) - Math.abs(a.diff); }); // biggest differences first
 
   var $ = function(id){ return document.getElementById(id); };
-  var fmt = function(n){ return n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); };
+  var fmt = function(n){ return n.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}); };
   var esc = function(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); };
   var amt = function(n){
     return n===null ? '<span class="cmp-dash">—</span>'
@@ -27073,7 +27078,7 @@ div:has(> .sidebar.collapsed) .vi-page-title {
   };
   // blank = line exists on only one platform; otherwise colour by sign
   var diffCell = function(n, blank){
-    var cls = blank ? 'cmp-diff--blank' : Math.abs(n) < 0.005 ? 'cmp-diff--zero' : n > 0 ? 'cmp-diff--pos' : 'cmp-diff--neg';
+    var cls = blank ? 'cmp-diff--blank' : n === 0 ? 'cmp-diff--zero' : n > 0 ? 'cmp-diff--pos' : 'cmp-diff--neg';
     return '<span class="cmp-diff '+cls+'">'+(n>0?'+':'')+fmt(n)+'</span>';
   };
   var ccyTag = function(c){ return '<span class="confirmation-details-amount__currency">'+c+'</span>'; };

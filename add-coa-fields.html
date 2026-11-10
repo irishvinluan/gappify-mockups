@@ -26985,6 +26985,11 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 </script>
 <style id="coa-fields-style">
+/* modal overlays: dimmed + blurred, covering the app header (like the reference Add transaction modal) */
+.labor-costs-modal-backdrop{z-index:1050;background:rgba(15,23,42,.5) !important;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.labor-costs-modal-backdrop .labor-costs-modal{max-height:85vh !important}
+.coa-confirm-backdrop{background:rgba(15,23,42,.5) !important;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+
 /* ---------- Shared COA field controls ---------- */
 .coa-label-line{display:flex;align-items:center;justify-content:space-between}
 .coa-remove-btn{background:transparent;border:none;color:#94a3b8;cursor:pointer;font-size:11px;font-weight:500;padding:2px 6px;border-radius:4px;display:inline-flex;align-items:center;gap:4px;font-family:inherit}
@@ -27127,6 +27132,12 @@ body:not(.role-sysadmin) .coa-fields-modal [data-act="save"]{display:none}
 .coa-demo-reset{border:none;background:transparent;color:#94a3b8;font-size:11px;cursor:pointer;padding:4px 6px;font-family:inherit}
 .coa-demo-reset:hover{color:#475569}
 .coa-demo-hint{flex-basis:100%;font-size:11px;color:#64748b;padding:2px 2px 0}
+/* narrow vertical demo card so it stays clear of centered modals (e.g. the "Add another" checkbox) */
+.coa-demo-switch{flex-direction:column;align-items:stretch;flex-wrap:nowrap;gap:6px;width:272px;max-width:calc(100vw - 32px);padding:10px 12px}
+.coa-demo-group{justify-content:space-between}
+.coa-demo-div{display:none}
+.coa-demo-reset{position:absolute;top:6px;right:6px}
+.coa-demo-hint{border-top:1px solid #eef2f7;padding-top:6px;line-height:1.4}
 </style>
 <script id="coa-fields-script">
 document.addEventListener('DOMContentLoaded', function () {

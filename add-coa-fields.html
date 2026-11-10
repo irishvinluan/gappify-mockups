@@ -27011,12 +27011,25 @@ body:not(.role-sysadmin) #coa-txn-modal .coa-admin-ctrls,
 body.opt-settings #coa-txn-modal .coa-admin-ctrls{display:none}
 body:not(.role-sysadmin) #coa-txn-modal .coa-admin-add,
 body.opt-settings #coa-txn-modal .coa-admin-add{display:none}
-.coa-manage-link{margin-right:auto;display:none;align-items:center;gap:6px;background:transparent;border:none;color:#4f46e5;font-size:12px;font-weight:600;cursor:pointer;padding:6px 8px;margin-left:-8px;border-radius:6px;font-family:inherit}
-.coa-manage-link:hover{background:#eef2ff}
-body.opt-settings.role-sysadmin .coa-manage-link{display:inline-flex}
 
 /* Other modals open on top of Add Transaction */
 .coa-modal-layer{z-index:1060 !important}
+
+/* ---------- Reorder (drag handle) ---------- */
+.coa-block{display:flex;flex-direction:column;gap:16px}
+.coa-label-left{display:inline-flex;align-items:center;gap:4px}
+.coa-grip{display:inline-flex;align-items:center;justify-content:center;width:18px;height:22px;margin-left:-6px;color:#cbd5e1;cursor:grab;border:none;background:transparent;padding:0;border-radius:4px;touch-action:none}
+.coa-grip:hover,.coa-grip:focus-visible{color:#475569;background:#f1f5f9;outline:none}
+.coa-sort-off .coa-grip{display:none}
+body:not(.role-sysadmin) #coa-txn-modal .coa-grip,
+body.opt-settings #coa-txn-modal .coa-grip{display:none}
+body:not(.role-sysadmin) .coa-fields-modal .coa-grip{display:none}
+.coa-dragging{position:relative;z-index:3;background:#fff;border-radius:8px;box-shadow:0 0 0 6px #fff,0 10px 28px #0f172a33}
+.coa-fields-modal .coa-dragging{box-shadow:0 8px 24px #0f172a2e;border-radius:0}
+body.coa-sorting,body.coa-sorting *{cursor:grabbing !important;user-select:none}
+.coa-grip-cell{display:inline-flex;align-items:center}
+.coa-grip-cell .coa-grip{margin-left:0}
+.coa-pin{display:inline-flex;color:#e2e8f0;padding-left:4px}
 
 /* ---------- Gear menu (Option B) ---------- */
 .coa-gear-menu{position:fixed;z-index:1080;min-width:240px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;box-shadow:0 12px 32px #0f172a2e;padding:6px;display:none;flex-direction:column}
@@ -27033,7 +27046,7 @@ body.opt-settings.role-sysadmin .coa-manage-link{display:inline-flex}
 .coa-readonly-note{display:none;gap:8px;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;color:#475569;border-radius:6px;padding:8px 10px;font-size:12px;margin-bottom:12px}
 body:not(.role-sysadmin) .coa-readonly-note{display:flex}
 .coa-field-table{border:1px solid #E2E8F1;border-radius:10px;overflow:hidden;background:#fff}
-.coa-field-table-head,.coa-field-item{display:grid;grid-template-columns:1fr 150px 90px;align-items:center;padding:0 16px}
+.coa-field-table-head,.coa-field-item{display:grid;grid-template-columns:24px 1fr 150px 90px;align-items:center;padding:0 16px 0 10px}
 .coa-field-table-head{height:38px;background:#f8fafc;border-bottom:1px solid #E2E8F1;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em}
 .coa-field-item{min-height:46px;border-bottom:1px solid #f1f5f9}
 .coa-field-item:last-child{border-bottom:none}
@@ -27081,6 +27094,28 @@ body:not(.role-sysadmin) .coa-fields-modal [data-act="save"]{display:none}
 .coa-toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,12px);background:#111827;color:#fff;font-size:13px;padding:10px 16px;border-radius:8px;box-shadow:0 8px 24px #0f172a40;z-index:1300;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;display:flex;align-items:center;gap:8px}
 .coa-toast.is-show{opacity:1;transform:translate(-50%,0)}
 
+/* ---------- Labor Costs table: COA columns ---------- */
+#labor-costs-table td[data-coa-col],#labor-costs-table th[data-coa-col]{white-space:nowrap}
+#labor-costs-table.coa-has-cols th,#labor-costs-table.coa-has-cols td{white-space:nowrap}
+.coa-cell{font-size:13px;color:#111827}
+.coa-cell-empty{color:#cbd5e1}
+.coa-cell-txn{font-size:12px;color:#64748b}
+.coa-multiple{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;color:#475569;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:999px;padding:1px 8px;cursor:help}
+.coa-col-new{animation:coaColFlash 1.6s ease-out}
+@keyframes coaColFlash{0%{background:#eef2ff}100%{background:transparent}}
+
+/* ---------- Add Transaction: pickable dropdowns + Add another ---------- */
+.coa-select-menu{position:fixed;z-index:1090;background:#fff;border:1px solid #e2e8f0;border-radius:8px;box-shadow:0 12px 32px #0f172a2e;padding:4px;display:none;flex-direction:column;max-height:240px;overflow-y:auto}
+.coa-select-menu.is-open{display:flex}
+.coa-select-opt{text-align:left;background:transparent;border:none;border-radius:6px;padding:7px 10px;font-size:12px;color:#334155;cursor:pointer;font-family:inherit;display:flex;justify-content:space-between;gap:8px}
+.coa-select-opt:hover,.coa-select-opt:focus-visible{background:#f8fafc;outline:none}
+.coa-select-opt.is-selected{color:#4f46e5;font-weight:600}
+#coa-txn-modal [data-field].has-value span span{color:#111827}
+.coa-add-another{margin-right:auto;display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#334155;cursor:pointer;user-select:none}
+.coa-add-another input{accent-color:#4f46e5;width:14px;height:14px;margin:0}
+.coa-row-new td{animation:coaRowFlash 2.2s ease-out}
+@keyframes coaRowFlash{0%{background:#ecfdf5}100%{background:transparent}}
+
 /* ---------- Demo-only switcher ---------- */
 .coa-demo-switch{position:fixed;left:16px;bottom:16px;z-index:1400;display:flex;align-items:center;gap:8px;background:#fff;border:1px dashed #a5b4fc;border-radius:14px;padding:6px 8px 6px 12px;box-shadow:0 6px 18px #0f172a1f;font-size:11px;color:#475569;font-family:inherit;flex-wrap:wrap;max-width:min(calc(100vw - 32px),620px)}
 .coa-demo-switch b{color:#6366f1;font-weight:700;letter-spacing:.03em;text-transform:uppercase;font-size:10px}
@@ -27101,13 +27136,53 @@ document.addEventListener('DOMContentLoaded', function () {
   try { [STORE, STORE_DEPT, STORE_OPT].forEach(function(k){ localStorage.removeItem(k); }); } catch(e){}
   var fields = [];                // org-level config: [{name, required}]
   var deptRequired = false;
-  var option = 'modal';           // 'modal' (Option A) | 'settings' (Option B)
+  var order = ['Department'];     // org-level display order of COA fields (Department + added); Subsidiary & GL Account stay first
+  var option = 'settings';        // default view: Option B. 'modal' (Option A) | 'settings' (Option B)
   var role = 'sysadmin';
 
   function save(){ /* no persistence in the demo: refresh resets everything */ }
   function byOrder(a,b){ return ALL.indexOf(a.name) - ALL.indexOf(b.name); }
   function joinNames(a){ return a.length <= 2 ? a.join(' and ') : a.slice(0,-1).join(', ') + ' and ' + a[a.length-1]; }
   function clone(a){ return a.map(function(f){ return { name: f.name, required: f.required }; }); }
+  function getField(fs, n){ for (var i = 0; i < fs.length; i++) if (fs[i].name === n) return fs[i]; return null; }
+  function appendInOrder(ord, names){ ALL.forEach(function(n){ if (names.indexOf(n) > -1 && ord.indexOf(n) < 0) ord.push(n); }); }
+
+  var ICON_GRIP = '<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor" aria-hidden="true"><circle cx="3" cy="3" r="1.3"/><circle cx="7" cy="3" r="1.3"/><circle cx="3" cy="7" r="1.3"/><circle cx="7" cy="7" r="1.3"/><circle cx="3" cy="11" r="1.3"/><circle cx="7" cy="11" r="1.3"/></svg>';
+  function gripHTML(name){ return '<button type="button" class="coa-grip" data-grip aria-label="Reorder ' + name + ' (drag, or use arrow keys)" title="Drag to reorder">' + ICON_GRIP + '</button>'; }
+
+  // Drag-to-reorder for direct children marked [data-sort-name]; arrow keys on a grip move it one step.
+  function makeSortable(container, onDrop){
+    function items(){ return Array.prototype.filter.call(container.children, function(x){ return x.hasAttribute('data-sort-name'); }); }
+    function names(){ return items().map(function(x){ return x.getAttribute('data-sort-name'); }); }
+    container.addEventListener('pointerdown', function(e){
+      var h = e.target.closest('[data-grip]'); if (!h || !container.contains(h)) return;
+      var item = h.closest('[data-sort-name]'); if (!item || item.parentElement !== container) return;
+      e.preventDefault();
+      var before = names().join('|');
+      item.classList.add('coa-dragging'); document.body.classList.add('coa-sorting');
+      function move(ev){
+        var others = items().filter(function(x){ return x !== item; }), target = null;
+        for (var i = 0; i < others.length; i++) { var r = others[i].getBoundingClientRect(); if (ev.clientY < r.top + r.height / 2) { target = others[i]; break; } }
+        if (target) container.insertBefore(item, target); else if (others.length) others[others.length - 1].after(item);
+      }
+      function up(){
+        document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up);
+        item.classList.remove('coa-dragging'); document.body.classList.remove('coa-sorting');
+        if (names().join('|') !== before) onDrop(names());
+      }
+      document.addEventListener('pointermove', move); document.addEventListener('pointerup', up);
+    });
+    container.addEventListener('keydown', function(e){
+      var h = e.target.closest('[data-grip]'); if (!h || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return;
+      var item = h.closest('[data-sort-name]'); var list = items(); var i = list.indexOf(item);
+      var j = e.key === 'ArrowUp' ? i - 1 : i + 1; if (i < 0 || j < 0 || j >= list.length) return;
+      e.preventDefault();
+      if (e.key === 'ArrowUp') container.insertBefore(item, list[j]); else list[j].after(item);
+      var moved = item.getAttribute('data-sort-name');
+      onDrop(names());
+      var g = container.querySelector('[data-sort-name="' + moved + '"] [data-grip]'); if (g) g.focus();
+    });
+  }
 
   var ICON_X = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
   var ICON_PLUS = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
@@ -27138,44 +27213,169 @@ document.addEventListener('DOMContentLoaded', function () {
   var deptBtn = txnBackdrop.querySelector('[aria-label="Select department"]');
   var deptRow = deptBtn.closest('.labor-costs-form-row');
   var dropdownTpl = deptBtn.parentElement.innerHTML;
-  var extra = document.createElement('div');
-  extra.style.cssText = 'display:flex;flex-direction:column;gap:16px';
-  deptRow.after(extra);
+  // Department + added COA fields live in one sortable block
+  var coaBlock = document.createElement('div');
+  coaBlock.className = 'coa-block';
+  deptRow.before(coaBlock);
+  coaBlock.appendChild(deptRow);
+  deptRow.setAttribute('data-sort-name', 'Department');
   var adminBar = document.createElement('div');
   adminBar.className = 'coa-admin-add';
   adminBar.innerHTML = '<button type="button" class="coa-add-btn" data-open-picker>' + ICON_PLUS + 'Add COA field</button><span class="coa-admin-badge">Sys Admin</span>';
-  extra.after(adminBar);
+  coaBlock.after(adminBar);
+  makeSortable(coaBlock, function(names){
+    order = names; save(); renderTxn();
+    toast('Field order updated for all users.');
+  });
   var deptLabel = deptRow.querySelector('.labor-costs-form-label');
   var deptLine = document.createElement('div');
   deptLine.className = 'coa-label-line';
   deptLabel.replaceWith(deptLine);
 
-  var footer = txnBackdrop.querySelector('.labor-costs-modal-footer');
-  var manageLink = document.createElement('button');
-  manageLink.type = 'button';
-  manageLink.className = 'coa-manage-link';
-  manageLink.innerHTML = ICON_GEAR + 'Manage COA fields';
-  footer.insertBefore(manageLink, footer.firstChild);
-  manageLink.addEventListener('click', function(){ openCoaModal(); });
 
   function renderTxn(flash){
-    fields.sort(byOrder);
-    deptLine.innerHTML = labelHTML('Department', deptRequired) + '<span class="coa-admin-ctrls">' + reqToggleHTML('Department', deptRequired) + '</span>';
-    extra.innerHTML = '';
-    fields.forEach(function(f){
+    deptLine.innerHTML = '<span class="coa-label-left">' + gripHTML('Department') + labelHTML('Department', deptRequired) + '</span>' +
+      '<span class="coa-admin-ctrls">' + reqToggleHTML('Department', deptRequired) + '</span>';
+    Array.prototype.slice.call(coaBlock.children).forEach(function(c){ if (c !== deptRow) c.remove(); });
+    order.forEach(function(n){
+      if (n === 'Department') { coaBlock.appendChild(deptRow); return; }
+      var f = getField(fields, n); if (!f) return;
       var r = document.createElement('div');
       r.className = 'labor-costs-form-row' + ((flash || []).indexOf(f.name) > -1 ? ' coa-field-new' : '');
+      r.setAttribute('data-sort-name', f.name);
       var dd = dropdownTpl
         .replace('aria-label="Select department"', 'aria-label="Select ' + f.name.toLowerCase() + '"')
         .replace('Select departm…', 'Select ' + f.name.toLowerCase() + '…');
-      r.innerHTML = '<div class="coa-label-line">' + labelHTML(f.name, f.required) +
+      r.innerHTML = '<div class="coa-label-line"><span class="coa-label-left">' + gripHTML(f.name) + labelHTML(f.name, f.required) + '</span>' +
         '<span class="coa-admin-ctrls">' + reqToggleHTML(f.name, f.required) + '<span class="coa-ctrl-sep"></span>' + removeBtnHTML(f.name) + '</span></div>' +
         '<div style="position: relative;">' + dd + '</div>';
-      extra.appendChild(r);
+      coaBlock.appendChild(r);
     });
-    extra.style.display = fields.length ? 'flex' : 'none';
+    coaBlock.classList.toggle('coa-sort-off', order.length < 2);
     adminBar.classList.toggle('is-empty', fields.length === ALL.length);
+    renderTable(flash);
   }
+
+  // =============== Labor Costs table: one column per enabled COA field (same for all users) ===============
+  // Mock data — these entries were added before any extra COA fields existed, so they have no COA values (shown as —).
+  // Each entry holds at most one value per COA field; rows are grouped by Subsidiary + GL Account + all enabled COA fields.
+  var GROUPS = [
+    { id: 'india', sub: 'Gappify India Private Limited', cur: 'INR', gl: '1300 - Short-Term Investments', dept: 'Sales Operations',
+      balance: 120000, capRate: 0, capAmount: 0,
+      txns: [
+        { date: '2026-10-05', doc: 'JE-10421', memo: 'Payroll – Engineering', balance: 70000, capRate: 0, coa: {} },
+        { date: '2026-10-20', doc: 'JE-10458', memo: 'Payroll – Product', balance: 50000, capRate: 0, coa: {} }
+      ] },
+    { id: 'aus', sub: 'Gappify Australia Pty Ltd', cur: 'AUD', gl: '1400 - Employee Advances', dept: 'Revenue Accounting',
+      balance: 100000, capRate: 50, capAmount: 50000,
+      txns: [
+        { date: '2026-10-12', doc: 'JE-20117', memo: 'Payroll – Finance Systems', balance: 100000, capRate: 50, coa: {} }
+      ] }
+  ];
+  var lcTable = document.getElementById('labor-costs-table');
+  var lcHeadRow = lcTable.querySelector('thead tr');
+  var lcBody = lcTable.querySelector('tbody');
+  var deptTh = lcHeadRow.querySelector('th[data-column-id="department"]');
+  var expanded = {};
+  var lastAdded = null;
+  var INITIAL_GROUPS = JSON.stringify(GROUPS);
+  function esc(v){ return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+  function amt(v, cur, kind){ return '<span class="labor-costs-amount labor-costs-amount--' + kind + '"><span class="labor-costs-amount-value">' + v.toLocaleString('en-US') + '</span><span class="labor-costs-amount-currency">' + cur + '</span></span>'; }
+  function td(col, html, extraAttr, cls){ return '<td data-column-id="' + col + '" class="data-table-cell' + (cls ? ' ' + cls : '') + '"' + (extraAttr || '') + '>' + html + '</td>'; }
+  // Every group row is one unique combination of Subsidiary + GL Account + Department + all enabled COA fields,
+  // so a group row always has exactly one value per COA column.
+  function splitGroups(cols){
+    var coaCols = cols.filter(function(n){ return n !== 'Department'; });
+    var out = [];
+    GROUPS.forEach(function(g){
+      if (g.single) {
+        var t0 = g.txns[0];
+        out.push({ id: g.id, single: true, sub: g.sub, cur: g.cur, gl: g.gl, dept: g.dept, balance: t0.balance, capRate: g.capRate,
+                   capAmount: Math.round(t0.balance * g.capRate / 100), txns: g.txns });
+        return;
+      }
+      var parts = {}, keys = [];
+      g.txns.forEach(function(t){
+        var key = coaCols.map(function(n){ return t.coa[n] || ''; }).join('|');
+        if (!parts[key]) { parts[key] = []; keys.push(key); }
+        parts[key].push(t);
+      });
+      keys.forEach(function(k){
+        var txns = parts[k], bal = 0;
+        txns.forEach(function(t){ bal += t.balance; });
+        out.push({ id: g.id + (k ? '|' + k : ''), sub: g.sub, cur: g.cur, gl: g.gl, dept: g.dept,
+                   balance: bal, capRate: g.capRate, capAmount: Math.round(bal * g.capRate / 100), txns: txns });
+      });
+    });
+    return out;
+  }
+  function groupCoaCell(g, name){
+    var v = g.txns[0].coa[name];
+    return v ? '<span class="coa-cell">' + esc(v) + '</span>' : '<span class="coa-cell coa-cell-empty">—</span>';
+  }
+  function renderTable(flash){
+    var cols = order.filter(function(n){ return n === 'Department' || getField(fields, n); });   // includes Department
+    var fl = flash || [];
+    var deptFirst = cols[0] === 'Department';
+    // header: Subsidiary, GL Account, then COA columns in the org's order
+    lcHeadRow.querySelectorAll('th[data-coa-col]').forEach(function(th){ th.remove(); });
+    var anchor = lcHeadRow.querySelector('th[data-column-id="glAccount"]');
+    cols.forEach(function(n){
+      if (n === 'Department') { anchor.after(deptTh); anchor = deptTh; return; }
+      var th = document.createElement('th');
+      th.className = 'data-table-header-cell' + (fl.indexOf(n) > -1 ? ' coa-col-new' : '');
+      th.setAttribute('data-column-id', 'coa-' + n.toLowerCase());
+      th.setAttribute('data-coa-col', n);
+      th.colSpan = 1;
+      th.innerHTML = '<div class="data-table-header-content" style="justify-content:flex-start">' + n + '</div>';
+      anchor.after(th); anchor = th;
+    });
+    // body
+    var rows = [], i = 0, totalBal = 0, totalCap = 0;
+    function rc(){ return 'data-table-row--' + (i++ % 2 ? 'odd' : 'even'); }
+    splitGroups(cols).forEach(function(g){
+      var open = !!expanded[g.id];
+      totalBal += g.balance; totalCap += g.capAmount;
+      var isNewRow = lastAdded && g.txns.indexOf(lastAdded) > -1;
+      rows.push('<tr class="' + rc() + (isNewRow ? ' coa-row-new' : '') + '" data-row-id="group:' + esc(g.id) + '">' +
+        td('expand', g.single ? '' : '<button type="button" class="labor-costs-caret' + (open ? ' labor-costs-caret--open' : '') + '" aria-expanded="' + open + '" data-expand="' + esc(g.id) + '" aria-label="Expand ' + esc(g.gl) + '">▸</button>', ' style="text-align:left"') +
+        td('subsidiary', '<span class="labor-costs-subsidiary-label">' + esc(g.sub) + ' <span class="labor-costs-subsidiary-currency">(' + g.cur + ')</span></span>') +
+        td('glAccount', '<span class="labor-costs-group-label">' + esc(g.gl) + '</span>') +
+        cols.map(function(n){
+          if (n === 'Department') return td('department', '<span class="labor-costs-department-label">' + esc(g.dept) + '</span>');
+          return td('coa-' + n.toLowerCase(), groupCoaCell(g, n), ' data-coa-col="' + n + '"', fl.indexOf(n) > -1 ? 'coa-col-new' : '');
+        }).join('') +
+        td('amount', amt(g.balance, g.cur, 'emphasis'), ' style="text-align:right"') +
+        td('capRate', '<span class="labor-costs-cap-rate"><input min="0" max="100" step="1" class="labor-costs-cap-rate-input" aria-label="Cap rate percent" type="number" value="' + g.capRate + '"><span class="labor-costs-cap-rate-suffix">%</span></span>', ' style="text-align:right"') +
+        td('capAmount', amt(g.capAmount, g.cur, 'emphasis'), ' style="text-align:right"') +
+      '</tr>');
+      if (open && !g.single) g.txns.forEach(function(t){
+        rows.push('<tr class="' + rc() + '" data-row-id="txn:' + t.doc + '">' +
+          td('expand', '') +
+          // entry detail spans Subsidiary + GL Account (+ Department when it sits right after them, as today)
+          '<td data-column-id="subsidiary" class="data-table-cell" colspan="' + (deptFirst ? 3 : 2) + '"><span class="labor-costs-txn-detail"><span>' + t.date + '</span><span class="labor-costs-txn-sep">·</span><span>' + t.doc + '</span><span class="labor-costs-txn-sep">·</span><span>' + esc(t.memo) + '</span></span></td>' +
+          cols.map(function(n, idx){
+            if (n === 'Department') return idx === 0 ? '' : td('department', '');
+            var v = t.coa[n]; return td('coa-' + n.toLowerCase(), v ? '<span class="coa-cell-txn">' + esc(v) + '</span>' : '<span class="coa-cell coa-cell-empty">—</span>', ' data-coa-col="' + n + '"');
+          }).join('') +
+          td('amount', amt(t.balance, g.cur, 'muted'), ' style="text-align:right"') +
+          td('capRate', '<span class="labor-costs-cap-rate-readonly">' + t.capRate + '<span class="labor-costs-cap-rate-suffix">%</span></span>', ' style="text-align:right"') +
+          td('capAmount', '', ' style="text-align:right"') +
+        '</tr>');
+      });
+    });
+    rows.push('<tr class="' + rc() + '" data-row-id="total">' + td('expand', '') +
+      '<td data-column-id="subsidiary" class="data-table-cell" colspan="' + (2 + cols.length) + '"><span class="labor-costs-total-label">Total</span></td>' +
+      td('amount', amt(totalBal, 'INR', 'emphasis'), ' style="text-align:right"') + td('capRate', '') +
+      td('capAmount', amt(totalCap, 'INR', 'emphasis'), ' style="text-align:right"') + '</tr>');
+    lcBody.innerHTML = rows.join('');
+    lcTable.classList.toggle('coa-has-cols', cols.length > 1);
+  }
+  lcTable.addEventListener('click', function(e){
+    var b = e.target.closest('[data-expand]'); if (!b) return;
+    expanded[b.dataset.expand] = !expanded[b.dataset.expand];
+    renderTable();
+  });
 
   // =============== Default Cap Rates modal (existing screen, unchanged) ===============
   var capBackdrop = document.querySelector('#coa-caprates-holder .labor-costs-modal-backdrop');
@@ -27202,11 +27402,11 @@ document.addEventListener('DOMContentLoaded', function () {
   coaBackdrop.innerHTML =
     '<div class="labor-costs-modal coa-fields-modal">' +
       '<div class="labor-costs-modal-header labor-costs-modal-header--stacked"><div><h2 class="labor-costs-modal-title">COA Fields</h2>' +
-      '<p class="labor-costs-modal-subtitle">Choose which COA fields appear on the Add Transaction form.</p></div>' +
+      '<p class="labor-costs-modal-subtitle">Choose which COA fields appear on the Add Transaction form, and drag to set their order on the form and in the table.</p></div>' +
       '<button type="button" class="labor-costs-modal-close" aria-label="Close">×</button></div>' +
       '<div class="labor-costs-modal-body">' +
         '<div class="coa-readonly-note">' + ICON_LOCK + 'View only. Only Sys Admins can change COA fields.</div>' +
-        '<div class="coa-field-table"><div class="coa-field-table-head"><span>Field</span><span>Required</span><span></span></div><div class="coa-field-list"></div></div>' +
+        '<div class="coa-field-table"><div class="coa-field-table-head"><span></span><span>Field</span><span>Required</span><span></span></div><div class="coa-field-list"></div></div>' +
         '<button type="button" class="labor-costs-rules-add coa-admin-only" data-open-picker>+ Add COA fields</button>' +
         '<div class="coa-notice coa-admin-only">' + ICON_INFO + '<span>Changes apply to <b>all users</b> and <b>all future labor cost entries</b> once saved. Existing entries won’t change.</span></div>' +
       '</div>' +
@@ -27221,11 +27421,12 @@ document.addEventListener('DOMContentLoaded', function () {
   var coaCancel = coaBackdrop.querySelector('[data-act="cancel"]');
   var coaUnsaved = coaBackdrop.querySelector('.coa-unsaved');
   bindModal(coaBackdrop, closeCoaModal);
+  makeSortable(coaList, function(names){ draftOrder = names; renderCoa(); });
   coaBackdrop.querySelector('.labor-costs-modal-body').addEventListener('scroll', function(){ closePop(); });
 
-  var draft = null, draftDept = false, draftNew = [];
+  var draft = null, draftDept = false, draftNew = [], draftOrder = [];
   function openCoaModal(){
-    draft = clone(fields); draftDept = deptRequired; draftNew = [];
+    draft = clone(fields); draftDept = deptRequired; draftNew = []; draftOrder = order.slice();
     renderCoa();
     coaBackdrop.classList.add('is-open');
   }
@@ -27245,26 +27446,35 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     if (draftDept && !deptRequired) nowReq.unshift('Department');
     if (!draftDept && deptRequired) nowOpt.unshift('Department');
-    return { added: added, removed: removed, nowReq: nowReq, nowOpt: nowOpt,
-             any: added.length + removed.length + nowReq.length + nowOpt.length > 0 };
+    // reordered = the draft order differs from "current order, minus removed fields, plus new fields appended"
+    var expected = order.filter(function(n){ return draftOrder.indexOf(n) > -1; });
+    appendInOrder(expected, added);
+    var reordered = expected.join('|') !== draftOrder.join('|');
+    return { added: added, removed: removed, nowReq: nowReq, nowOpt: nowOpt, reordered: reordered,
+             any: added.length + removed.length + nowReq.length + nowOpt.length > 0 || reordered };
   }
   function statusText(on){ return '<span class="coa-status-text coa-readonly-only' + (on ? ' is-req' : '') + '">' + (on ? 'Required' : 'Optional') + '</span>'; }
   function renderCoa(flash){
     var src = draft || fields;
-    src.sort(byOrder);
+    var ord = draft ? draftOrder : order;
     var dReq = draft ? draftDept : deptRequired;
     var rows = [];
     ['Subsidiary','GL Account'].forEach(function(n){
-      rows.push('<div class="coa-field-item"><span class="coa-field-name">' + n + '<span class="coa-core-tag">Core</span></span><span class="coa-lock">' + ICON_LOCK + 'Always</span><span></span></div>');
+      rows.push('<div class="coa-field-item"><span class="coa-grip-cell"></span><span class="coa-field-name">' + n + '<span class="coa-core-tag">Core</span></span><span class="coa-lock">' + ICON_LOCK + 'Always</span><span></span></div>');
     });
-    rows.push('<div class="coa-field-item"><span class="coa-field-name">Department<span class="coa-core-tag">Core</span></span><span><span class="coa-admin-only">' + reqToggleHTML('Department', dReq) + '</span>' + statusText(dReq) + '</span><span></span></div>');
-    src.forEach(function(f){
+    ord.forEach(function(n){
+      if (n === 'Department') {
+        rows.push('<div class="coa-field-item" data-sort-name="Department"><span class="coa-grip-cell">' + gripHTML('Department') + '</span><span class="coa-field-name">Department<span class="coa-core-tag">Core</span></span><span><span class="coa-admin-only">' + reqToggleHTML('Department', dReq) + '</span>' + statusText(dReq) + '</span><span></span></div>');
+        return;
+      }
+      var f = getField(src, n); if (!f) return;
       var isNew = draftNew.indexOf(f.name) > -1;
-      rows.push('<div class="coa-field-item' + ((flash || []).indexOf(f.name) > -1 ? ' coa-field-new' : '') + '"><span class="coa-field-name">' + f.name + (isNew ? '<span class="coa-new-tag">New</span>' : '') + '</span>' +
+      rows.push('<div class="coa-field-item' + ((flash || []).indexOf(f.name) > -1 ? ' coa-field-new' : '') + '" data-sort-name="' + f.name + '"><span class="coa-grip-cell">' + gripHTML(f.name) + '</span><span class="coa-field-name">' + f.name + (isNew ? '<span class="coa-new-tag">New</span>' : '') + '</span>' +
         '<span><span class="coa-admin-only">' + reqToggleHTML(f.name, f.required) + '</span>' + statusText(f.required) + '</span>' +
         '<span class="coa-admin-only" style="text-align:right">' + removeBtnHTML(f.name) + '</span></div>');
     });
     coaList.innerHTML = rows.join('');
+    coaList.classList.toggle('coa-sort-off', ord.length < 2);
     coaAdd.style.display = src.length === ALL.length ? 'none' : '';
     var dirty = draft ? diff().any : false;
     coaSave.disabled = !dirty;
@@ -27278,13 +27488,14 @@ document.addEventListener('DOMContentLoaded', function () {
     if (d.removed.length) lines.push('<b>Remove:</b> ' + joinNames(d.removed) + ' <span style="color:#64748b">(existing values are kept)</span>');
     if (d.nowReq.length)  lines.push('<b>Make required:</b> ' + joinNames(d.nowReq));
     if (d.nowOpt.length)  lines.push('<b>Make optional:</b> ' + joinNames(d.nowOpt));
+    if (d.reordered)      lines.push('<b>New order:</b> Subsidiary, GL Account, ' + draftOrder.join(', '));
     confirmDialog({
       title: 'Save COA field changes?',
       body: 'These changes apply to all users and all future labor cost entries. Existing entries won’t change.',
       summary: lines.join('<br>'),
       okText: 'Save changes', danger: false,
       onOk: function(){
-        fields = clone(draft); deptRequired = draftDept;
+        fields = clone(draft); deptRequired = draftDept; order = draftOrder.slice();
         save(); renderTxn(); closeCoaModal();
         toast('COA fields updated for all users.');
       }
@@ -27342,7 +27553,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var rm = e.target.closest('.coa-remove-btn');
     if (rm) {
       var n = rm.dataset.name;
-      if (inCoaModal(rm)) { draft = draft.filter(function(f){ return f.name !== n; }); draftNew = draftNew.filter(function(x){ return x !== n; }); renderCoa(); }
+      if (inCoaModal(rm)) { draft = draft.filter(function(f){ return f.name !== n; }); draftNew = draftNew.filter(function(x){ return x !== n; }); draftOrder = draftOrder.filter(function(x){ return x !== n; }); renderCoa(); }
       else askRemove(n);
       return;
     }
@@ -27396,10 +27607,12 @@ document.addEventListener('DOMContentLoaded', function () {
     closePop();
     if (toModal) {
       names.forEach(function(n){ draft.push({ name: n, required: false }); draftNew.push(n); });
+      appendInOrder(draftOrder, names);
       renderCoa(names);
       return;
     }
     names.forEach(function(n){ fields.push({ name: n, required: false }); });
+    appendInOrder(order, names);
     save(); renderTxn(names);
     var ordered = ALL.filter(function(n){ return names.indexOf(n) > -1; });
     toast(joinNames(ordered) + (ordered.length > 1 ? ' were' : ' was') + ' added for all users (optional).');
@@ -27436,7 +27649,7 @@ document.addEventListener('DOMContentLoaded', function () {
       title: 'Remove ' + n + ' for all users?',
       body: 'It will no longer appear on the form for future labor cost entries. Existing entries keep their ' + n + ' values.',
       okText: 'Remove', danger: true,
-      onOk: function(){ fields = fields.filter(function(f){ return f.name !== n; }); save(); renderTxn(); toast(n + ' removed for all users.'); }
+      onOk: function(){ fields = fields.filter(function(f){ return f.name !== n; }); order = order.filter(function(x){ return x !== n; }); save(); renderTxn(); toast(n + ' removed for all users.'); }
     });
   }
 
@@ -27445,6 +27658,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (e.key !== 'Escape') return;
     if (cb.classList.contains('is-open')) closeConfirm();
     else if (pop.classList.contains('is-open')) closePop();
+    else if (selMenu.classList.contains('is-open')) closeSelMenu();
     else if (gearMenu.classList.contains('is-open')) closeGearMenu();
     else if (isCoaOpen()) closeCoaModal();
     else if (capBackdrop && capBackdrop.classList.contains('is-open')) closeCapRates();
@@ -27460,6 +27674,143 @@ document.addEventListener('DOMContentLoaded', function () {
     t.classList.add('is-show'); clearTimeout(tt);
     tt = setTimeout(function(){ t.classList.remove('is-show'); }, 2600);
   }
+
+  // =============== Add Transaction: working form + "Add another" (like Jira's "Create another") ===============
+  var OPTIONS = {
+    'Subsidiary': ['Gappify India Private Limited (INR)', 'Gappify Australia Pty Ltd (AUD)', 'Gappify Inc (USD)'],
+    'GL Account': ['1300 - Short-Term Investments', '1400 - Employee Advances', '6100 - Salaries & Wages'],
+    'Department': ['Sales Operations', 'Revenue Accounting', 'Engineering', 'Product'],
+    'Location': ['Bengaluru', 'Mumbai', 'Sydney', 'San Francisco'],
+    'Class': ['Engineering', 'Finance', 'G&A'],
+    'Product': ['IRIS Platform', 'Accruals AI'],
+    'Project': ['PRJ-101 Accruals AI', 'PRJ-104 Close Automation', 'PRJ-110 Flux Analysis'],
+    'Region': ['APAC', 'North America', 'EMEA'],
+    'Company': ['Gappify Inc.', 'Gappify Holdings'],
+    'Intercompany': ['Gappify India', 'Gappify Australia', 'Gappify Inc'],
+    'Channel': ['Direct', 'Partner']
+  };
+  var formValues = {};
+  var amountIn = txnBackdrop.querySelector('input[type="number"]');
+  var dateIn = txnBackdrop.querySelector('input[type="date"]');
+  var docIn = txnBackdrop.querySelector('input[type="text"]');
+  var memoIn = txnBackdrop.querySelector('textarea');
+  var submitBtn = txnBackdrop.querySelector('.labor-costs-modal-footer .labor-costs-modal-primary-btn');
+  var txnFooter = txnBackdrop.querySelector('.labor-costs-modal-footer');
+  var addAnother = document.createElement('label');
+  addAnother.className = 'coa-add-another';
+  addAnother.innerHTML = '<input type="checkbox" id="coa-add-another"> Add another';
+  txnFooter.insertBefore(addAnother, txnFooter.firstChild);
+  var addAnotherBox = addAnother.querySelector('input');
+
+  function fieldOfButton(btn){
+    var lbl = (btn.getAttribute('aria-label') || '').replace(/^Select /, '');
+    if (lbl === 'subsidiary') return 'Subsidiary';
+    if (lbl === 'GL account') return 'GL Account';
+    if (lbl === 'department') return 'Department';
+    for (var i = 0; i < ALL.length; i++) if (ALL[i].toLowerCase() === lbl) return ALL[i];
+    return null;
+  }
+  var PLACEHOLDER = { 'Subsidiary': 'Select subsidi…', 'GL Account': 'Select GL acco…', 'Department': 'Select departm…' };
+  function paintDropdowns(){
+    txnBackdrop.querySelectorAll('.labor-costs-modal-body button[aria-label^="Select "]').forEach(function(btn){
+      var f = fieldOfButton(btn); if (!f) return;
+      btn.setAttribute('data-field', f);
+      var txt = btn.querySelector('span span');
+      var v = formValues[f];
+      if (!btn.dataset.placeholder) btn.dataset.placeholder = PLACEHOLDER[f] || txt.textContent;
+      txt.textContent = v || btn.dataset.placeholder;
+      btn.classList.toggle('has-value', !!v);
+    });
+  }
+  function requiredMissing(){
+    var miss = [];
+    if (!formValues['Subsidiary']) miss.push('Subsidiary');
+    if (!formValues['GL Account']) miss.push('GL Account');
+    if (deptRequired && !formValues['Department']) miss.push('Department');
+    fields.forEach(function(f){ if (f.required && !formValues[f.name]) miss.push(f.name); });
+    if (!(parseFloat(amountIn.value) > 0)) miss.push('Amount');
+    return miss;
+  }
+  function updateSubmit(){ submitBtn.disabled = requiredMissing().length > 0; }
+  function resetForm(){
+    formValues = {};
+    amountIn.value = ''; dateIn.value = ''; docIn.value = ''; memoIn.value = '';
+    paintDropdowns(); updateSubmit();
+  }
+  [amountIn, dateIn, docIn, memoIn].forEach(function(el){ el.addEventListener('input', updateSubmit); });
+
+  // option menu for a dropdown
+  var selMenu = document.createElement('div');
+  selMenu.className = 'coa-select-menu';
+  selMenu.setAttribute('role', 'listbox');
+  document.body.appendChild(selMenu);
+  var selFor = null;
+  function openSelMenu(btn){
+    selFor = btn;
+    var f = btn.getAttribute('data-field');
+    selMenu.innerHTML = (OPTIONS[f] || []).map(function(o){
+      return '<button type="button" class="coa-select-opt' + (formValues[f] === o ? ' is-selected' : '') + '" role="option" data-opt-val="' + esc(o) + '">' + esc(o) + '</button>';
+    }).join('');
+    selMenu.classList.add('is-open');
+    var r = btn.getBoundingClientRect(), mh = selMenu.offsetHeight;
+    var top = r.bottom + 4; if (top + mh > window.innerHeight - 12) top = Math.max(12, r.top - mh - 4);
+    selMenu.style.top = top + 'px'; selMenu.style.left = r.left + 'px'; selMenu.style.width = r.width + 'px';
+    var first = selMenu.querySelector('.is-selected') || selMenu.querySelector('button'); if (first) first.focus();
+  }
+  function closeSelMenu(){ selMenu.classList.remove('is-open'); selFor = null; }
+  txnBackdrop.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-field]');
+    if (!btn || e.target.closest('[data-grip], .coa-req-toggle, .coa-remove-btn')) return;
+    (selMenu.classList.contains('is-open') && selFor === btn) ? closeSelMenu() : openSelMenu(btn);
+  });
+  selMenu.addEventListener('click', function(e){
+    var o = e.target.closest('[data-opt-val]'); if (!o || !selFor) return;
+    formValues[selFor.getAttribute('data-field')] = o.getAttribute('data-opt-val');
+    var btn = selFor; closeSelMenu(); paintDropdowns(); updateSubmit(); btn.focus();
+  });
+  document.addEventListener('mousedown', function(e){
+    if (selMenu.classList.contains('is-open') && !selMenu.contains(e.target) && !(selFor && selFor.contains(e.target))) closeSelMenu();
+  });
+  modalBody.addEventListener('scroll', closeSelMenu);
+
+  // the form re-renders when COA fields change: keep picked values and button state
+  var _renderTxn = renderTxn;
+  renderTxn = function(flash){ _renderTxn(flash); paintDropdowns(); updateSubmit(); };
+
+  // opening the form from "+ Add" always starts blank
+  document.querySelector('.labor-costs-action-button').addEventListener('click', function(){ resetForm(); });
+
+  submitBtn.addEventListener('click', function(){
+    if (requiredMissing().length) return;
+    var subFull = formValues['Subsidiary'];
+    var m = subFull.match(/^(.*) \((\w+)\)$/);
+    var sub = m ? m[1] : subFull, cur = m ? m[2] : 'USD';
+    var gl = formValues['GL Account'], dept = formValues['Department'] || '—';
+    var coa = {};
+    fields.forEach(function(f){ if (formValues[f.name]) coa[f.name] = formValues[f.name]; });
+    // Each added transaction is its own line in the table (never nested under an existing line).
+    // Its cap rate starts from an existing line with the same Subsidiary + GL Account + Department, else 0%.
+    var rate = 0;
+    GROUPS.forEach(function(g){ if (g.sub === sub && g.gl === gl && g.dept === dept && !g.single) rate = g.capRate; });
+    var group = { id: 'g' + Date.now(), single: true, sub: sub, cur: cur, gl: gl, dept: dept, balance: 0, capRate: rate, capAmount: 0, txns: [] };
+    GROUPS.push(group);
+    var t = { date: dateIn.value || '2026-10-31', doc: docIn.value.trim() || 'New entry', memo: memoIn.value.trim() || '—',
+              balance: Math.round(parseFloat(amountIn.value) * 100) / 100, capRate: group.capRate, coa: coa };
+    group.txns.push(t);
+    lastAdded = t;
+    renderTable();
+    if (addAnotherBox.checked) {
+      resetForm();
+      modalBody.scrollTop = 0;
+      var first = txnBackdrop.querySelector('[data-field="Subsidiary"]'); if (first) first.focus();
+      toast('Transaction added. Ready for the next one.');
+    } else {
+      txnBackdrop.classList.remove('is-open'); document.body.style.overflow = '';
+      resetForm();
+      toast('Transaction added.');
+    }
+  });
+  paintDropdowns(); updateSubmit();
 
   // =============== Demo-only switcher ===============
   var sw = document.createElement('div');
@@ -27483,7 +27834,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.classList.toggle('role-sysadmin', r === 'sysadmin');
     sw.querySelectorAll('[data-role]').forEach(function(b){ b.classList.toggle('is-active', b.dataset.role === r); });
     closePop();
-    if (isCoaOpen()) { draft = clone(fields); draftDept = deptRequired; draftNew = []; renderCoa(); }
+    if (isCoaOpen()) { draft = clone(fields); draftDept = deptRequired; draftNew = []; draftOrder = order.slice(); renderCoa(); }
   }
   function setOption(o){
     option = o;
@@ -27497,8 +27848,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var r = e.target.closest('[data-role]'); if (r) setRole(r.dataset.role);
     var o = e.target.closest('[data-opt]'); if (o) setOption(o.dataset.opt);
     if (e.target.closest('.coa-demo-reset')) {
-      fields = []; deptRequired = false; save(); renderTxn();
-      if (isCoaOpen()) { draft = []; draftDept = false; draftNew = []; renderCoa(); }
+      fields = []; deptRequired = false; order = ['Department']; GROUPS = JSON.parse(INITIAL_GROUPS); lastAdded = null; resetForm(); save(); renderTxn();
+      if (isCoaOpen()) { draft = []; draftDept = false; draftNew = []; draftOrder = ['Department']; renderCoa(); }
       toast('Demo reset.');
     }
   });

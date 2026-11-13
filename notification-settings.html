@@ -229,18 +229,42 @@
   .ns-link:hover{color:var(--gappify-indigo-700);text-decoration:underline;}
 
   .ns-layout{display:flex;flex-direction:column;gap:24px;}
-  .ns-scope{display:inline-flex;align-items:center;margin-left:6px;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;vertical-align:1px;}
-  .ns-scope--personal{background:var(--gappify-indigo-50);color:var(--gappify-indigo-700);}
+
+  /* New Design: patterned on Settings > Field Requirements (intro line,
+     narrow grid, toggle switches that unlock in edit mode). */
+  .nr-intro{margin:0;font-size:12px;line-height:1.625;color:var(--slate-500);}
+  .nr-grid{display:grid;grid-template-columns:260px 90px 90px;max-width:576px;}
+  .nr-head{padding:0 16px 8px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--slate-500);}
+  .nr-head--center{text-align:center;}
+  .nr-name{padding:10px 16px;display:flex;flex-direction:column;justify-content:center;gap:2px;}
+  .nr-name strong{font-size:12px;font-weight:600;color:var(--slate-700);}
+  .nr-name span{font-size:11px;color:var(--slate-400);}
+  .nr-cell{padding:10px 16px;display:flex;align-items:center;justify-content:center;}
+  .nr-switch{position:relative;width:32px;height:18px;flex-shrink:0;padding:0;border:0;border-radius:999px;background:var(--slate-300);cursor:pointer;transition:background-color .2s;}
+  .nr-switch span{position:absolute;top:3px;left:0;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.1);transform:translateX(3px);transition:transform .2s;}
+  .nr-switch.on{background:#6366f1;}
+  .nr-switch.on span{transform:translateX(17px);}
+  .nr-switch:disabled{opacity:.5;cursor:default;}
+
+  /* Mock-only option switcher, not part of the product UI. */
+  .mock-switcher{
+    position:fixed;left:16px;bottom:16px;z-index:10000;display:flex;align-items:center;gap:4px;padding:4px;
+    border-radius:999px;background:var(--slate-900);box-shadow:0 10px 15px -3px rgba(0,0,0,.2);
+  }
+  .mock-switcher-label{padding:0 8px 0 10px;font-size:11px;font-weight:600;color:var(--slate-400);}
+  .mock-switcher-btn{border:0;border-radius:999px;padding:6px 12px;font:inherit;font-size:11px;font-weight:600;color:#cbd5e1;background:transparent;cursor:pointer;}
+  .mock-switcher-btn:hover{color:#fff;}
+  .mock-switcher-btn.active{background:#fff;color:var(--slate-900);}
 
   /* Notification table. Same table recipe as Emails & Forms
      (slate-50 header, 11px uppercase labels) with group rows between areas. */
-  .nt-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .nt-toolbar{display:flex;flex-direction:column;align-items:flex-start;gap:8px;}
+  .nt-personal-note{margin:0;font-size:11px;line-height:1.5;color:var(--slate-500);}
   .nt-table-wrap{border-radius:12px;border:1px solid var(--slate-200);overflow:hidden;}
   .nt-table{width:100%;border-collapse:separate;border-spacing:0;text-align:left;}
   .nt-table th{padding:10px 16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--slate-500);background:var(--slate-50);border-bottom:1px solid var(--slate-200);}
   .nt-table td{padding:12px 16px;border-bottom:1px solid var(--slate-100);vertical-align:middle;}
   .nt-table tbody tr:last-child td{border-bottom:0;}
-  .nt-col-scope{width:180px;}
   .nt-col-check{width:96px;text-align:center!important;}
   .nt-th-icon{display:inline-flex;align-items:center;gap:6px;}
   .nt-table tr.nt-row:hover td{background:var(--slate-50);}
@@ -749,9 +773,9 @@
         <div class="settings-page-shell-box settings-page-shell-box--flush">
           <div class="ns-body">
             <div class="ns-content">
-              <!-- One row per notification, so the page scales as more
+              <!-- Old Design: one row per notification, so the page scales as more
                    notification types are added -->
-              <div class="ns-layout" data-layout="table">
+              <div class="ns-layout" data-layout="table" style="display:none;">
                 <div class="nt-toolbar">
                   <div class="ns-chat-status" data-chat-status></div>
                 </div>
@@ -760,33 +784,51 @@
                     <thead>
                       <tr>
                         <th>Notification</th>
-                        <th class="nt-col-scope">Applies to</th>
                         <th class="nt-col-check"><span class="nt-th-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 6-10 7L2 6"></path></svg>Email</span></th>
                         <th class="nt-col-check"><span class="nt-th-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg>Chat</span></th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr class="nt-row" data-key="mentions" data-scope="personal">
+                      <tr class="nt-row" data-key="mentions">
                         <td><p class="nt-name">Comment mentions</p><p class="nt-desc">When someone tags you in a comment.</p></td>
-                        <td><span class="ns-scope ns-scope--personal">Only you</span></td>
                         <td class="nt-check"><input type="checkbox" aria-label="Comment mentions by email" data-key="mentions" data-channel="email" onchange="toggleTableChannel('mentions')"><span class="nt-mark"></span></td>
                         <td class="nt-check"><input type="checkbox" aria-label="Comment mentions by chat" data-key="mentions" data-channel="chat" onchange="toggleTableChannel('mentions')"><span class="nt-mark"></span></td>
                       </tr>
-                      <tr class="nt-row" data-key="importDone" data-scope="personal">
+                      <tr class="nt-row" data-key="importDone">
                         <td><p class="nt-name">Import completed</p><p class="nt-desc">When an import you started finishes successfully.</p></td>
-                        <td><span class="ns-scope ns-scope--personal">Only you</span></td>
                         <td class="nt-check"><input type="checkbox" aria-label="Import completed by email" data-key="importDone" data-channel="email" onchange="toggleTableChannel('importDone')"><span class="nt-mark"></span></td>
                         <td class="nt-check"><input type="checkbox" aria-label="Import completed by chat" data-key="importDone" data-channel="chat" onchange="toggleTableChannel('importDone')"><span class="nt-mark"></span></td>
                       </tr>
-                      <tr class="nt-row" data-key="exportReady" data-scope="personal">
+                      <tr class="nt-row" data-key="exportReady">
                         <td><p class="nt-name">Export ready</p><p class="nt-desc">When a file you exported is ready to download.</p></td>
-                        <td><span class="ns-scope ns-scope--personal">Only you</span></td>
                         <td class="nt-check"><input type="checkbox" aria-label="Export ready by email" data-key="exportReady" data-channel="email" onchange="toggleTableChannel('exportReady')"><span class="nt-mark"></span></td>
                         <td class="nt-check"><input type="checkbox" aria-label="Export ready by chat" data-key="exportReady" data-channel="chat" onchange="toggleTableChannel('exportReady')"><span class="nt-mark"></span></td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
+                <p class="nt-personal-note">These preferences apply only to you. Changing them doesn't affect anyone else.</p>
+              </div>
+
+              <!-- New Design (default): patterned on Settings > Field Requirements -->
+              <div class="ns-layout" data-layout="toggles">
+                <p class="nr-intro">Choose how you're notified about your own activity in Gappify.</p>
+                <div class="ns-chat-status" data-chat-status></div>
+                <div class="nr-grid">
+                  <div class="nr-head">Notification</div>
+                  <div class="nr-head nr-head--center">Email</div>
+                  <div class="nr-head nr-head--center">Chat</div>
+                  <div class="nr-name"><strong>Comment mentions</strong><span>When someone tags you in a comment.</span></div>
+                  <div class="nr-cell"><button type="button" class="nr-switch" role="switch" aria-label="Comment mentions by email" data-key="mentions" data-channel="email" onclick="toggleSwitch('mentions', 'email')"><span></span></button></div>
+                  <div class="nr-cell"><button type="button" class="nr-switch" role="switch" aria-label="Comment mentions by chat" data-key="mentions" data-channel="chat" onclick="toggleSwitch('mentions', 'chat')"><span></span></button></div>
+                  <div class="nr-name"><strong>Import completed</strong><span>When an import you started finishes successfully.</span></div>
+                  <div class="nr-cell"><button type="button" class="nr-switch" role="switch" aria-label="Import completed by email" data-key="importDone" data-channel="email" onclick="toggleSwitch('importDone', 'email')"><span></span></button></div>
+                  <div class="nr-cell"><button type="button" class="nr-switch" role="switch" aria-label="Import completed by chat" data-key="importDone" data-channel="chat" onclick="toggleSwitch('importDone', 'chat')"><span></span></button></div>
+                  <div class="nr-name"><strong>Export ready</strong><span>When a file you exported is ready to download.</span></div>
+                  <div class="nr-cell"><button type="button" class="nr-switch" role="switch" aria-label="Export ready by email" data-key="exportReady" data-channel="email" onclick="toggleSwitch('exportReady', 'email')"><span></span></button></div>
+                  <div class="nr-cell"><button type="button" class="nr-switch" role="switch" aria-label="Export ready by chat" data-key="exportReady" data-channel="chat" onclick="toggleSwitch('exportReady', 'chat')"><span></span></button></div>
+                </div>
+                <p class="nt-personal-note">These preferences apply only to you. Changing them doesn't affect anyone else.</p>
               </div>
             </div>
           </div>
@@ -844,6 +886,13 @@
       <button type="button" class="dc-btn dc-btn-confirm" onclick="confirmDisconnectSlack()">Disconnect</button>
     </div>
   </div>
+</div>
+
+<!-- Mock-only: flip between the old (table) and new (toggles) designs. -->
+<div class="mock-switcher" id="mock-switcher" role="group" aria-label="Mock-up option">
+  <span class="mock-switcher-label">Notification Preferences</span>
+  <button type="button" class="mock-switcher-btn" data-option="table" onclick="setOption('table')">Old Design</button>
+  <button type="button" class="mock-switcher-btn active" data-option="toggles" onclick="setOption('toggles')">New Design</button>
 </div>
 
 <!-- Audit Trail -->
@@ -912,6 +961,7 @@
     // Notification Preferences is opened from the user profile menu, not
     // Settings, so it shows without the Settings sidebar.
     document.getElementById('settings-sidebar').style.display = view === 'notification-settings' ? 'none' : '';
+    document.getElementById('mock-switcher').style.display = view === 'notification-settings' ? '' : 'none';
   }
 
   /* ---------- Emails & Forms tabs ---------- */
@@ -953,6 +1003,16 @@
       chat.title = slackConnected ? '' : 'Connect a chat app to deliver notifications by chat.';
     });
 
+    // New Design: Email / Chat switches, locked until Edit.
+    document.querySelectorAll('.nr-switch').forEach(sw => {
+      const value = nsDraft[sw.dataset.key];
+      const on = sw.dataset.channel === 'email' ? value !== 'chat' : value !== 'email';
+      sw.classList.toggle('on', on);
+      sw.setAttribute('aria-checked', on);
+      sw.disabled = !ntEditing || (sw.dataset.channel === 'chat' && !slackConnected);
+      sw.title = sw.dataset.channel === 'chat' && !slackConnected ? 'Connect a chat app to deliver notifications by chat.' : '';
+    });
+
     const statusHtml = slackConnected
       ? '<span class="card-status-dot"></span><span>Chat (via Slack)</span>'
       : '<span class="card-status-dot card-status-dot--warn"></span><span>No chat app connected yet, so only Email is available.</span><button type="button" class="ns-link" onclick="navigateTo(\'connected-apps\')">Connect one in Connected Apps</button>';
@@ -975,6 +1035,30 @@
       return;
     }
     setChannel(key, email && chat ? 'both' : chat ? 'chat' : 'email');
+  }
+
+  // New Design: flip one channel; the same at-least-one-channel rule applies.
+  function toggleSwitch(key, channel){
+    const value = nsDraft[key];
+    const email = channel === 'email' ? value === 'chat' : value !== 'chat';
+    const chat = channel === 'chat' ? value === 'email' : value !== 'email';
+    if (!email && !chat) {
+      showToast('Each notification needs at least one channel.');
+      return;
+    }
+    setChannel(key, email && chat ? 'both' : chat ? 'chat' : 'email');
+  }
+
+  /* ---------- Mock-only: Old / New Design ---------- */
+  function setOption(option){
+    ntEditing = false;
+    nsDraft = {...nsSaved};
+    document.querySelectorAll('#view-notification-settings .ns-layout').forEach(el => {
+      el.style.display = el.dataset.layout === option ? '' : 'none';
+    });
+    document.querySelectorAll('.mock-switcher-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.option === option));
+    navigateTo('notification-settings');
+    renderNotificationSettings();
   }
 
   /* ---------- Edit mode + audit trail ---------- */

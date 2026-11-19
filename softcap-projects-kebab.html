@@ -1475,6 +1475,10 @@ body:not(.coa-view-projects) .pj-cls-pop{display:none}
 .pj-sync-fail .pj-sync-body{display:flex;gap:12px;align-items:flex-start}
 .pj-sync-fail-icon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:#fef2f2;color:#dc2626;flex-shrink:0}
 .pj-sync-fail .pj-sync-text + .pj-sync-text{margin-top:6px}
+
+/* ---- Projects: Total row frozen at the bottom of the table (always visible; totals cover every epic, all pages) ---- */
+#projects-epic-table > tbody > tr[data-row-id="__total__"] > td{position:sticky;bottom:0;z-index:3;background-color:#fff !important;box-shadow:inset 0 2px 0 #cbd5e1;font-weight:700}
+#projects-epic-table .pj-total-scope{margin-left:6px;font-size:11px;font-weight:400;color:#64748b}
 </style>
 <script id="coa-fields-script">
 document.addEventListener('DOMContentLoaded', function () {
@@ -3471,6 +3475,13 @@ document.addEventListener('DOMContentLoaded', function () {
     var pc = paintChildren; paintChildren = function(r){ pc(r); paintAll(); };
     var pa = pjApply; pjApply = function(){ pa(); paintAll(); };
     paintAll();
+  })();
+  // Total row: says it covers every epic (all pages), not just the current page
+  (function(){
+    var lab = document.querySelector('#projects-epic-table tr[data-row-id="__total__"] .projects-table-totals-label');
+    if (!lab || lab.querySelector('.pj-total-scope')) return;
+    if (!projRows) buildProj();
+    lab.insertAdjacentHTML('beforeend', '<span class="pj-total-scope">· all ' + projRows.length + ' epics</span>');
   })();
   // ---- Projects: kebab (⋯) per row with Edit / History Logs (display only, like Accrual Manager) ----
   (function(){

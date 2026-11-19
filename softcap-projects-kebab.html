@@ -2262,6 +2262,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!pts || !pill) return;
       var m = pts.textContent.match(/([\d.,]+)\s*·\s*([\d.,]+)\s*Cap/);
       var cls = pill.classList.contains('projects-classification-pill--capitalized') ? 'capitalized' : 'expensed';
+      pill.classList.remove('projects-classification-pill--editable');   // read-only until ⋯ › Edit
       var wi = tr.querySelector('td[data-column-id="workItemCount"]');
       var r = { tr: tr, key: key.textContent.trim(), pts: pts, pill: pill, total: m ? num(m[1]) : 0, cap0: m ? num(m[2]) : 0, cls0: cls, cls: cls,
                 status: ((tr.querySelector('td[data-column-id="status"]') || {}).textContent || '').trim(), count: wi ? parseInt(wi.textContent, 10) || 0 : 0, open: false, groupOpen: true };
@@ -2320,7 +2321,7 @@ document.addEventListener('DOMContentLoaded', function () {
     r.pts.innerHTML = fmtPts(r.total) + ' · <span class="projects-cap-value">' + fmtPts(c) + ' Cap (' + pct + '%)</span>';
     r.pill.classList.toggle('projects-classification-pill--capitalized', v.cls === 'capitalized');
     r.pill.classList.toggle('projects-classification-pill--expensed', v.cls === 'expensed');
-    r.pill.classList.add('projects-classification-pill--editable');   // click the pill to change it (popover)
+    r.pill.classList.toggle('projects-classification-pill--editable', epicEditing(r));   // only in ⋯ › Edit
     Array.prototype.forEach.call(r.pill.childNodes, function(n){ if (n.nodeType === 3 && n.textContent.trim()) n.textContent = v.cls === 'capitalized' ? 'Capitalized' : 'Expensed'; });
     r.tr.classList.toggle('pj-editing', epicEditing(r));
     paintActions(r);
@@ -2360,12 +2361,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // each line logs its own changes (the same line-level History Logs used elsewhere in the app)
     if (d.cls !== r.cls) {
       if (editKind === 'child') logLine(r, 'Classification', CLS_LABEL[r.cls], CLS_LABEL[d.cls], 'System', 'Auto-updated (' + d.children[editChild].key + ' capitalized)');
-      else logLine(r, 'Classification', CLS_LABEL[r.cls], CLS_LABEL[d.cls]);
+      else logLine(r, 'Classification', CLS_LABEL[r.cls], CLS_LABEL[d.cls], null, 'Updated', d.clsNote);
     }
     d.children.forEach(function(c, k){
       var o = r.children[k]; if (!o) return;
       c.history = o.history;
-      if (c.cls !== o.cls) logLine(c, 'Classification', CLS_LABEL[o.cls], CLS_LABEL[c.cls]);
+      if (c.cls !== o.cls) logLine(c, 'Classification', CLS_LABEL[o.cls], CLS_LABEL[c.cls], null, 'Updated', c.clsNote);
+      delete c.clsNote;
       if ((c.coa || '') !== (o.coa || '')) logLine(c, 'Project COA', o.coa || '—', c.coa || '—');
     });
     r.cls = d.cls; r.children = d.children;
@@ -2453,7 +2455,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var clsFor = null;
   function closeClsMenu(){ clsPop.classList.remove('is-open'); clsFor = null; }
   function paintClsPop(){
-    var t = clsFor, blocked = !t.child && hasCapKid(t.r);   // yes/no only: stops at the first Capitalized work item
+    var t = clsFor, blocked = !t.child && hasCapKid(viewOf(t.r));   // yes/no only: stops at the first Capitalized work item
     clsPop.innerHTML = '<div class="pj-cls-list">' +
       ['capitalized', 'expensed'].map(function(c){
         var dis = c === 'expensed' && blocked;
@@ -2478,24 +2480,20 @@ document.addEventListener('DOMContentLoaded', function () {
     var t = clsFor, h = clsPop.offsetHeight;
     clsPop.style.top = (t.below ? t.rc.bottom + 4 : t.rc.top - 4 - h) + 'px';
   }
+  // in ⋯ › Edit: Confirm puts the choice (and note) on the line's draft; the row's Save applies it and logs it
   function saveClsPop(){
     var t = clsFor; if (!t || !t.sel) return;
-    var r = t.r, cls = t.sel, ta = clsPop.querySelector('.pj-cls-notes'), note = ta ? ta.value.trim() : '';
+    var r = t.r, d = r.draft, ta = clsPop.querySelector('.pj-cls-notes'), note = ta ? ta.value.trim() : '';
     closeClsMenu();
-    var line = t.child || r, from = line.cls;
-    if (cls === from) return;   // nothing changed
-    var before = currentRate(), dr = (r === editEpic && r.draft) ? r.draft : null;   // keep an open Project COA edit in step
-    logLine(line, 'Classification', CLS_LABEL[from], CLS_LABEL[cls], null, 'Updated', note);
-    line.cls = cls;
+    if (!d || r !== editEpic) return;
     if (t.child) {
-      if (dr && dr.children[t.j]) dr.children[t.j].cls = cls;
-      if (cls === 'capitalized' && r.cls === 'expensed') {   // a Capitalized work item makes its parent Capitalized
-        logLine(r, 'Classification', 'Expensed', 'Capitalized', 'System', 'Auto-updated (' + t.child.key + ' capitalized)');
-        r.cls = 'capitalized'; if (dr) dr.cls = 'capitalized';
-      }
-    } else if (dr) dr.cls = cls;
-    afterProjChange(r, before);
-    toast(esc(line.key) + ' updated to ' + CLS_LABEL[cls] + '.');
+      var ch = d.children[t.j]; if (!ch) return;
+      if (note) ch.clsNote = note;
+      draftChildCls(r, ch, t.sel);   // a Capitalized work item also makes the (draft) parent Capitalized
+    } else {
+      if (note) d.clsNote = note;
+      draftEpicCls(r, t.sel);
+    }
   }
   document.addEventListener('click', function(e){
     var pill = e.target.closest('#projects-epic-table .projects-classification-pill--editable');
@@ -2504,7 +2502,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!projRows) buildProj();
       var target;
       if (pill.hasAttribute('data-child')) {   // a work item
-        var pr = projRows[+pill.dataset.epic], j = +pill.dataset.child, ch = pr && pr.children[j]; if (!ch) return;
+        var pr = projRows[+pill.dataset.epic], j = +pill.dataset.child, ch = pr && viewOf(pr).children[j]; if (!ch) return;
         target = { r: pr, child: ch, j: j };
       } else {
         var r = projRows.filter(function(x){ return x.pill === pill; })[0]; if (!r) return;
@@ -2598,7 +2596,7 @@ document.addEventListener('DOMContentLoaded', function () {
           '<td class="data-table-cell"><span class="projects-type-badge projects-type-badge--' + c.type.toLowerCase() + '">' + c.type + '</span></td>' +
           '<td class="data-table-cell"><a class="projects-key-link" href="#" onclick="return false">' + c.key + '</a></td>' +
           '<td class="data-table-cell pj-summary-cell" title="' + esc(c.summary) + '">' + esc(c.summary) + '</td><td class="data-table-cell">' + esc(c.status) + '</td>' +
-          '<td class="data-table-cell">' + childPill(i, j, c, true) + '</td><td class="data-table-cell pj-coa-cell">' + (ed ? coaBtn(i, j, c) : '<span class="pj-coa-ro' + (c.coa ? '' : ' is-empty') + '">' + (c.coa ? esc(c.coa) : '—') + '</span>') + '</td>' +
+          '<td class="data-table-cell">' + childPill(i, j, c, ed) + '</td><td class="data-table-cell pj-coa-cell">' + (ed ? coaBtn(i, j, c) : '<span class="pj-coa-ro' + (c.coa ? '' : ' is-empty') + '">' + (c.coa ? esc(c.coa) : '—') + '</span>') + '</td>' +
           '<td class="data-table-cell" style="text-align:right">' + fmtPts(c.pts) + '</td><td class="data-table-cell">' + c.done + '</td>' +
           '<td class="data-table-cell pj-actions-col">' + actionsHtml(ed, i, j) + '</td></tr>';
       });
@@ -3420,7 +3418,6 @@ document.addEventListener('DOMContentLoaded', function () {
         e.stopPropagation();
         if (openBtn === b) { close(); return; }
         close(); openBtn = b; b.setAttribute('aria-expanded', 'true'); b.classList.add('is-active');
-        menu.querySelector('[data-more="edit"]').style.display = b.hasAttribute('data-child') ? '' : 'none';
         menu.classList.add('is-open');
         var r = b.getBoundingClientRect();
         menu.style.top = (r.bottom + 4) + 'px';

@@ -3476,13 +3476,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var pa = pjApply; pjApply = function(){ pa(); paintAll(); };
     paintAll();
   })();
-  // Total row: says it covers every epic (all pages), not just the current page
-  (function(){
-    var lab = document.querySelector('#projects-epic-table tr[data-row-id="__total__"] .projects-table-totals-label');
-    if (!lab || lab.querySelector('.pj-total-scope')) return;
-    if (!projRows) buildProj();
-    lab.insertAdjacentHTML('beforeend', '<span class="pj-total-scope">· all ' + projRows.length + ' epics</span>');
-  })();
   // ---- Projects: kebab (⋯) per row with Edit / History Logs (display only, like Accrual Manager) ----
   (function(){
     var table = document.getElementById('projects-epic-table'); if (!table) return;

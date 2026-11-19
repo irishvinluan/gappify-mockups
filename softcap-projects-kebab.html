@@ -1449,6 +1449,32 @@ body:not(.coa-view-projects) .pj-cls-pop{display:none}
 .pj-sync-cancel:hover{background:#f8fafc}
 .pj-sync-ok{border:none;background:#4f46e5;color:#fff;font-weight:600}
 .pj-sync-ok:hover{background:#4338ca}
+
+/* ---- Settings › Integrations › Connected Apps (same cards as the app) ---- */
+.pj-apps-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-content:start;align-self:stretch}
+@media (max-width:1100px){.pj-apps-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.pj-app-card{display:flex;flex-direction:column;gap:12px;padding:20px;background:#fff;border:1px solid #e2e8f0;border-radius:12px}
+.pj-app-head{display:flex;align-items:center;gap:12px}
+.pj-app-head svg{flex-shrink:0}
+.pj-app-titles{display:flex;flex-direction:column}
+.pj-app-name{font-size:14px;font-weight:700;color:#0f172a}
+.pj-app-desc{font-size:12px;color:#64748b}
+.pj-app-status{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#64748b}
+.pj-app-dot{width:8px;height:8px;border-radius:50%;background:#cbd5e1;flex-shrink:0}
+.pj-app-status.is-on{color:#047857}
+.pj-app-status.is-on .pj-app-dot{background:#10b981}
+.pj-app-hint{margin:0;font-size:12px;color:#64748b}
+.pj-app-actions{display:flex;align-items:center;gap:8px;padding-top:4px;margin-top:auto}
+.pj-app-btn{display:inline-flex;align-items:center;justify-content:center;height:32px;padding:0 12px;border-radius:6px;border:1px solid #e2e8f0;background:#fff;color:#334155;font:inherit;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s}
+.pj-app-btn:hover{background:#f8fafc}
+.pj-app-btn--primary{background:#4f46e5;border-color:#4f46e5;color:#fff;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.pj-app-btn--primary:hover{background:#4338ca;border-color:#4338ca}
+.pj-app-btn--danger{color:#dc2626;border-color:#fecaca}
+.pj-app-btn--danger:hover{background:#fef2f2}
+/* sync failed modal (same card as "Sync now?") */
+.pj-sync-fail .pj-sync-body{display:flex;gap:12px;align-items:flex-start}
+.pj-sync-fail-icon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:#fef2f2;color:#dc2626;flex-shrink:0}
+.pj-sync-fail .pj-sync-text + .pj-sync-text{margin-top:6px}
 </style>
 <script id="coa-fields-script">
 document.addEventListener('DOMContentLoaded', function () {
@@ -1806,6 +1832,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (window.coaShowView) coaShowView('settings');
     if (companyContent) companyContent.hidden = p !== 'company';
     coaBackdrop.hidden = p !== 'lcf';
+    var appsPage = document.querySelector('.pj-apps-content'); if (appsPage) appsPage.hidden = p !== 'apps';
     document.querySelectorAll('.settings-page-shell [data-coa-page]').forEach(function(li){
       li.classList.toggle('ant-menu-item-selected', li.getAttribute('data-coa-page') === p);
     });
@@ -3022,6 +3049,7 @@ document.addEventListener('DOMContentLoaded', function () {
     pClr.addEventListener('click', function(){ pIn.value = ''; projSearch(); pIn.focus(); });
   }
 
+  var jiraConnected = true;   // Settings › Connected Apps can disconnect it
   // ---- Projects: "Sync Now" (top right, above the table) — confirm, then pull the latest epics and stories from Jira ----
   (function(){
     var bar = document.querySelector('.projects-container .projects-filters-toolbar'); if (!bar) return;
@@ -3035,12 +3063,25 @@ document.addEventListener('DOMContentLoaded', function () {
       '<div class="pj-sync-body"><p class="pj-sync-title" id="pj-sync-title">Sync now?</p><p class="pj-sync-text">This will pull the latest epics and stories from Jira right away.</p></div>' +
       '<div class="pj-sync-actions"><button type="button" class="pj-sync-cancel" data-sy="cancel">Cancel</button><button type="button" class="pj-sync-ok" data-sy="ok">Sync Now</button></div></div>';
     document.body.appendChild(m);
+    // sync failed: Jira was disconnected in Settings
+    var fail = document.createElement('div');
+    fail.className = 'pj-sync-modal pj-sync-fail'; fail.setAttribute('role', 'alertdialog'); fail.setAttribute('aria-modal', 'true'); fail.setAttribute('aria-labelledby', 'pj-sync-fail-title');
+    fail.innerHTML = '<div class="pj-sync-backdrop"></div><div class="pj-sync-card">' +
+      '<div class="pj-sync-body"><span class="pj-sync-fail-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>' +
+        '<div><p class="pj-sync-title" id="pj-sync-fail-title">Sync failed: Jira is disconnected</p>' +
+        '<p class="pj-sync-text">Projects couldn’t pull the latest epics and stories because the Jira connection was turned off in Settings.</p>' +
+        '<p class="pj-sync-text">Contact your system admin to reconnect Jira (Settings › Integrations › Connected Apps), then try again.</p></div></div>' +
+      '<div class="pj-sync-actions"><button type="button" class="pj-sync-ok" data-sf="ok">Got it</button></div></div>';
+    document.body.appendChild(fail);
+    fail.addEventListener('click', function(e){ if (e.target.closest('[data-sf]') || e.target.classList.contains('pj-sync-backdrop')) fail.classList.remove('is-open'); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && fail.classList.contains('is-open')) { fail.classList.remove('is-open'); e.stopImmediatePropagation(); } }, true);
     function closeModal(){ m.classList.remove('is-open'); }
     function startSync(){
       closeModal();
       btn.disabled = true; btn.classList.add('is-syncing'); btn.querySelector('.pj-sync-label').textContent = 'Syncing...';
       setTimeout(function(){
         btn.disabled = false; btn.classList.remove('is-syncing'); btn.querySelector('.pj-sync-label').textContent = 'Sync Now';
+        if (!jiraConnected) { fail.classList.add('is-open'); fail.querySelector('[data-sf="ok"]').focus(); return; }
         toast('Synced with Jira. Projects are up to date.');
       }, 2000);
     }
@@ -3051,6 +3092,47 @@ document.addEventListener('DOMContentLoaded', function () {
       else if (b || e.target.classList.contains('pj-sync-backdrop')) closeModal();
     });
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && m.classList.contains('is-open')) { closeModal(); e.stopImmediatePropagation(); } }, true);
+  })();
+  // ---- Settings › Integrations › Connected Apps (Jira can be disconnected; Projects' Sync Now then fails) ----
+  var CONNECTED_APPS = [{"name": "Jira", "desc": "Sync data from Jira into Gappify.", "hint": "Connect to start syncing data from Jira.", "icon": "<svg width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"#0052CC\"><path d=\"M11.571 11.513H0a5.218 5.218 0 0 0 5.232 5.215h2.13v2.057A5.215 5.215 0 0 0 12.575 24V12.518a1.005 1.005 0 0 0-1.005-1.005zm5.723-5.756H5.736a5.215 5.215 0 0 0 5.215 5.214h2.129v2.058a5.218 5.218 0 0 0 5.215 5.214V6.758a1.001 1.001 0 0 0-1.001-1.001zM23.013 0H11.455a5.215 5.215 0 0 0 5.215 5.215h2.129v2.057A5.215 5.215 0 0 0 24 12.483V1.005A1.001 1.001 0 0 0 23.013 0Z\"></path></svg>"}, {"name": "Slack", "desc": "Send accrual notifications and alerts to Slack.", "hint": "Connect a workspace to start sending notifications to Slack.", "icon": "<svg width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><path fill=\"#36C5F0\" d=\"M9.5 2a2 2 0 0 0 0 4H11V4a2 2 0 0 0-1.5-2zm0 5.5H4a2 2 0 0 0 0 4h5.5a2 2 0 0 0 0-4z\"></path><path fill=\"#2EB67D\" d=\"M22 9.5a2 2 0 0 0-4 0V11h2a2 2 0 0 0 2-1.5zm-5.5 0V4a2 2 0 0 0-4 0v5.5a2 2 0 0 0 4 0z\"></path><path fill=\"#ECB22E\" d=\"M14.5 22a2 2 0 0 0 0-4H13v2a2 2 0 0 0 1.5 2zm0-5.5H20a2 2 0 0 0 0-4h-5.5a2 2 0 0 0 0 4z\"></path><path fill=\"#E01E5A\" d=\"M2 14.5a2 2 0 0 0 4 0V13H4a2 2 0 0 0-2 1.5zm5.5 0V20a2 2 0 0 0 4 0v-5.5a2 2 0 0 0-4 0z\"></path></svg>"}];   // Jira and Slack only for now
+  (function(){
+    var shell = document.querySelector('.settings-page-shell-content'); if (!shell) return;
+    var li = document.querySelector('.settings-page-shell [data-menu-id$="connected-apps"]');
+    if (li) li.setAttribute('data-coa-page', 'apps');
+    var page = document.createElement('div');
+    page.className = 'settings-page-shell-content settings-page-shell-content-v2 pj-apps-content';
+    page.hidden = true;
+    shell.parentNode.insertBefore(page, shell.nextSibling);
+    function card(a){
+      var jira = a.name === 'Jira', on = jira && jiraConnected;
+      return '<div class="pj-app-card" data-app="' + esc(a.name) + '">' +
+        '<div class="pj-app-head">' + a.icon + '<div class="pj-app-titles"><span class="pj-app-name">' + esc(a.name) + '</span><span class="pj-app-desc">' + esc(a.desc) + '</span></div></div>' +
+        '<div class="pj-app-status' + (on ? ' is-on' : '') + '"><span class="pj-app-dot"></span><span>' + (on ? 'Connected' : 'Not Connected') + '</span></div>' +
+        '<p class="pj-app-hint">' + (on ? 'Syncing epics and stories into Software Capitalization.' : esc(a.hint)) + '</p>' +
+        '<div class="pj-app-actions">' + (on
+          ? '<button type="button" class="pj-app-btn" data-app-act="configure">Configure</button><button type="button" class="pj-app-btn pj-app-btn--danger" data-app-act="disconnect">Disconnect</button>'
+          : '<button type="button" class="pj-app-btn pj-app-btn--primary" data-app-act="connect">Connect to ' + esc(a.name) + '</button>') + '</div></div>';
+    }
+    function render(){
+      page.innerHTML = '<div class="settings-page-shell-title-row-v2"><p class="settings-page-shell-title-v2">Connected Apps</p></div>' +
+        '<div class="settings-page-shell-box"><div class="pj-apps-grid">' + CONNECTED_APPS.map(card).join('') + '</div></div>';
+    }
+    render();
+    window.pjRenderApps = render;
+    page.addEventListener('click', function(e){
+      var b = e.target.closest('[data-app-act]'); if (!b) return;
+      var app = b.closest('[data-app]').dataset.app, act = b.dataset.appAct;
+      if (app !== 'Jira') { toast(app + ' isn’t part of this mock-up.'); return; }
+      if (act === 'disconnect') {
+        confirmDialog({
+          title: 'Disconnect Jira?',
+          body: 'Projects will stop syncing epics and stories from Jira until Jira is connected again. Data already synced stays as it is.',
+          summary: '', okText: 'Disconnect', danger: true,
+          onOk: function(){ jiraConnected = false; render(); toast('Jira disconnected.'); }
+        });
+      } else if (act === 'connect') { jiraConnected = true; render(); toast('Jira connected.'); }
+      else if (act === 'configure') toast('Jira settings aren’t part of this mock-up.');
+    });
   })();
   // ---- Projects: pagination footer (same component as Accrual Manager) — search first, then page ----
   var pjView = { q: '', page: 1, size: 25 };
